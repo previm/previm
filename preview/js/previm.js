@@ -1,5 +1,5 @@
 (function() {
-  var REFRESH_INTERVAL = 3000;
+  var REFRESH_INTERVAL = 1000;
   var converter = new Showdown.converter();
 
   function loadPreview() {

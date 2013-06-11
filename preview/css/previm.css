@@ -2,6 +2,10 @@ body {
   padding: 20px 100px 0;
 }
 
+#header {
+  border-bottom: 1px solid #ccc;
+}
+
 #last-modified {
   padding-left: 10px;
 }

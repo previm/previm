@@ -1,0 +1,122 @@
+*previm.txt*	プレビュー用プラグイン
+
+Version: 1.0
+Author: kanno <akapanna@gmail.com>
+
+==============================================================================
+目次							*previm-contents*
+
+概要							|previm-introduction|
+依存プラグイン						|previm-depends|
+使い方							|previm-usage|
+コマンド						|previm-command|
+関数							|previm-functions|
+設定							|previm-settings|
+Google Chromeの注意					|previm-chrome-note|
+open-browser.vimの使用					|previm-openbrowser|
+更新履歴						|previm-changelog|
+
+
+==============================================================================
+概要							*previm-introduction*
+
+Vimで編集した内容をブラウザでプレビューするための機能を提供します。
+リアルタイムプレビューに近いことが可能です。
+
+[対応フォーマット]
+	- Markdown
+
+最新版:
+http://github.com/kannokanno/previm
+
+
+==============================================================================
+依存プラグイン						*previm-depends*
+
+[必須]
+	なし
+
+[任意]
+	- open-browser.vim(https://github.com/tyru/open-browser.vim)
+
+
+==============================================================================
+使い方							*previm-usage*
+
+1. .vimrcで |g:previm_open_cmd| を設定します。
+(ただしopen-browser.vimを使用する場合は不要です)
+2. |filetype| がMarkdownのファイルの編集を開始します。
+3. |:PrevimOpen| を実行してブラウザを開きます。
+4. 元のVimバッファに戻り編集を続けます。
+5. 保存の度にブラウザの表示内容が更新されます。
+
+
+==============================================================================
+コマンド						*previm-command*
+
+							*:PrevimOpen*
+:PrevimOpen
+	現在のファイルを対象としてブラウザを開きます。
+
+
+==============================================================================
+関数							*previm-functions*
+
+previm#open({path})					*previm#open()*
+	{path} にはブラウザで開くURLを指定します。
+
+previm#refresh()					*previm#refresh()*
+	編集内容の更新を反映します。これによりブラウザの表示も更新されます。
+
+
+==============================================================================
+設定							*previm-settings*
+
+
+g:previm_open_cmd					*g:previm_open_cmd*
+	型:文字列
+
+	|:PrevimOpen| で実行するコマンドを指定します。このコマンドが指定されて
+	いない場合はopenbrowser#openを試みます。
+	|previm-openbrowser| も参照してください。
+
+	以下の設定例は、MacにてFirefoxで開く場合です。
+	>
+		let g:previm_open_cmd = 'open -a Firefox'
+	<
+
+
+==============================================================================
+Google Chromeの注意					*previm-chrome-note*
+
+Google Chromeに関してはSame-Origin Policyにより、そのままではこのプラグインは
+動作しません。
+
+Chromeの起動オプションに '--allow-file-access-from-files' を付ける必要がありま
+す。詳細は「Chrome Same Origin Policy」などで検索してください。
+しかしこれは手間になりますので、作者としてはプレビューに関しては他ブラウザを使
+うことを推奨します。
+
+
+==============================================================================
+open-browser.vimの使用					*previm-openbrowser*
+
+プレビューブラウザを開くときは次のような処理になります。
+
+1. |g:previm_open_cmd| が設定されていればそのコマンドを実行する
+  - |g:previm_open_cmd| が未定義、もしくは空文字の場合は 2 へ
+2. openbrowser#open()でブラウザを開く
+  - open-browser.vimがインストールされていない場合は 3 へ
+3. 実行できるコマンドがないので標準エラーにメッセージを出力して終了
+
+このため、open-browser.vimを使う場合 |g:previm_open_cmd| の設定は不要です。
+
+
+==============================================================================
+更新履歴						*previm-changelog*
+
+1.0	2013-06-11
+	- 初版
+
+vim:tw=78:ts=8:ft=help:norl:
+

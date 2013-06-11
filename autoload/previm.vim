@@ -5,16 +5,36 @@ set cpo&vim
 
 function! previm#open(preview_html_file)
   call previm#refresh()
-  execute printf('silent !open -a Safari "%s"', a:preview_html_file)
-  "call openbrowser#open(s:preview_html_file)
+  if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
+    execute printf('silent !%s "%s"', g:previm_open_cmd, a:preview_html_file)
+  elseif s:exists_openbrowser()
+    call s:apply_openbrowser(a:preview_html_file)
+  else
+    echoerr 'not found command for open. show detail :h previm#open'
+  endif
+endfunction
+
+function! s:exists_openbrowser()
+  try
+    call openbrowser#load()
+    return 1
+  catch /E117.*/
+    return 0
+  endtry
+endfunction
+
+function! s:apply_openbrowser(path)
+  let saved_in_vim = g:openbrowser_open_filepath_in_vim
+  try
+    let g:openbrowser_open_filepath_in_vim = 0
+    call openbrowser#open(a:path)
+  finally
+    let g:openbrowser_open_filepath_in_vim = saved_in_vim
+  endtry
 endfunction
 
 function! previm#refresh()
-  let function_js_file = previm#make_preview_file_path('js/previm-function.js')
-  if filewritable(function_js_file) !=# 1
-    throw function_js_file . ' cannot be created.'
-  endif
-  call writefile(s:function_template(), function_js_file)
+  call writefile(s:function_template(), previm#make_preview_file_path('js/previm-function.js'))
 endfunction
 
 let s:base_dir = expand('<sfile>:p:h')
