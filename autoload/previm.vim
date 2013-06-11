@@ -50,7 +50,7 @@ function! s:function_template()
       \ '}',
       \ '',
       \ 'function getLastModified() {',
-      \ printf('return "%s";', strftime("%Y/%m/%d (%a) %H:%M")),
+      \ printf('return "%s";', strftime("%Y/%m/%d (%a) %T")),
       \ '}',
       \ '',
       \ 'function getContent() {',
