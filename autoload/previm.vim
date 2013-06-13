@@ -3,6 +3,8 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+let s:newline_character = "\n"
+
 function! previm#open(preview_html_file)
   call previm#refresh()
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
@@ -34,7 +36,8 @@ function! s:apply_openbrowser(path)
 endfunction
 
 function! previm#refresh()
-  call writefile(s:function_template(), previm#make_preview_file_path('js/previm-function.js'))
+  let encoded_lines = split(iconv(s:function_template(), &encoding, 'utf-8'), s:newline_character)
+  call writefile(encoded_lines, previm#make_preview_file_path('js/previm-function.js'))
 endfunction
 
 let s:base_dir = expand('<sfile>:p:h')
@@ -44,7 +47,7 @@ endfunction
 
 function! s:function_template()
   let current_file = expand('%:p')
-  return [
+  return join([
       \ 'function getFileName() {',
       \ printf('return "%s";', current_file),
       \ '}',
@@ -56,11 +59,12 @@ function! s:function_template()
       \ 'function getContent() {',
       \ printf('return "%s";', s:convert_to_content(getline(1, '$'))),
       \ '}',
-      \]
+      \], s:newline_character)
 endfunction
 
 function! s:convert_to_content(lines)
   let converted_lines = []
+  " TODO リストじゃなくて普通に文字列連結にする(テスト書く)
   for line in a:lines
     let escaped = substitute(line, '\', '\\\\\\', 'g')
     let escaped = substitute(escaped, '"', '\\"', 'g')
