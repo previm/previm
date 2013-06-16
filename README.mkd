@@ -24,13 +24,3 @@
 1. `:PrevimOpen` を実行してブラウザを開きます
 1. 元のVimバッファに戻り編集を続けます
 1. 保存の度にブラウザの表示内容が更新されます
-
-
-## Google Chromeでの注意
-
-Google Chromeに関してはSame-Origin Policyにより、そのままではこのプラグインは動作しません。
-
-Chromeの起動オプションに '--allow-file-access-from-files' を付ける必要があります。  
-詳細は「Chrome Same Origin Policy」などで検索してください。
-
-しかしこれは手間になりますので、作者としてはプレビューに関しては他ブラウザを使うことを推奨します。
