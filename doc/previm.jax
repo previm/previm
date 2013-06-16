@@ -12,7 +12,6 @@ Author: kanno <akapanna@gmail.com>
 コマンド						|previm-command|
 関数							|previm-functions|
 設定							|previm-settings|
-Google Chromeの注意					|previm-chrome-note|
 open-browser.vimの使用					|previm-openbrowser|
 更新履歴						|previm-changelog|
 
@@ -87,18 +86,6 @@ g:previm_open_cmd					*g:previm_open_cmd*
 
 
 ==============================================================================
-Google Chromeの注意					*previm-chrome-note*
-
-Google Chromeに関してはSame-Origin Policyにより、そのままではこのプラグインは
-動作しません。
-
-Chromeの起動オプションに '--allow-file-access-from-files' を付ける必要がありま
-す。詳細は「Chrome Same Origin Policy」などで検索してください。
-しかしこれは手間になりますので、作者としてはプレビューに関しては他ブラウザを使
-うことを推奨します。
-
-
-==============================================================================
 open-browser.vimの使用					*previm-openbrowser*
 
 プレビューブラウザを開くときは次のような処理になります。
@@ -114,6 +101,10 @@ open-browser.vimの使用					*previm-openbrowser*
 
 ==============================================================================
 更新履歴						*previm-changelog*
+
+1.2	2013-06-16
+	- resolved reload issue in google chrome
+	- Thanks id:ArcCosine
 
 1.1	2013-06-13
 	- previm-function.jsのエンコードにUTF-8を明示
