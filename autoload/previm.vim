@@ -49,11 +49,11 @@ function! s:function_template()
   let current_file = expand('%:p')
   return join([
       \ 'function getFileName() {',
-      \ printf('return "%s";', current_file),
+      \ printf('return "%s";', escape(current_file, '\')),
       \ '}',
       \ '',
       \ 'function getLastModified() {',
-      \ printf('return "%s";', strftime("%Y/%m/%d (%a) %T")),
+      \ printf('return "%s";', strftime("%Y/%m/%d (%a) %H:%M:%S")),
       \ '}',
       \ '',
       \ 'function getContent() {',
