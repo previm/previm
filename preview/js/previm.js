@@ -20,12 +20,12 @@
     script.type = 'text/javascript';
     script.src = 'js/previm-function.js?t=' + new Date().getTime();
 
-    script.addEventListener("load", function() {
+    AddEventListener(script, "load", (function() {
       loadPreview();
       _win.setTimeout(function() {
         script.parentNode.removeChild(script);
       }, 160);
-    }, false);
+    })());
 
     _doc.getElementsByTagName("head")[0].appendChild(script);
 
@@ -33,3 +33,13 @@
 
   loadPreview();
 })(document, window);
+
+function AddEventListener(target, type, listener) {
+    if (target.addEventListener) {
+        target.addEventListener(type, listener, false);
+    } else if (target.attachEvent) {
+        target.attachEvent('on' + type,
+            function() { listener.apply(target, arguments); } );
+    } else {
+    }
+}
