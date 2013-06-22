@@ -3,6 +3,9 @@
   var converter = new Showdown.converter();
 
   function loadPreview() {
+    // These functions are defined as the file generated dynamically.
+    //   generator-file: preview/autoload/previm.vim
+    //   generated-file: preview/js/previm-function.js
     if (typeof getFileName === 'function') {
       _doc.getElementById("markdown-file-name").innerHTML = getFileName();
     }
@@ -20,7 +23,7 @@
     script.type = 'text/javascript';
     script.src = 'js/previm-function.js?t=' + new Date().getTime();
 
-    AddEventListener(script, "load", (function() {
+    _addEventListener(script, "load", (function() {
       loadPreview();
       _win.setTimeout(function() {
         script.parentNode.removeChild(script);
@@ -31,15 +34,16 @@
 
   }, REFRESH_INTERVAL);
 
+  function _addEventListener(target, type, listener) {
+    if (target.addEventListener) {
+      target.addEventListener(type, listener, false);
+    } else if (target.attachEvent) {
+      // for IE6 - IE8
+      target.attachEvent('on' + type, function() { listener.apply(target, arguments); });
+    } else {
+      // do nothing
+    }
+  }
+
   loadPreview();
 })(document, window);
-
-function AddEventListener(target, type, listener) {
-    if (target.addEventListener) {
-        target.addEventListener(type, listener, false);
-    } else if (target.attachEvent) {
-        target.attachEvent('on' + type,
-            function() { listener.apply(target, arguments); } );
-    } else {
-    }
-}
