@@ -102,6 +102,13 @@ open-browser.vimの使用					*previm-openbrowser*
 ==============================================================================
 更新履歴						*previm-changelog*
 
+1.3	2013-06-22
+	- fixed #4(Github issue)
+	- Windowsのディレクトリパス()のエスケープ処理追加
+	- IE8以前での動作対応(attachEvent対応追加)
+	- Windows環境での更新日表示対応追加
+	- Thanks id:sousu, id:beckorz
+
 1.2	2013-06-16
 	- resolved reload issue in google chrome
 	- Thanks id:ArcCosine
