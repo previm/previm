@@ -1,6 +1,5 @@
 (function(_doc, _win) {
   var REFRESH_INTERVAL = 1000;
-  var converter = new Showdown.converter();
 
   function loadPreview() {
     // These functions are defined as the file generated dynamically.
@@ -13,7 +12,7 @@
       _doc.getElementById("last-modified").innerHTML = getLastModified();
     }
     if (typeof getContent === 'function') {
-      _doc.getElementById("preview").innerHTML = converter.makeHtml(getContent());
+      _doc.getElementById("preview").innerHTML = marked(getContent());
     }
   }
 
