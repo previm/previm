@@ -53,13 +53,20 @@ function! s:function_template()
       \ '}',
       \ '',
       \ 'function getLastModified() {',
-      \ printf('return "%s";', strftime("%Y/%m/%d (%a) %H:%M:%S")),
+      \ printf('return "%s";', s:get_last_modified_time()),
       \ '}',
       \ '',
       \ 'function getContent() {',
       \ printf('return "%s";', s:convert_to_content(getline(1, '$'))),
       \ '}',
       \], s:newline_character)
+endfunction
+
+function! s:get_last_modified_time()
+  if exists('*strftime')
+    return strftime("%Y/%m/%d (%a) %H:%M:%S")
+  endif
+  return '(strftime cannot be performed.)'
 endfunction
 
 function! s:convert_to_content(lines)
