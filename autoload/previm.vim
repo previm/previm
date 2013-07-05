@@ -49,7 +49,7 @@ function! s:function_template()
   let current_file = expand('%:p')
   return join([
       \ 'function getFileName() {',
-      \ printf('return "%s";', escape(current_file, '\')),
+      \ printf('return "%s";', s:escape_backslash(current_file)),
       \ '}',
       \ '',
       \ 'function getLastModified() {',
@@ -57,7 +57,7 @@ function! s:function_template()
       \ '}',
       \ '',
       \ 'function getContent() {',
-      \ printf('return "%s";', s:convert_to_content(getline(1, '$'))),
+      \ printf('return "%s";', previm#convert_to_content(getline(1, '$'))),
       \ '}',
       \], s:newline_character)
 endfunction
@@ -69,15 +69,54 @@ function! s:get_last_modified_time()
   return '(strftime cannot be performed.)'
 endfunction
 
-function! s:convert_to_content(lines)
+" TODO test
+function! s:escape_backslash(text)
+  return escape(a:text, '\')
+endfunction
+
+function! previm#convert_to_content(lines)
+  let mkd_dir = s:escape_backslash(expand('%:p:h'))
   let converted_lines = []
   " TODO リストじゃなくて普通に文字列連結にする(テスト書く)
   for line in a:lines
     let escaped = substitute(line, '\', '\\\\\\', 'g')
     let escaped = substitute(escaped, '"', '\\"', 'g')
+    let escaped = previm#relative_to_absolute_imgpath(escaped, mkd_dir)
     call add(converted_lines, escaped)
   endfor
   return join(converted_lines, "\\n")
+endfunction
+
+function! previm#relative_to_absolute_imgpath(text, mkd_dir)
+  let elem = previm#fetch_imgpath_elements(a:text)
+  if empty(elem.path)
+    return a:text
+  endif
+  for protocol in ['http://', 'https://', 'file://']
+    if s:start_with(elem.path, protocol)
+      " is absolute path
+      return a:text
+    endif
+  endfor
+  " TODO url encode
+  let pre_slash = s:start_with(a:mkd_dir, '/') ? '' : '/'
+  let local_path = a:mkd_dir . '/' . elem.path
+  return printf('![%s](file://localhost%s%s)', elem.title, pre_slash, local_path)
+endfunction
+
+function! previm#fetch_imgpath_elements(text)
+  let elem = {'title': '', 'path': ''}
+  let matched = matchlist(a:text, '!\[\(.*\)\](\(.*\))')
+  if empty(matched)
+    return elem
+  endif
+  let elem.title = matched[1]
+  let elem.path = matched[2]
+  return elem
+endfunction
+
+function! s:start_with(haystock, needle)
+  return stridx(a:haystock, a:needle) ==# 0
 endfunction
 
 let &cpo = s:save_cpo
