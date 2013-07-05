@@ -72,14 +72,11 @@ function! s:t.replace_path_when_relative()
   call self.assert.equals(expected, previm#relative_to_absolute_imgpath(arg_line, arg_dir))
 endfunction
 
-" TODO path pattern
-" TODO URLencodeする必要がある？ブラウザが勝手にやってくれる？
-" TODO バックスラッシュでいい？エスケープする必要ある？
 function! s:t.urlencoded_path()
-  let rel_path = 'previm\\some\\path\\img.png'
+  let rel_path = 'previm\some\path\img.png'
   let arg_line = printf('![img](%s)', rel_path)
-  let arg_dir = 'C:\\Documents and Settings\\folder'
-  let expected = '![img](file://localhost/C%3A%5C%5CDocuments%20and%20Settings%5C%5C%E3%83%95%E3%82%A9%E3%83%AB%E3%83%80%5C%5Cmarkdown%5C%5Cprevim%5C%5Csome%5C%5Cpath%5C%5Cimg.png)'
+  let arg_dir = 'C:\Documents and Settings\folder'
+  let expected = '![img](file://localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png)'
   call self.assert.equals(expected, previm#relative_to_absolute_imgpath(arg_line, arg_dir))
 endfunction
 "}}}

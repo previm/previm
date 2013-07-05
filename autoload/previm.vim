@@ -98,9 +98,11 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir)
       return a:text
     endif
   endfor
-  " TODO url encode
+
+  " マルチバイトの解釈はブラウザに任せるのでURLエンコードしない
+  " 半角空白だけはエラーの原因になるのでURLエンコード対象とする
   let pre_slash = s:start_with(a:mkd_dir, '/') ? '' : '/'
-  let local_path = a:mkd_dir . '/' . elem.path
+  let local_path = substitute(a:mkd_dir.'/'.elem.path, ' ', '%20', 'g')
   return printf('![%s](file://localhost%s%s)', elem.title, pre_slash, local_path)
 endfunction
 
