@@ -19,7 +19,7 @@ endfunction
 function! s:t.exists_backslash()
   let arg = ['\(x -> x + 2)', 'あいうえお漢字']
   let expected =
-        \   '\\\(x -> x + 2)' . s:newline
+        \   '\\(x -> x + 2)' . s:newline
         \ . 'あいうえお漢字'
   call self.assert.equals(expected, previm#convert_to_content(arg))
 endfunction
