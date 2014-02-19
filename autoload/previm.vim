@@ -79,7 +79,7 @@ function! previm#convert_to_content(lines)
   let converted_lines = []
   " TODO リストじゃなくて普通に文字列連結にする(テスト書く)
   for line in a:lines
-    let escaped = substitute(line, '\', '\\\\\\', 'g')
+    let escaped = substitute(line, '\', '\\\\', 'g')
     let escaped = substitute(escaped, '"', '\\"', 'g')
     let escaped = previm#relative_to_absolute_imgpath(escaped, mkd_dir)
     call add(converted_lines, escaped)
