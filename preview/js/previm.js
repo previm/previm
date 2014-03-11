@@ -2,16 +2,27 @@
   var REFRESH_INTERVAL = 1000;
 
   function loadPreview() {
+    var need_reload = false;
     // These functions are defined as the file generated dynamically.
     //   generator-file: preview/autoload/previm.vim
     //   generated-file: preview/js/previm-function.js
     if (typeof getFileName === 'function') {
-      _doc.getElementById("markdown-file-name").innerHTML = getFileName();
+      if (_doc.getElementById("markdown-file-name").innerHTML != getFileName()) {
+        _doc.getElementById("markdown-file-name").innerHTML = getFileName();
+        need_reload = true;
+      }
+    } else {
+      need_reload = true;
     }
     if (typeof getLastModified === 'function') {
-      _doc.getElementById("last-modified").innerHTML = getLastModified();
+      if (_doc.getElementById("last-modified").innerHTML != getLastModified()) {
+        _doc.getElementById("last-modified").innerHTML = getLastModified();
+        need_reload = true;
+      }
+    } else {
+      need_reload = true;
     }
-    if (typeof getContent === 'function') {
+    if (need_reload && (typeof getContent === 'function')) {
       _doc.getElementById("preview").innerHTML = marked(getContent());
     }
   }
