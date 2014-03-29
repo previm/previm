@@ -3,6 +3,13 @@
 (function(_doc, _win) {
   var REFRESH_INTERVAL = 1000;
 
+  function transform(filetype, content) {
+    if (filetype === 'markdown') {
+      return marked(content);
+    }
+    return 'Sorry. It is a filetype(' + filetype + ') that is not support<br /><br />' + content;
+  }
+
   function loadPreview() {
     var needReload = false;
     // These functions are defined as the file generated dynamically.
@@ -24,8 +31,8 @@
     } else {
       needReload = true;
     }
-    if (needReload && (typeof getContent === 'function')) {
-      _doc.getElementById('preview').innerHTML = marked(getContent());
+    if (needReload && (typeof getContent === 'function') && (typeof getFileType === 'function')) {
+      _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
     }
   }
 

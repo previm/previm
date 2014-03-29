@@ -45,11 +45,19 @@ function! previm#make_preview_file_path(path)
   return s:base_dir . '/../preview/' . a:path
 endfunction
 
+" NOTE: getFileType()の必要性について。
+" js側でファイル名の拡張子から取得すればこの関数は不要だが、
+" その場合「.txtだが内部的なファイルタイプがmarkdown」といった場合に動かなくなる。
+" そのためVim側できちんとファイルタイプを返すようにしている。
 function! s:function_template()
   let current_file = expand('%:p')
   return join([
       \ 'function getFileName() {',
       \ printf('return "%s";', s:escape_backslash(current_file)),
+      \ '}',
+      \ '',
+      \ 'function getFileType() {',
+      \ printf('return "%s";', &filetype),
       \ '}',
       \ '',
       \ 'function getLastModified() {',
