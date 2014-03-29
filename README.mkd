@@ -16,7 +16,7 @@
 [open-browser.vim](https://github.com/tyru/open-browser.vim)は任意で使用できます。
 
 
-## 使い方
+## 使い方(Markdownの場合)
 
 1. .vimrc にて `g:previm_open_cmd` を定義します
     * この値はコマンドラインから実行できるコマンドです
