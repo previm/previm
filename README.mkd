@@ -1,10 +1,13 @@
 ## Previm
 
 プレビュー用のVimプラグインです。  
-現在はMarkdownのみ対応しています。
 
 ![previm](https://raw.github.com/kannokanno/previm/master/previm-example.png)
 
+## 対応フォーマット
+
+* Markdown
+* textile
 
 ## 依存
 
