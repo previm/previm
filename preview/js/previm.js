@@ -6,6 +6,8 @@
   function transform(filetype, content) {
     if (filetype === 'markdown') {
       return marked(content);
+    } else if (filetype === 'textile') {
+      return textile(content);
     }
     return 'Sorry. It is a filetype(' + filetype + ') that is not support<br /><br />' + content;
   }
