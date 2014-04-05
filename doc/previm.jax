@@ -49,6 +49,15 @@ http://github.com/kannokanno/previm
 4. 元のVimバッファに戻り編集を続けます。
 5. 保存の度にブラウザの表示内容が更新されます。
 
+注意:拡張子が`.md`の場合は`markdown`ではなく`modula2`として認識されてしまいます。
+その場合は以下の設定を.vimrcに記述してください
+
+
+	" .vimrc
+	augroup PrevimSettings
+	  autocmd!
+	  autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
+	augroup END
 
 ==============================================================================
 コマンド						*previm-command*
@@ -80,9 +89,9 @@ g:previm_open_cmd					*g:previm_open_cmd*
 	|previm-openbrowser| も参照してください。
 
 	以下の設定例は、MacにてFirefoxで開く場合です。
-	>
-		let g:previm_open_cmd = 'open -a Firefox'
-	<
+
+	" .vimrc
+	let g:previm_open_cmd = 'open -a Firefox'
 
 
 ==============================================================================
@@ -101,6 +110,9 @@ open-browser.vimの使用					*previm-openbrowser*
 
 ==============================================================================
 更新履歴						*previm-changelog*
+
+1.5	2014-04-05
+	- modula2の対応を記述
 
 1.4	2014-03-29
 	- textile対応
