@@ -159,6 +159,9 @@ table tr:nth-child(2n)
 table tr th[align="center"], table tr td[align="center"] {
   text-align: center;
 }
+table tr th[align="right"], table tr td[align="right"] {
+  text-align: right;
+}
 table tr th, table tr td
 {
   border: 1px solid #ccc;
