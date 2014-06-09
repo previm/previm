@@ -84,6 +84,10 @@ endfunction
 
 function! previm#convert_to_content(lines)
   let mkd_dir = s:escape_backslash(expand('%:p:h'))
+  if has("win32unix")
+    " convert cygwin path to windows path
+    let mkd_dir = s:escape_backslash(substitute(system('cygpath -wa ' . mkd_dir), "\n$", '', ''))
+  endif
   let converted_lines = []
   " TODO リストじゃなくて普通に文字列連結にする(テスト書く)
   for line in a:lines
