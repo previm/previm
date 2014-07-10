@@ -15,7 +15,8 @@ html {
 }
 
 body {
-  font: 14px helvetica,arial,freesans,clean,sans-serif;
+  font: 14px consolas,helvetica,arial,freesans,clean,sans-serif !important;
+  font-size: 80% !important;
   line-height: 1.6;
   margin: 0 auto;
   padding: 20px;
@@ -77,7 +78,7 @@ p {
 }
 
 pre, code {
-  font: 12px 'Bitstream Vera Sans Mono','Courier',monospace;
+  font: 12px Consolas, 'Bitstream Vera Sans Mono','Courier',monospace;
 }
 .highlight pre, pre {
   background-color: #f8f8f8;
@@ -171,8 +172,6 @@ ul, ol
 
 ul li, ol li
 {
-  margin-top: 7px;
-  margin-bottom: 7px;
 }
 
 dl {
@@ -220,5 +219,12 @@ dl dd > :last-child {
 @media print {
   table, pre {
     page-break-inside: avoid;
+  }
+  #header {
+    display:none;
+  }
+
+  #last-modified {
+    display:none;
   }
 }
