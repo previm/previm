@@ -5,6 +5,15 @@
 
   function transform(filetype, content) {
     if (filetype === 'markdown') {
+      marked.setOptions({
+        gfm: true,
+        tables: true,
+        breaks: false,
+        pedantic: false,
+        sanitize: true,
+        smartLists: true,
+        smartypants: false,
+        langPrefix:''});
       return marked(content);
     } else if (filetype === 'textile') {
       return textile(content);
@@ -35,6 +44,7 @@
     }
     if (needReload && (typeof getContent === 'function') && (typeof getFileType === 'function')) {
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
+      $('pre code').each(function(i, e) {hljs.highlightBlock(e)});
     }
   }
 
