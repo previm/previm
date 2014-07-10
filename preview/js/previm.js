@@ -44,6 +44,13 @@
     }
     if (needReload && (typeof getContent === 'function') && (typeof getFileType === 'function')) {
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
+      $("img").wrap("<a href='' class='fancybox1' rel='fancybox'></a>");
+      $("img").addClass('fancybox-img');
+      $("img").each(function(){
+        var href = $(this).attr('src');
+        $(this).parent().attr('href', href);    // apply parent a tag([a href]) from img src
+      })
+      $(".fancybox1").fancybox();
       $('pre code').each(function(i, e) {hljs.highlightBlock(e)});
     }
   }
