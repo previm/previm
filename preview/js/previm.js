@@ -5,6 +5,12 @@
 
   function transform(filetype, content) {
     if (filetype === 'markdown') {
+      marked.setOptions({
+        langPrefix: '',
+        highlight: function (code) {
+          return hljs.highlightAuto(code).value;
+        }
+      });
       return marked(content);
     } else if (filetype === 'textile') {
       return textile(content);
