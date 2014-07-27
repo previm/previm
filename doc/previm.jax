@@ -111,6 +111,10 @@ open-browser.vimの使用					*previm-openbrowser*
 ==============================================================================
 更新履歴						*previm-changelog*
 
+1.5.2	2014-07-27
+	- code block syntax highlighting
+        - update marked.js
+
 1.5.1	2014-06-08
 	- cssのバグを修正
 
