@@ -1,0 +1,35 @@
+## Previm
+
+###ScreenShot
+
+![previm](https://raw.github.com/kannokanno/previm/master/previm-example.png)
+
+## Supported file formats
+
+* Markdown
+* textile
+
+## Dependencies
+
+No need for extra libraries or plug-ins.
+
+It can, however, be integrated with [open-browser.vim](https://github.com/tyru/open-browser.vim). For detailed usages, please see below.
+
+## Usage
+
+1. Define `g:previm_open_cmd` in .vimrc
+    * This command is used in terminal for opening your browser.
+    * For example, uses Safari on Mac `let g:previm_open_cmd = 'open -a Safari'`
+    * `:help g:previm_open_cmd` for more details
+    * You can skip this setting if you're using open-browser.
+2. Define `filetype` for Previm
+    * Set the following in your .vimrc
+    ```vim
+    augroup PrevimSettings
+        autocmd!
+        autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
+    augroup END
+    ```
+3. Run `:PrevimOpen` to open browser to preview
+4. Back to Vim to edit your file
+5. Save the file, and the content for previewing will be updated automatically
