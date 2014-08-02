@@ -12,6 +12,9 @@
         }
       });
       return marked(content);
+    } else if (filetype === 'rst') {
+      // It has already been converted by rst2html.py
+      return content;
     } else if (filetype === 'textile') {
       return textile(content);
     }

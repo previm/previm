@@ -111,6 +111,9 @@ open-browser.vimの使用					*previm-openbrowser*
 ==============================================================================
 更新履歴						*previm-changelog*
 
+1.5.3	2014-08-02
+        - support reStructuredText(required rst2html.py)
+
 1.5.2	2014-07-27
 	- code block syntax highlighting
         - update marked.js

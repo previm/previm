@@ -7,12 +7,24 @@
 ## 対応フォーマット
 
 * Markdown
+* reStructuredText
 * textile
 
 ## 依存
 
-必須なものはありません。
+### 変換のため
 
+Markdownとtextileの場合は必須なものはありません。  
+reStructuredTextの場合は`rst2html.py`が必要です。  
+`docutils`をインストールすると`rst2html.py`コマンドが使えるようになります。
+
+    % pip install docutils
+    % rst2html.py --version
+    rst2html.py (Docutils 0.12 [release], Python 2.7.5, on darwin)
+
+### プレビューを開くため
+
+必須なものはありません。  
 [open-browser.vim](https://github.com/tyru/open-browser.vim)は任意で使用できます。
 
 

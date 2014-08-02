@@ -82,6 +82,31 @@ function! s:escape_backslash(text)
   return escape(a:text, '\')
 endfunction
 
+function! s:system(cmd)
+  try
+    let result = vimproc#system(a:cmd)
+    return result
+  catch /E117.*/
+    return system(a:cmd)
+  endtry
+endfunction
+
+function! s:do_external_parse(lines)
+  if &filetype !=# "rst"
+    return a:lines
+  endif
+  " NOTE: 本来は外部コマンドに頼りたくない
+  "       いずれjsパーサーが出てきたときに移行するが、
+  "       その時に混乱を招かないように設定でrst2htmlへのパスを持つことはしない
+  if executable("rst2html.py") !=# 1
+    echoerr "rst2html.py has not been installed, you can not run"
+    return a:lines
+  endif
+  let temp = tempname()
+  call writefile(a:lines, temp)
+  return split(s:system('rst2html.py ' . temp), "\n")
+endfunction
+
 function! previm#convert_to_content(lines)
   let mkd_dir = s:escape_backslash(expand('%:p:h'))
   if has("win32unix")
@@ -90,7 +115,7 @@ function! previm#convert_to_content(lines)
   endif
   let converted_lines = []
   " TODO リストじゃなくて普通に文字列連結にする(テスト書く)
-  for line in a:lines
+  for line in s:do_external_parse(a:lines)
     let escaped = substitute(line, '\', '\\\\', 'g')
     let escaped = substitute(escaped, '"', '\\"', 'g')
     let escaped = previm#relative_to_absolute_imgpath(escaped, mkd_dir)
