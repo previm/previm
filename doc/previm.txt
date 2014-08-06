@@ -1,0 +1,155 @@
+*previm.txt*	Preview Plugin
+
+Version: 1.1
+Author: kanno <akapanna@gmail.com>
+
+==============================================================================
+CONTENTS						*previm-contents*
+
+Introduction						|previm-introduction|
+Dependencies						|previm-depends|
+Usage							|previm-usage|
+Commands						|previm-command|
+Functions						|previm-functions|
+Settings						|previm-settings|
+Using with open-browser.vim				|previm-openbrowser|
+Changelog						|previm-changelog|
+
+
+==============================================================================
+INDRODUCTION						*previm-introduction*
+
+This plugin provides the functionality of displaying file previews on
+browsers. It achieves something similar to real-time previewing.
+
+[Available formats]
+	- Markdown
+
+Latest revision:
+http://github.com/kannokanno/previm
+
+
+==============================================================================
+DEPENDENCIES						*previm-depends*
+
+[Required]
+	None
+
+[Optional]
+	- open-browser.vim(https://github.com/tyru/open-browser.vim)
+
+
+==============================================================================
+USAGE							*previm-usage*
+
+1. Set |g:previm_open_cmd| in your .vimrc. This is unnecessary if you are using
+open-browser.vim.
+2. Start editing a file with |filetype| of Markdown.
+3. Open preview on browser with |:PrevimOpen|.
+4. Go back to the buffer and edit some more.
+5. Changes are reflected on the page shown in the browser each save.
+
+Note: If `.md` files are recognized as `modula2` rather than `markdown`, add
+the following to your .vimrc.
+
+	" .vimrc
+	augroup PrevimSettings
+	  autocmd!
+	  autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
+	augroup END
+
+==============================================================================
+COMMANDS						*previm-command*
+
+							*:PrevimOpen*
+:PrevimOpen
+	Opens the current file on the browser.
+
+
+==============================================================================
+FUNCTIONS						*previm-functions*
+
+previm#open({path})					*previm#open()*
+	Set {path} to the URL to open in browser.
+
+previm#refresh()					*previm#refresh()*
+	Apply the changes made to the file. This will automatically update
+	the page shown in the browser.
+
+
+==============================================================================
+SETTINGS						*previm-settings*
+
+
+g:previm_open_cmd					*g:previm_open_cmd*
+	Type:String
+
+	Specify the command to be executed with |:PrevimOpen|. openbrowser#open
+	is executed if no command is specified.
+	Also see |previm-openbrowser|.
+
+	The following sample configuration opens Firefox on Mac.
+
+	" .vimrc
+	let g:previm_open_cmd = 'open -a Firefox'
+
+
+==============================================================================
+USING WITH OPEN-BROWSER.VIM				*previm-openbrowser*
+
+The following steps are taken for choosing which browser to display the
+preview on.
+
+1. Attempt to execute command that is set to |g:previm_open_cmd|
+  - If |g:previm_open_cmd| is undefined or empty, proceed to step 2
+2. Attempt open browser with openbrowser#open()
+  - If open-browser.vim is not installed, proceed to step 3
+3. Exit after displaying message to standard error about not being able to
+   find any command to execute.
+
+Thus, |g:previm_open_cmd| need not be configured when using open-browser.vim.
+
+==============================================================================
+CHANGELOG						*previm-changelog*
+
+1.5.3	2014-08-02
+        - support reStructuredText(required rst2html.py)
+
+1.5.2	2014-07-27
+	- code block syntax highlighting
+        - update marked.js
+
+1.5.1	2014-06-08
+	- fix bug regarding css
+
+1.5	2014-04-05
+	- add notice about modula2
+
+1.4	2014-03-29
+	- add support for textile
+
+1.3.2	2013-07-06
+	- local images can now be referenced
+	- fix bug when g:previm_open_cmd contains half-width space character
+
+1.3.1	2013-06-28
+	- change showdown.js to "marked"
+
+1.3	2013-06-22
+	- fixed #4(Github issue)
+	- escape Windows' directory path
+	- add support for browsers before IE8 (add support for attachEvent)
+	- add feature to display modified time under Windows environment
+	- Thanks id:sousu, id:beckorz
+
+1.2	2013-06-16
+	- resolved reload issue in google chrome
+	- Thanks id:ArcCosine
+
+1.1	2013-06-13
+	- explicitly state the usage of UTF-8 encoding in previm-function.js
+
+1.0	2013-06-11
+	- first release
+
+vim:tw=78:ts=8:ft=help:norl:noexpandtab
