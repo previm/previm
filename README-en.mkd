@@ -22,8 +22,8 @@ It can, however, be integrated with [open-browser.vim](https://github.com/tyru/o
     * For example, uses Safari on Mac `let g:previm_open_cmd = 'open -a Safari'`
     * `:help g:previm_open_cmd` for more details
     * You can skip this setting if you're using open-browser.
-2. Define `filetype` for Previm
-    * Set the following in your .vimrc
+2. Start editing the file of Markdown.(`filetype` is `markdown`)
+    * __NOTE__: In the case of `.md`, `filetype` becomes a `modula2`. If so, please describe in `.vimrc` this setting
     ```vim
     augroup PrevimSettings
         autocmd!
