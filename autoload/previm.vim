@@ -3,9 +3,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:V = vital#of('previm')
-let s:File = s:V.import('System.File')
-
 let s:newline_character = "\n"
 
 function! previm#open(preview_html_file)
@@ -39,24 +36,6 @@ function! s:apply_openbrowser(path)
 endfunction
 
 function! previm#refresh()
-  call previm#refresh_css()
-  call previm#refresh_js()
-endfunction
-
-function! previm#refresh_css()
-  let css = []
-  if !exists('g:previm_disable_default_css') || g:previm_disable_default_css !=# 1
-    call extend(css, ["@import url('origin.css');",  "@import url('lib/github.css');"])
-  endif
-  if exists('g:previm_custom_css_path') && filereadable(g:previm_custom_css_path)
-    call s:File.copy(g:previm_custom_css_path, previm#make_preview_file_path('css/user_custom.css'))
-    call add(css, "@import url('user_custom.css');")
-  endif
-  call writefile(css, previm#make_preview_file_path('css/previm.css'))
-endfunction
-
-" TODO: test(refresh_cssと同じように)
-function! previm#refresh_js()
   let encoded_lines = split(iconv(s:function_template(), &encoding, 'utf-8'), s:newline_character)
   call writefile(encoded_lines, previm#make_preview_file_path('js/previm-function.js'))
 endfunction
