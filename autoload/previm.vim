@@ -15,7 +15,7 @@ function! previm#open(preview_html_file)
   elseif s:exists_openbrowser()
     call s:apply_openbrowser(a:preview_html_file)
   else
-    echoerr 'not found command for open. show detail :h previm#open'
+    call s:echo_err('Command for the open can not be found. show detail :h previm#open')
   endif
 endfunction
 
@@ -125,7 +125,7 @@ function! s:do_external_parse(lines)
   "       いずれjsパーサーが出てきたときに移行するが、
   "       その時に混乱を招かないように設定でrst2htmlへのパスを持つことはしない
   if executable("rst2html.py") !=# 1
-    echoerr "rst2html.py has not been installed, you can not run"
+    call s:echo_err("rst2html.py has not been installed, you can not run")
     return a:lines
   endif
   let temp = tempname()
@@ -182,6 +182,12 @@ endfunction
 
 function! s:start_with(haystock, needle)
   return stridx(a:haystock, a:needle) ==# 0
+endfunction
+
+function! s:echo_err(msg)
+  echohl WarningMsg
+  echomsg a:msg
+  echohl None
 endfunction
 
 let &cpo = s:save_cpo
