@@ -1,6 +1,6 @@
 *previm.txt*	Preview Plugin
 
-Version: 1.1
+Version: 1.5
 Author: kanno <akapanna@gmail.com>
 
 ==============================================================================
@@ -24,6 +24,8 @@ browsers. It achieves something similar to real-time previewing.
 
 [Available formats]
 	- Markdown
+	- textile
+	- reStructuredText(required rst2html.py)
 
 Latest revision:
 http://github.com/kannokanno/previm
@@ -41,6 +43,9 @@ DEPENDENCIES						*previm-depends*
 
 ==============================================================================
 USAGE							*previm-usage*
+
+This is an example of the case of markdown.
+The basic operation is the same in other formats.
 
 1. Set |g:previm_open_cmd| in your .vimrc. This is unnecessary if you are using
 open-browser.vim.
@@ -93,6 +98,32 @@ g:previm_open_cmd					*g:previm_open_cmd*
 	" .vimrc
 	let g:previm_open_cmd = 'open -a Firefox'
 
+g:previm_disable_default_css			*g:previm_disable_default_css*
+	Type:Num
+
+	I do not apply the default CSS when previewing.
+	Valid values that can be set only one. All other values are ignored.
+
+	" .vimrc
+	" I want to disable the default CSS
+	let g:previm_disable_default_css = 1
+
+g:previm_custom_css_path			*g:previm_custom_css_path*
+	Type:String
+
+	I can add a custom CSS during preview.
+	This CSS will be loaded after the default CSS.
+	Please write the absolute path to the CSS file to the set value.
+
+	" .vimrc
+	" Also apply your own CSS in addition to the default CSS
+	let g:previm_custom_css_path = '/Users/kanno/tmp/some.css'
+
+	" .vimrc
+	" Instead of using the default CSS and apply only your own CSS
+	let g:previm_disable_default_css = 1
+	let g:previm_custom_css_path = '/Users/kanno/tmp/some.css'
+
 
 ==============================================================================
 USING WITH OPEN-BROWSER.VIM				*previm-openbrowser*
@@ -111,6 +142,9 @@ Thus, |g:previm_open_cmd| need not be configured when using open-browser.vim.
 
 ==============================================================================
 CHANGELOG						*previm-changelog*
+
+1.5.4	2014-09-06
+        - support custom css
 
 1.5.3	2014-08-02
         - support reStructuredText(required rst2html.py)

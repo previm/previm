@@ -44,6 +44,8 @@ http://github.com/kannokanno/previm
 ==============================================================================
 使い方							*previm-usage*
 
+Markdownの場合を例とします。他の形式についても基本的な操作は同じです。
+
 1. .vimrcで |g:previm_open_cmd| を設定します。
 (ただしopen-browser.vimを使用する場合は不要です)
 2. |filetype| がMarkdownのファイルの編集を開始します。

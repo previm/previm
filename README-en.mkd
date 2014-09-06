@@ -1,5 +1,7 @@
 ## Previm
 
+Vim plugin for preview.
+
 ###ScreenShot
 
 ![previm](https://raw.github.com/kannokanno/previm/master/previm-example.png)
@@ -7,9 +9,22 @@
 ## Supported file formats
 
 * Markdown
+* reStructuredText(required rst2html.py)
 * textile
 
 ## Dependencies
+
+### For conversion
+
+There is nothing essential in the case of textile and Markdown.  
+`rst2html.py` is required in the case of reStructuredText.  
+It will become available `rst2html.py` command when you install the `docutils.`
+
+    % pip install docutils
+    % rst2html.py --version
+    rst2html.py (Docutils 0.12 [release], Python 2.7.5, on darwin)
+
+### For open preview
 
 No need for extra libraries or plug-ins.
 
