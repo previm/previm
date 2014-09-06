@@ -133,22 +133,22 @@ function! s:t.teardown()
   endif
 endfunction
 
-function! s:t.defaut_content_if_not_exists_setting()
+function! s:t.default_content_if_not_exists_setting()
   call previm#refresh_css()
   let actual = readfile(previm#make_preview_file_path('css/previm.css'))
   call self.assert.equals([
         \ "@import url('origin.css');",
-        \ "@import url('lib/github.css');"
+        \ "@import url('lib/github.css');",
         \ ], actual)
 endfunction
 
-function! s:t.defaut_content_if_invalid_setting()
+function! s:t.default_content_if_invalid_setting()
   let g:previm_disable_default_css = 2
   call previm#refresh_css()
   let actual = readfile(previm#make_preview_file_path('css/previm.css'))
   call self.assert.equals([
         \ "@import url('origin.css');",
-        \ "@import url('lib/github.css');"
+        \ "@import url('lib/github.css');",
         \ ], actual)
 endfunction
 
@@ -162,7 +162,7 @@ function! s:t.custom_content_if_exists_file()
   call self.assert.equals(["@import url('user_custom.css');"], actual)
 endfunction
 
-function! s:t.if_not_exists_file()
+function! s:t.empty_if_not_exists_file()
   let g:previm_disable_default_css = 1
   let g:previm_custom_css_path = s:base_dir . '/not_exists.css'
   call previm#refresh_css()

@@ -45,12 +45,17 @@ endfunction
 
 function! previm#refresh_css()
   let css = []
-  if !exists('g:previm_disable_default_css') || g:previm_disable_default_css !=# 1
+  if get(g:, 'previm_disable_default_css', 0) !=# 1
     call extend(css, ["@import url('origin.css');",  "@import url('lib/github.css');"])
   endif
-  if exists('g:previm_custom_css_path') && filereadable(g:previm_custom_css_path)
-    call s:File.copy(g:previm_custom_css_path, previm#make_preview_file_path('css/user_custom.css'))
-    call add(css, "@import url('user_custom.css');")
+  if exists('g:previm_custom_css_path')
+    let css_path = expand(g:previm_custom_css_path)
+    if filereadable(css_path)
+      call s:File.copy(css_path, previm#make_preview_file_path('css/user_custom.css'))
+      call add(css, "@import url('user_custom.css');")
+    else
+      echomsg "[Previm]failed load custom css. " . css_path
+    endif
   endif
   call writefile(css, previm#make_preview_file_path('css/previm.css'))
 endfunction
