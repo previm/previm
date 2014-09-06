@@ -4,7 +4,7 @@
   var REFRESH_INTERVAL = 1000;
 
   function transform(filetype, content) {
-    if (filetype === 'markdown') {
+    if (filetype === 'markdown' || filetype === 'mkd') {
       marked.setOptions({
         langPrefix: '',
         highlight: function (code) {
