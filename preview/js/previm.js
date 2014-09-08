@@ -4,7 +4,7 @@
   var REFRESH_INTERVAL = 1000;
 
   function transform(filetype, content) {
-    if (filetype === 'markdown') {
+    if (filetype === 'markdown' || filetype === 'mkd') {
       marked.setOptions({
         gfm: true,
         tables: true,
@@ -13,8 +13,15 @@
         sanitize: true,
         smartLists: true,
         smartypants: false,
-        langPrefix:''});
+        langPrefix: '',
+        highlight: function (code) {
+          return hljs.highlightAuto(code).value;
+        }
+      });
       return marked(content);
+    } else if (filetype === 'rst') {
+      // It has already been converted by rst2html.py
+      return content;
     } else if (filetype === 'textile') {
       return textile(content);
     }
@@ -51,7 +58,6 @@
         $(this).parent().attr('href', href);    // apply parent a tag([a href]) from img src
       })
       $(".fancybox1").fancybox();
-      $('pre code').each(function(i, e) {hljs.highlightBlock(e)});
     }
   }
 

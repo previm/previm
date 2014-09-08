@@ -3,6 +3,9 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+let s:V = vital#of('previm')
+let s:File = s:V.import('System.File')
+
 let s:newline_character = "\n"
 
 function! previm#open(preview_html_file)
@@ -12,7 +15,7 @@ function! previm#open(preview_html_file)
   elseif s:exists_openbrowser()
     call s:apply_openbrowser(a:preview_html_file)
   else
-    echoerr 'not found command for open. show detail :h previm#open'
+    call s:echo_err('Command for the open can not be found. show detail :h previm#open')
   endif
 endfunction
 
@@ -36,6 +39,29 @@ function! s:apply_openbrowser(path)
 endfunction
 
 function! previm#refresh()
+  call previm#refresh_css()
+  call previm#refresh_js()
+endfunction
+
+function! previm#refresh_css()
+  let css = []
+  if get(g:, 'previm_disable_default_css', 0) !=# 1
+    call extend(css, ["@import url('origin.css');",  "@import url('lib/github.css');"])
+  endif
+  if exists('g:previm_custom_css_path')
+    let css_path = expand(g:previm_custom_css_path)
+    if filereadable(css_path)
+      call s:File.copy(css_path, previm#make_preview_file_path('css/user_custom.css'))
+      call add(css, "@import url('user_custom.css');")
+    else
+      echomsg "[Previm]failed load custom css. " . css_path
+    endif
+  endif
+  call writefile(css, previm#make_preview_file_path('css/previm.css'))
+endfunction
+
+" TODO: test(refresh_cssと同じように)
+function! previm#refresh_js()
   let encoded_lines = split(iconv(s:function_template(), &encoding, 'utf-8'), s:newline_character)
   call writefile(encoded_lines, previm#make_preview_file_path('js/previm-function.js'))
 endfunction
@@ -82,6 +108,31 @@ function! s:escape_backslash(text)
   return escape(a:text, '\')
 endfunction
 
+function! s:system(cmd)
+  try
+    let result = vimproc#system(a:cmd)
+    return result
+  catch /E117.*/
+    return system(a:cmd)
+  endtry
+endfunction
+
+function! s:do_external_parse(lines)
+  if &filetype !=# "rst"
+    return a:lines
+  endif
+  " NOTE: 本来は外部コマンドに頼りたくない
+  "       いずれjsパーサーが出てきたときに移行するが、
+  "       その時に混乱を招かないように設定でrst2htmlへのパスを持つことはしない
+  if executable("rst2html.py") !=# 1
+    call s:echo_err("rst2html.py has not been installed, you can not run")
+    return a:lines
+  endif
+  let temp = tempname()
+  call writefile(a:lines, temp)
+  return split(s:system('rst2html.py ' . temp), "\n")
+endfunction
+
 function! previm#convert_to_content(lines)
   let mkd_dir = s:escape_backslash(expand('%:p:h'))
   if has("win32unix")
@@ -90,7 +141,7 @@ function! previm#convert_to_content(lines)
   endif
   let converted_lines = []
   " TODO リストじゃなくて普通に文字列連結にする(テスト書く)
-  for line in a:lines
+  for line in s:do_external_parse(a:lines)
     let escaped = substitute(line, '\', '\\\\', 'g')
     let escaped = substitute(escaped, '"', '\\"', 'g')
     let escaped = previm#relative_to_absolute_imgpath(escaped, mkd_dir)
@@ -131,6 +182,12 @@ endfunction
 
 function! s:start_with(haystock, needle)
   return stridx(a:haystock, a:needle) ==# 0
+endfunction
+
+function! s:echo_err(msg)
+  echohl WarningMsg
+  echomsg a:msg
+  echohl None
 endfunction
 
 let &cpo = s:save_cpo

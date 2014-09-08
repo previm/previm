@@ -1,6 +1,6 @@
 *previm.txt*	プレビュー用プラグイン
 
-Version: 1.1
+Version: 1.5
 Author: kanno <akapanna@gmail.com>
 
 ==============================================================================
@@ -24,6 +24,8 @@ Vimで編集した内容をブラウザでプレビューするための機能�
 
 [対応フォーマット]
 	- Markdown
+	- textile
+	- reStructuredText(required rst2html.py)
 
 最新版:
 http://github.com/kannokanno/previm
@@ -41,6 +43,8 @@ http://github.com/kannokanno/previm
 
 ==============================================================================
 使い方							*previm-usage*
+
+Markdownの場合を例とします。他の形式についても基本的な操作は同じです。
 
 1. .vimrcで |g:previm_open_cmd| を設定します。
 (ただしopen-browser.vimを使用する場合は不要です)
@@ -93,6 +97,32 @@ g:previm_open_cmd					*g:previm_open_cmd*
 	" .vimrc
 	let g:previm_open_cmd = 'open -a Firefox'
 
+g:previm_disable_default_css			*g:previm_disable_default_css*
+	型:数値
+
+	プレビュー時にデフォルトのCSSを適用しないようにします。
+	設定出来る有効な値は1のみです。それ以外の値は無視されます。
+
+	" .vimrc
+	" デフォルトのCSSを無効にする
+	let g:previm_disable_default_css = 1
+
+g:previm_custom_css_path			*g:previm_custom_css_path*
+	型:文字列
+
+	プレビュー時にユーザー定義のCSSを追加出来ます。
+	このCSSはデフォルトCSSの後に読み込まれます。
+	設定する値にはCSSファイルへの絶対パスを書いてください。
+
+	" .vimrc
+	" デフォルトのCSSに加えて独自のCSSも適用する
+	let g:previm_custom_css_path = '/Users/kanno/tmp/some.css'
+
+	" .vimrc
+	" デフォルトのCSSを使わず、独自のCSSのみ適用する
+	let g:previm_disable_default_css = 1
+	let g:previm_custom_css_path = '/Users/kanno/tmp/some.css'
+
 
 ==============================================================================
 open-browser.vimの使用					*previm-openbrowser*
@@ -110,6 +140,16 @@ open-browser.vimの使用					*previm-openbrowser*
 
 ==============================================================================
 更新履歴						*previm-changelog*
+
+1.5.4	2014-09-06
+        - support custom css
+
+1.5.3	2014-08-02
+        - support reStructuredText(required rst2html.py)
+
+1.5.2	2014-07-27
+	- code block syntax highlighting
+        - update marked.js
 
 1.5.1	2014-06-08
 	- cssのバグを修正
