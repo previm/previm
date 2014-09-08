@@ -104,3 +104,70 @@ function! s:empty_img_elements()
   return {'title': '', 'path': ''}
 endfunction
 "}}}
+let s:t = vimtest#new('refresh_css') "{{{
+function! s:t.setup()
+  let self.exist_previm_disable_default_css = 0
+  if exists('g:previm_disable_default_css')
+    let self.tmp_previm_disable_default_css = g:previm_disable_default_css
+    let self.exist_previm_disable_default_css = 1
+  endif
+
+  let self.exist_previm_custom_css_path = 0
+  if exists('g:previm_custom_css_path')
+    let self.tmp_previm_custom_css_path = g:previm_custom_css_path
+    let self.exist_previm_custom_css_path = 1
+  endif
+endfunction
+
+function! s:t.teardown()
+  if self.exist_previm_disable_default_css
+    let g:previm_disable_default_css = self.tmp_previm_disable_default_css
+  else
+    unlet! g:previm_disable_default_css
+  endif
+
+  if self.exist_previm_custom_css_path
+    let g:previm_custom_css_path = self.tmp_previm_custom_css_path
+  else
+    unlet! g:previm_custom_css_path
+  endif
+endfunction
+
+function! s:t.default_content_if_not_exists_setting()
+  call previm#refresh_css()
+  let actual = readfile(previm#make_preview_file_path('css/previm.css'))
+  call self.assert.equals([
+        \ "@import url('origin.css');",
+        \ "@import url('lib/github.css');",
+        \ ], actual)
+endfunction
+
+function! s:t.default_content_if_invalid_setting()
+  let g:previm_disable_default_css = 2
+  call previm#refresh_css()
+  let actual = readfile(previm#make_preview_file_path('css/previm.css'))
+  call self.assert.equals([
+        \ "@import url('origin.css');",
+        \ "@import url('lib/github.css');",
+        \ ], actual)
+endfunction
+
+let s:base_dir = expand('<sfile>:p:h')
+function! s:t.custom_content_if_exists_file()
+  let g:previm_disable_default_css = 1
+  let g:previm_custom_css_path = s:base_dir . '/dummy_user_custom.css'
+  call previm#refresh_css()
+
+  let actual = readfile(previm#make_preview_file_path('css/previm.css'))
+  call self.assert.equals(["@import url('user_custom.css');"], actual)
+endfunction
+
+function! s:t.empty_if_not_exists_file()
+  let g:previm_disable_default_css = 1
+  let g:previm_custom_css_path = s:base_dir . '/not_exists.css'
+  call previm#refresh_css()
+
+  let actual = readfile(previm#make_preview_file_path('css/previm.css'))
+  call self.assert.equals([], actual)
+endfunction
+"}}}
