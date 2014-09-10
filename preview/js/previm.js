@@ -4,7 +4,7 @@
   var REFRESH_INTERVAL = 1000;
 
   function transform(filetype, content) {
-    if (filetype === 'markdown' || filetype === 'mkd') {
+    if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
       marked.setOptions({
         langPrefix: '',
         highlight: function (code) {
@@ -12,13 +12,23 @@
         }
       });
       return marked(content);
-    } else if (filetype === 'rst') {
+    } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
       return content;
-    } else if (filetype === 'textile') {
+    } else if(hasTargetFileType(filetype, ['textile'])) {
       return textile(content);
     }
     return 'Sorry. It is a filetype(' + filetype + ') that is not support<br /><br />' + content;
+  }
+
+  function hasTargetFileType(filetype, targetList) {
+    var ftlist = filetype.split('.');
+    for(var i=0;i<ftlist.length; i++) {
+      if(targetList.indexOf(ftlist[i]) > -1){
+        return true;
+      }
+    }
+    return false;
   }
 
   function loadPreview() {
