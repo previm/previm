@@ -11,7 +11,7 @@ let s:newline_character = "\n"
 function! previm#open(preview_html_file)
   call previm#refresh()
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
-    execute printf('silent !"%s" "%s"', g:previm_open_cmd, a:preview_html_file)
+    call s:system(g:previm_open_cmd . ' '  . a:preview_html_file)
   elseif s:exists_openbrowser()
     call s:apply_openbrowser(a:preview_html_file)
   else
