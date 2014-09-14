@@ -10,9 +10,15 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! s:setup_setting()
-  augroup Previm
-    autocmd BufWritePost <buffer> call previm#refresh()
-  augroup END
+  if get(g:, "previm_enable_realtime", 1) !=# 0
+    if exists("##TextChanged")
+      autocmd TextChanged,TextChangedI <buffer> call previm#refresh()
+    else
+      autocmd CursorHold,CursorHoldI,CursorMoved,CursorMovedI,InsertLeave,BufWritePost <buffer> call previm#refresh()
+    endif
+  else
+    autocmd InsertLeave,BufWritePost <buffer> call previm#refresh()
+  endif
 
   command! -buffer -nargs=0 PrevimOpen call previm#open(previm#make_preview_file_path('index.html'))
 endfunction
