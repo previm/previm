@@ -31,6 +31,15 @@
     return false;
   }
 
+  // NOTE: Experimental
+  function autoScroll(id) {
+    var relaxed = 0.95;
+    if((_doc.documentElement.clientHeight + _win.pageYOffset) / _doc.body.clientHeight > relaxed) {
+      var obj = document.getElementById(id);
+      obj.scrollTop = obj.scrollHeight;
+    }
+  }
+
   function loadPreview() {
     var needReload = false;
     // These functions are defined as the file generated dynamically.
@@ -54,6 +63,7 @@
     }
     if (needReload && (typeof getContent === 'function') && (typeof getFileType === 'function')) {
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
+      autoScroll('body');
     }
   }
 
