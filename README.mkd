@@ -4,7 +4,7 @@
 
 プレビュー用のVimプラグインです。  
 
-![previm](https://raw.github.com/kannokanno/previm/master/previm-example.gif)
+![previm](https://raw.github.com/wiki/kannokanno/previm/images/previm-example.gif)
 
 ## 対応フォーマット
 
