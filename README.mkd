@@ -1,10 +1,10 @@
-[README in English](https://github.com/kannokanno/previm/blob/master/README-en.mkd)
-
 ## Previm
 
 プレビュー用のVimプラグインです。  
 
-![previm](https://raw.github.com/kannokanno/previm/master/previm-example.gif)
+![previm](https://raw.github.com/kannokanno/previm/master/previm-example.png)
+
+[README in English](https://github.com/kannokanno/previm/blob/master/README-en.mkd)
 
 ## 対応フォーマット
 

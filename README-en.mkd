@@ -4,7 +4,7 @@ Vim plugin for preview.
 
 ###ScreenShot
 
-![previm](https://raw.github.com/kannokanno/previm/master/previm-example.gif)
+![previm](https://raw.github.com/kannokanno/previm/master/previm-example.png)
 
 ## Supported file formats
 
