@@ -9,19 +9,11 @@ let g:loaded_previm = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:change_updatetime()
-  let origin = &updatetime
-  let &updatetime = 500
-  return origin
-endfunction
-
 function! s:setup_setting()
   augroup Previm
     if get(g:, "previm_enable_realtime", 1) !=# 0
       " NOTE: It is too frequently in TextChanged/TextChangedI
       autocmd CursorHold,CursorHoldI,InsertLeave,BufWritePost <buffer> call previm#refresh()
-      autocmd BufEnter <buffer> let backup = s:change_updatetime()
-      autocmd BufLeave <buffer> let &updatetime = backup
     else
       autocmd InsertLeave,BufWritePost <buffer> call previm#refresh()
     endif
