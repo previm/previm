@@ -103,18 +103,19 @@ g:previm_enable_realtime			*g:previm_enable_realtime*
 	Type:Num
 
 	You can select whether you want to preview the changes in real time.
-	Changes are reflected only at the timing of the two if the value 0.
-	  1. When you exit the insert mode
-	  2. When saving a file
+	Changes are reflected only at the timing if the value 0.
+
+	  * When saving a file
 
 	If the value is 1, I can preview in near real-time.
-	It is set to 1 by default.
+	It is set to 0 by default.
 
 	The case of changing this value after opening a file to preview is 
 	You need to re-open the file to preview in order to reflect the setting.
 >
 	" .vimrc
-	let g:previm_enable_realtime = 0
+	" Realtime preview
+	let g:previm_enable_realtime = 1
 
 g:previm_disable_default_css			*g:previm_disable_default_css*
 	Type:Num

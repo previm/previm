@@ -102,18 +102,19 @@ g:previm_enable_realtime			*g:previm_enable_realtime*
 	型:数値
 
 	リアルタイムに変更をプレビューするかどうかを設定します。
-	値が0なら以下の2つのタイミングでのみ変更が反映されます。
-	  1. 挿入モードを抜けた時
-	  2. ファイル保存時
+	値が0なら以下のタイミングでのみ変更が反映されます。
+
+	  * ファイル保存時
 
 	値が1ならば、ほぼリアルタイムにプレビューできます。
-	デフォルトでは1に設定されています。
+	デフォルトでは0に設定されています。
 
 	なおプレビュー対象のファイルを開いた後でこの値を変えた場合は、
 	設定反映のためにプレビュー対象のファイルを開き直す必要があります。
 >
 	" .vimrc
-	let g:previm_enable_realtime = 0
+        " リアルタイムにプレビューする
+	let g:previm_enable_realtime = 1
 
 g:previm_disable_default_css			*g:previm_disable_default_css*
 	型:数値
