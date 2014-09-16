@@ -11,11 +11,12 @@ set cpo&vim
 
 function! s:setup_setting()
   augroup Previm
-    if get(g:, "previm_enable_realtime", 1) !=# 0
+    autocmd! * <buffer>
+    if get(g:, "previm_enable_realtime", 0) ==# 1
       " NOTE: It is too frequently in TextChanged/TextChangedI
       autocmd CursorHold,CursorHoldI,InsertLeave,BufWritePost <buffer> call previm#refresh()
     else
-      autocmd InsertLeave,BufWritePost <buffer> call previm#refresh()
+      autocmd BufWritePost <buffer> call previm#refresh()
     endif
   augroup END
 
