@@ -1,10 +1,10 @@
+[README in English](https://github.com/kannokanno/previm/blob/master/README-en.mkd)
+
 ## Previm
 
 プレビュー用のVimプラグインです。  
 
-![previm](https://raw.github.com/kannokanno/previm/master/previm-example.png)
-
-[README in English](https://github.com/kannokanno/previm/blob/master/README-en.mkd)
+![previm](https://raw.github.com/wiki/kannokanno/previm/images/previm-example.gif)
 
 ## 対応フォーマット
 
@@ -47,4 +47,4 @@ reStructuredTextの場合は`rst2html.py`が必要です。
     ```
 1. `:PrevimOpen` を実行してブラウザを開きます
 1. 元のVimバッファに戻り編集を続けます
-1. 保存の度にブラウザの表示内容が更新されます
+1. 変更の度にブラウザの表示内容が更新されます

@@ -4,13 +4,13 @@
   var REFRESH_INTERVAL = 1000;
 
   function transform(filetype, content) {
-    if (filetype === 'markdown' || filetype === 'mkd') {
+    if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
       marked.setOptions({
         gfm: true,
         tables: true,
         breaks: false,
         pedantic: false,
-        sanitize: true,
+        sanitize: false,
         smartLists: true,
         smartypants: false,
         langPrefix: '',
@@ -19,13 +19,32 @@
         }
       });
       return marked(content);
-    } else if (filetype === 'rst') {
+    } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
       return content;
-    } else if (filetype === 'textile') {
+    } else if(hasTargetFileType(filetype, ['textile'])) {
       return textile(content);
     }
     return 'Sorry. It is a filetype(' + filetype + ') that is not support<br /><br />' + content;
+  }
+
+  function hasTargetFileType(filetype, targetList) {
+    var ftlist = filetype.split('.');
+    for(var i=0;i<ftlist.length; i++) {
+      if(targetList.indexOf(ftlist[i]) > -1){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // NOTE: Experimental
+  function autoScroll(id) {
+    var relaxed = 0.95;
+    if((_doc.documentElement.clientHeight + _win.pageYOffset) / _doc.body.clientHeight > relaxed) {
+      var obj = document.getElementById(id);
+      obj.scrollTop = obj.scrollHeight;
+    }
   }
 
   function loadPreview() {
@@ -51,6 +70,7 @@
     }
     if (needReload && (typeof getContent === 'function') && (typeof getFileType === 'function')) {
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
+      autoScroll('body');
       $("img").wrap("<a href='' class='fancybox1' rel='fancybox'></a>");
       $("img").addClass('fancybox-img');
       $("img").each(function(){

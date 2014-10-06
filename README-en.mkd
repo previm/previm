@@ -4,7 +4,7 @@ Vim plugin for preview.
 
 ###ScreenShot
 
-![previm](https://raw.github.com/kannokanno/previm/master/previm-example.png)
+![previm](https://raw.github.com/wiki/kannokanno/previm/images/previm-example.gif)
 
 ## Supported file formats
 
@@ -47,4 +47,4 @@ It can, however, be integrated with [open-browser.vim](https://github.com/tyru/o
     ```
 3. Run `:PrevimOpen` to open browser to preview
 4. Back to Vim to edit your file
-5. Save the file, and the content for previewing will be updated automatically
+5. Update the file, and the content for previewing will be updated automatically

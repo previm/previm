@@ -11,7 +11,7 @@ let s:newline_character = "\n"
 function! previm#open(preview_html_file)
   call previm#refresh()
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
-    execute printf('silent !"%s" "%s"', g:previm_open_cmd, a:preview_html_file)
+    call s:system(g:previm_open_cmd . ' '  . a:preview_html_file)
   elseif s:exists_openbrowser()
     call s:apply_openbrowser(a:preview_html_file)
   else
@@ -124,13 +124,20 @@ function! s:do_external_parse(lines)
   " NOTE: 本来は外部コマンドに頼りたくない
   "       いずれjsパーサーが出てきたときに移行するが、
   "       その時に混乱を招かないように設定でrst2htmlへのパスを持つことはしない
-  if executable("rst2html.py") !=# 1
-    call s:echo_err("rst2html.py has not been installed, you can not run")
+  let cmd = ''
+  if executable("rst2html.py") ==# 1
+    let cmd = "rst2html.py"
+  elseif executable("rst2html") ==# 1
+    let cmd = "rst2html"
+  endif
+
+  if empty(cmd)
+    call s:echo_err("rst2html.py or rst2html has not been installed, you can not run")
     return a:lines
   endif
   let temp = tempname()
   call writefile(a:lines, temp)
-  return split(s:system('rst2html.py ' . temp), "\n")
+  return split(s:system(cmd . ' ' . temp), "\n")
 endfunction
 
 function! previm#convert_to_content(lines)
