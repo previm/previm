@@ -1,6 +1,6 @@
 *previm.txt*	Preview Plugin
 
-Version: 1.5
+Version: 1.6
 Author: kanno <akapanna@gmail.com>
 
 ==============================================================================
@@ -52,7 +52,7 @@ open-browser.vim.
 2. Start editing a file with |filetype| of Markdown.
 3. Open preview on browser with |:PrevimOpen|.
 4. Go back to the buffer and edit some more.
-5. Changes are reflected on the page shown in the browser each save.
+5. Changes are reflected on the page shown in the browser each update.
 
 Note: If `.md` files are recognized as `modula2` rather than `markdown`, add
 the following to your .vimrc.
@@ -95,8 +95,27 @@ g:previm_open_cmd					*g:previm_open_cmd*
 
 	The following sample configuration opens Firefox on Mac.
 
+>
 	" .vimrc
 	let g:previm_open_cmd = 'open -a Firefox'
+
+g:previm_enable_realtime			*g:previm_enable_realtime*
+	Type:Num
+
+	You can select whether you want to preview the changes in real time.
+	Changes are reflected only at the timing if the value 0.
+
+	  * When saving a file
+
+	If the value is 1, I can preview in near real-time.
+	It is set to 0 by default.
+
+	The case of changing this value after opening a file to preview is 
+	You need to re-open the file to preview in order to reflect the setting.
+>
+	" .vimrc
+	" Realtime preview
+	let g:previm_enable_realtime = 1
 
 g:previm_disable_default_css			*g:previm_disable_default_css*
 	Type:Num
@@ -104,6 +123,7 @@ g:previm_disable_default_css			*g:previm_disable_default_css*
 	I do not apply the default CSS when previewing.
 	Valid values that can be set only one. All other values are ignored.
 
+>
 	" .vimrc
 	" I want to disable the default CSS
 	let g:previm_disable_default_css = 1
@@ -115,6 +135,7 @@ g:previm_custom_css_path			*g:previm_custom_css_path*
 	This CSS will be loaded after the default CSS.
 	Please write the absolute path to the CSS file to the set value.
 
+>
 	" .vimrc
 	" Also apply your own CSS in addition to the default CSS
 	let g:previm_custom_css_path = '/Users/kanno/tmp/some.css'
@@ -143,6 +164,8 @@ Thus, |g:previm_open_cmd| need not be configured when using open-browser.vim.
 ==============================================================================
 CHANGELOG						*previm-changelog*
 
+1.6	2014-09-15
+        - support realtime refresh
 1.5.4	2014-09-06
         - support custom css
 

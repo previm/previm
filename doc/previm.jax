@@ -1,6 +1,6 @@
 *previm.txt*	プレビュー用プラグイン
 
-Version: 1.5
+Version: 1.6
 Author: kanno <akapanna@gmail.com>
 
 ==============================================================================
@@ -51,7 +51,7 @@ Markdownの場合を例とします。他の形式についても基本的な操
 2. |filetype| がMarkdownのファイルの編集を開始します。
 3. |:PrevimOpen| を実行してブラウザを開きます。
 4. 元のVimバッファに戻り編集を続けます。
-5. 保存の度にブラウザの表示内容が更新されます。
+5. 変更の度にブラウザの表示内容が更新されます。
 
 注意:拡張子が`.md`の場合は`markdown`ではなく`modula2`として認識されてしまいます。
 その場合は以下の設定を.vimrcに記述してください
@@ -93,9 +93,28 @@ g:previm_open_cmd					*g:previm_open_cmd*
 	|previm-openbrowser| も参照してください。
 
 	以下の設定例は、MacにてFirefoxで開く場合です。
-
+>
 	" .vimrc
 	let g:previm_open_cmd = 'open -a Firefox'
+<
+
+g:previm_enable_realtime			*g:previm_enable_realtime*
+	型:数値
+
+	リアルタイムに変更をプレビューするかどうかを設定します。
+	値が0なら以下のタイミングでのみ変更が反映されます。
+
+	  * ファイル保存時
+
+	値が1ならば、ほぼリアルタイムにプレビューできます。
+	デフォルトでは0に設定されています。
+
+	なおプレビュー対象のファイルを開いた後でこの値を変えた場合は、
+	設定反映のためにプレビュー対象のファイルを開き直す必要があります。
+>
+	" .vimrc
+        " リアルタイムにプレビューする
+	let g:previm_enable_realtime = 1
 
 g:previm_disable_default_css			*g:previm_disable_default_css*
 	型:数値
@@ -103,6 +122,7 @@ g:previm_disable_default_css			*g:previm_disable_default_css*
 	プレビュー時にデフォルトのCSSを適用しないようにします。
 	設定出来る有効な値は1のみです。それ以外の値は無視されます。
 
+>
 	" .vimrc
 	" デフォルトのCSSを無効にする
 	let g:previm_disable_default_css = 1
@@ -114,6 +134,7 @@ g:previm_custom_css_path			*g:previm_custom_css_path*
 	このCSSはデフォルトCSSの後に読み込まれます。
 	設定する値にはCSSファイルへの絶対パスを書いてください。
 
+>
 	" .vimrc
 	" デフォルトのCSSに加えて独自のCSSも適用する
 	let g:previm_custom_css_path = '/Users/kanno/tmp/some.css'
@@ -140,6 +161,9 @@ open-browser.vimの使用					*previm-openbrowser*
 
 ==============================================================================
 更新履歴						*previm-changelog*
+
+1.6	2014-09-15
+        - support realtime refresh
 
 1.5.4	2014-09-06
         - support custom css
