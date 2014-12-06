@@ -137,7 +137,7 @@ function! s:do_external_parse(lines)
   endif
   let temp = tempname()
   call writefile(a:lines, temp)
-  return split(s:system(cmd . ' ' . temp), "\n")
+  return split(s:system(cmd . ' ' . s:escape_backslash(temp)), "\n")
 endfunction
 
 function! previm#convert_to_content(lines)
