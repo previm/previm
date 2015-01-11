@@ -5,12 +5,6 @@
 
   function transform(filetype, content) {
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
-      marked.setOptions({
-        langPrefix: '',
-        highlight: function (code) {
-          return hljs.highlightAuto(code).value;
-        }
-      });
       return marked(content);
     } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
@@ -63,6 +57,7 @@
     }
     if (needReload && (typeof getContent === 'function') && (typeof getFileType === 'function')) {
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
+      Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
       autoScroll('body');
     }
   }
