@@ -54,7 +54,7 @@ function! previm#refresh_css()
       call s:File.copy(css_path, previm#make_preview_file_path('css/user_custom.css'))
       call add(css, "@import url('user_custom.css');")
     else
-      echomsg "[Previm]failed load custom css. " . css_path
+      call s:echo_err('[Previm]failed load custom css. ' . css_path)
     endif
   endif
   call writefile(css, previm#make_preview_file_path('css/previm.css'))
