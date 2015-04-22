@@ -70,6 +70,7 @@
     }
     if (needReload && (typeof getContent === 'function') && (typeof getFileType === 'function')) {
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
+      Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
       autoScroll('body');
       $("img").wrap("<a href='' class='fancybox1' rel='fancybox'></a>");
       $("img").addClass('fancybox-img');

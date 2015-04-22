@@ -11,7 +11,7 @@ let s:newline_character = "\n"
 function! previm#open(preview_html_file)
   call previm#refresh()
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
-    call s:system(g:previm_open_cmd . ' '  . a:preview_html_file)
+    call s:system(g:previm_open_cmd . ' '''  . a:preview_html_file . '''')
   elseif s:exists_openbrowser()
     call s:apply_openbrowser(a:preview_html_file)
   else
@@ -54,7 +54,7 @@ function! previm#refresh_css()
       call s:File.copy(css_path, previm#make_preview_file_path('css/user_custom.css'))
       call add(css, "@import url('user_custom.css');")
     else
-      echomsg "[Previm]failed load custom css. " . css_path
+      call s:echo_err('[Previm]failed load custom css. ' . css_path)
     endif
   endif
   call writefile(css, previm#make_preview_file_path('css/previm.css'))
@@ -137,7 +137,7 @@ function! s:do_external_parse(lines)
   endif
   let temp = tempname()
   call writefile(a:lines, temp)
-  return split(s:system(cmd . ' ' . temp), "\n")
+  return split(s:system(cmd . ' ' . s:escape_backslash(temp)), "\n")
 endfunction
 
 function! previm#convert_to_content(lines)
