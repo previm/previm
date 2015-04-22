@@ -100,6 +100,7 @@
       for (i = 0; i < _doc.links.length; i++) {
         _doc.links[i].setAttribute('target', '_blank');
       }
+      createTOC();
     }
   }
 
@@ -133,3 +134,8 @@
 
   loadPreview();
 })(document, window);
+
+function createTOC() {
+  var toc = $("#toc").tocify({selectors: "h2,h3,h4,h5,h6"}).data("toc-tocify");
+}
+
