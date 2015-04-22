@@ -15,8 +15,7 @@ html {
 }
 
 body {
-  font: 14px consolas,helvetica,arial,freesans,clean,sans-serif !important;
-  font-size: 80% !important;
+  font: 14px meiryo, メイリオ, consolas,helvetica,arial,freesans,clean,sans-serif !important;
   line-height: 1.6;
   margin: 0 auto;
   padding: 20px;
