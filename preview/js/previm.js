@@ -5,6 +5,19 @@
 
   function transform(filetype, content) {
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
+      var renderer = new marked.Renderer();
+
+      // custom renderer for GitHub Task List Like
+      renderer.listitem = function(text) {
+        if (/\[ \]/.test(text)) {
+          return '<li class="task-list-item enabled"><input class="task-list-item-checkbox" type="checkbox" />'+text.replace(/\[ \]/g, '')+'</li>';
+        } else if (/\[x\]/.test(text)) {
+          return '<li class="task-list-item enabled"><input class="task-list-item-checkbox" type="checkbox" checked="" />'+text.replace(/\[x\]/g, '')+'</li>';
+        } else {
+          return '<li>'+text+'</li>';
+        }
+      };
+
       marked.setOptions({
         gfm: true,
         tables: true,
@@ -13,12 +26,9 @@
         sanitize: false,
         smartLists: true,
         smartypants: false,
-        langPrefix: '',
-        highlight: function (code) {
-          return hljs.highlightAuto(code).value;
-        }
+        langPrefix: ''
       });
-      return marked(content);
+      return marked(content, { renderer: renderer });
     } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
       return content;
@@ -72,13 +82,24 @@
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
       autoScroll('body');
-      $("img").wrap("<a href='' class='fancybox1' rel='fancybox'></a>");
-      $("img").addClass('fancybox-img');
-      $("img").each(function(){
-        var href = $(this).attr('src');
-        $(this).parent().attr('href', href);    // apply parent a tag([a href]) from img src
-      })
+
+      // apply fancybox
+      var i;
+      for (i = 0; i < _doc.images.length; i++) {
+        var elem = _doc.images[i];
+
+        elem.setAttribute('class', 'fancybox-img'); // add Style Sheet Class
+        elem.outerHTML = '<a href="" class="fancybox1" rel="fancybox" title="'+elem.alt+'">'+elem.outerHTML+'</a>'; // insert Before a tag
+        _doc.images[i].parentNode.setAttribute('href', elem.src);  // copy src to parent a tag href (for fancybox)
+
+        // clean up
+        elem = null;
+      }
       $(".fancybox1").fancybox();
+      // external link
+      for (i = 0; i < _doc.links.length; i++) {
+        _doc.links[i].setAttribute('target', '_blank');
+      }
     }
   }
 
