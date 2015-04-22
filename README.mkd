@@ -48,3 +48,36 @@ reStructuredTextの場合は`rst2html.py`が必要です。
 1. `:PrevimOpen` を実行してブラウザを開きます
 1. 元のVimバッファに戻り編集を続けます
 1. 変更の度にブラウザの表示内容が更新されます
+
+## オリジナルとの変更点
+- リンクを外部リンクで開く
+- css
+    - GitHub風に変更
+    - 画像をMacのスクリーンショットのように影を強めに
+    - h1をタイトルとして中央表示するように変更
+- GitHub Task List 対応
+- 画像のFancybox対応
+- 目次生成対応
+    - NOTE: 初期ページを表示後、vimで編集後目次の表示されない(ページのリロードをする必要あり)
+    - NOTE: 目次がh1,h2,h3と順に作成していないと目次が正しく表示されない
+- wkhtmltopdf でPDF生成される@printのメディアクエリーにそれなりに対応
+    - Windowsでの、wkhtmltopdf 出力例
+    ```bat
+    SET PREVIM_DATA=file:///%HOMEDRIVE%/%homepath%/.vim/bundle/previm/preview/index.html
+
+    wkhtmltopdf ^
+      --print-media-type ^
+      --javascript-delay 5000 ^
+      --header-right [date] ^
+      --header-spacing 2 ^
+      --footer-center [page]/[toPage] ^
+      --footer-spacing 2 ^
+      --margin-top 12 ^
+      --margin-right 5 ^
+      --margin-left 5 ^
+      --margin-bottom 12 ^
+      %PREVIM_DATA% ^
+      previm.pdf
+    ```
+    previmでhtml生成時間差waitのdelayを設定するのが重要 (上記例 5000[ms])
+
