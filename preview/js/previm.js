@@ -2,6 +2,7 @@
 
 (function(_doc, _win) {
   var REFRESH_INTERVAL = 1000;
+  var toc;
 
   function transform(filetype, content) {
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
@@ -57,6 +58,10 @@
     }
   }
 
+  function createTOC() {
+    toc = $("#toc").tocify({selectors: "h2,h3,h4,h5,h6"}).data("toc-tocify");
+  }
+
   function loadPreview() {
     var needReload = false;
     // These functions are defined as the file generated dynamically.
@@ -100,7 +105,7 @@
       for (i = 0; i < _doc.links.length; i++) {
         _doc.links[i].setAttribute('target', '_blank');
       }
-      createTOC();
+      toc.update();
     }
   }
 
@@ -133,9 +138,7 @@
   }
 
   loadPreview();
+  createTOC();
 })(document, window);
 
-function createTOC() {
-  var toc = $("#toc").tocify({selectors: "h2,h3,h4,h5,h6"}).data("toc-tocify");
-}
 
