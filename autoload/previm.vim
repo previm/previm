@@ -109,7 +109,12 @@ function! s:escape_backslash(text)
 endfunction
 
 function! s:system(cmd)
+  if get(g:, 'previm_disable_vimproc', 0)
+    return system(a:cmd)
+  endif
+
   try
+    " NOTE: WindowsでDOS窓を開かず実行してくれるらしいのでvimprocを使う
     let result = vimproc#system(a:cmd)
     return result
   catch /E117.*/
