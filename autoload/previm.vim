@@ -174,11 +174,17 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir)
     endif
   endfor
 
+  " escape backslash
+  let dir = substitute(a:mkd_dir, '\\', '\\\\', 'g')
+  let elem.path = substitute(elem.path, '\\', '\\\\', 'g')
+
   " マルチバイトの解釈はブラウザに任せるのでURLエンコードしない
   " 半角空白だけはエラーの原因になるのでURLエンコード対象とする
-  let pre_slash = s:start_with(a:mkd_dir, '/') ? '' : '/'
-  let local_path = substitute(a:mkd_dir.'/'.elem.path, ' ', '%20', 'g')
-  return printf('![%s](file://localhost%s%s)', elem.title, pre_slash, local_path)
+  let pre_slash = s:start_with(dir, '/') ? '' : '/'
+  let local_path = substitute(dir.'/'.elem.path, ' ', '%20', 'g')
+  let prev_imgpath = printf('!\[%s\](%s)', elem.title, elem.path)
+  let new_imgpath = printf('![%s](file://localhost%s%s)', elem.title, pre_slash, local_path)
+  return substitute(a:text, prev_imgpath, new_imgpath, '')
 endfunction
 
 function! previm#fetch_imgpath_elements(text)
