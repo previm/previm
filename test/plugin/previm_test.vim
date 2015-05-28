@@ -37,7 +37,7 @@ function! s:t.valid_filetype()
   let exist_command = 2
   for type in [
         \ 'markdown', 'mkd', 'rst', 'textile',
-        \ 'aaa.markdown', 'mkd.foo', 'bb.rst.cc', 'a.b.c.textile',
+        \ 'aaa.markdow', 'mkd.foo', 'bb.rst.cc', 'a.b.c.textile',
         \]
     call s:_assert_filetype(type, exist_command)
     call s:_clean_command()
