@@ -50,6 +50,14 @@ h1 { text-align:center; }
   }
 }
 
+/* highlight.js */
+.hljs { word-wrap: normal; }
+@media print {
+  .hljs {
+      max-width: 70%;
+  }
+}
+
 /* modify tocify.js style */
 .nav-list > li > a {
     background-color: rgba(255, 255, 255, 0.5);
@@ -173,4 +181,19 @@ h5 code {
 h6 code {
   font-size: 12px;
   line-height: 20px;
+}
+kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 11px;
+  line-height: 10px;
+  color: #555;
+  vertical-align: middle;
+  background-color: #fcfcfc;
+  border: solid 1px #ccc;
+  border-bottom-color: #bbb;
+  border-radius: 3px;
+  -webkit-box-shadow: inset 0 -1px 0 #bbb;
+  box-shadow: inset 0 -1px 0 #bbb;
+  font-family: monospace, serif;
 }
