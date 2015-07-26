@@ -81,6 +81,22 @@ function! s:t.urlencoded_path()
   call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
 endfunction
 
+function! s:t.with_title_from_double_quote()
+  let rel_path = 'previm\some\path\img.png'
+  let arg_line = printf('![img](%s "title")', rel_path)
+  let arg_dir = 'C:\Documents and Settings\folder'
+  let expected = '![img](file://localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png "title")'
+  call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
+endfunction
+
+function! s:t.with_title_from_single_quote()
+  let rel_path = 'previm\some\path\img.png'
+  let arg_line = printf("![img](%s 'title')", rel_path)
+  let arg_dir = 'C:\Documents and Settings\folder'
+  let expected = '![img](file://localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png "title")'
+  call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
+endfunction
+
 function! s:t.not_only_img()
   let rel_path = 'previm/some/path/img.png'
   let arg_line = printf('| a | ![img](%s) |', rel_path)
@@ -105,12 +121,24 @@ endfunction
 
 function! s:t.get_alt_and_path()
   let arg = '![IMG](path/img.png)'
-  let expected = {'alt': 'IMG', 'path': 'path/img.png'}
+  let expected = {'alt': 'IMG', 'path': 'path/img.png', 'title': ''}
   call s:assert.equals(previm#fetch_imgpath_elements(arg), expected)
 endfunction
 
+function! s:t.get_title_from_double_quote()
+  let arg = '![IMG](path/img.png  "image")'
+  let expected = {'alt': 'IMG', 'path': 'path/img.png', 'title': 'image'}
+  call s:assert.equals(expected, previm#fetch_imgpath_elements(arg))
+endfunction
+
+function! s:t.get_title_from_single_quote()
+  let arg = "![IMG](path/img.png  'image')"
+  let expected = {'alt': 'IMG', 'path': 'path/img.png', 'title': 'image'}
+  call s:assert.equals(expected, previm#fetch_imgpath_elements(arg))
+endfunction
+
 function! s:empty_img_elements()
-  return {'alt': '', 'path': ''}
+  return {'alt': '', 'path': '', 'title': ''}
 endfunction
 "}}}
 let s:t = themis#suite('refresh_css') "{{{
