@@ -80,6 +80,14 @@ function! s:t.urlencoded_path()
   let expected = '![img](file://localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png)'
   call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
 endfunction
+
+function! s:t.not_only_img()
+  let rel_path = 'previm/some/path/img.png'
+  let arg_line = printf('| a | ![img](%s) |', rel_path)
+  let arg_dir  = '/Users/foo/tmp'
+  let expected = printf('| a | ![img](file://localhost%s/%s) |', arg_dir, rel_path)
+  call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
+endfunction
 "}}}
 let s:t = themis#suite('fetch_imgpath_elements') "{{{
 
