@@ -103,14 +103,14 @@ function! s:t.nothing_when_not_img_statement()
   call s:assert.equals(previm#fetch_imgpath_elements(arg), expected)
 endfunction
 
-function! s:t.get_title_and_path()
+function! s:t.get_alt_and_path()
   let arg = '![IMG](path/img.png)'
-  let expected = {'title': 'IMG', 'path': 'path/img.png'}
+  let expected = {'alt': 'IMG', 'path': 'path/img.png'}
   call s:assert.equals(previm#fetch_imgpath_elements(arg), expected)
 endfunction
 
 function! s:empty_img_elements()
-  return {'title': '', 'path': ''}
+  return {'alt': '', 'path': ''}
 endfunction
 "}}}
 let s:t = themis#suite('refresh_css') "{{{

@@ -182,18 +182,18 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir)
   " 半角空白だけはエラーの原因になるのでURLエンコード対象とする
   let pre_slash = s:start_with(dir, '/') ? '' : '/'
   let local_path = substitute(dir.'/'.elem.path, ' ', '%20', 'g')
-  let prev_imgpath = printf('!\[%s\](%s)', elem.title, elem.path)
-  let new_imgpath = printf('![%s](file://localhost%s%s)', elem.title, pre_slash, local_path)
+  let prev_imgpath = printf('!\[%s\](%s)', elem.alt, elem.path)
+  let new_imgpath = printf('![%s](file://localhost%s%s)', elem.alt, pre_slash, local_path)
   return substitute(a:text, prev_imgpath, new_imgpath, '')
 endfunction
 
 function! previm#fetch_imgpath_elements(text)
-  let elem = {'title': '', 'path': ''}
+  let elem = {'alt': '', 'path': ''}
   let matched = matchlist(a:text, '!\[\(.*\)\](\(.*\))')
   if empty(matched)
     return elem
   endif
-  let elem.title = matched[1]
+  let elem.alt = matched[1]
   let elem.path = matched[2]
   return elem
 endfunction
