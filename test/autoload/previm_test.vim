@@ -70,7 +70,7 @@ function! s:t.replace_path_when_relative()
   let arg_line = printf('![img](%s)', rel_path)
   let arg_dir = '/Users/foo/tmp'
   let expected = printf('![img](file://localhost%s/%s)', arg_dir, rel_path)
-  call s:assert.equals(expected, previm#relative_to_absolute_imgpath(arg_line, arg_dir))
+  call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
 endfunction
 
 function! s:t.urlencoded_path()
@@ -78,7 +78,7 @@ function! s:t.urlencoded_path()
   let arg_line = printf('![img](%s)', rel_path)
   let arg_dir = 'C:\Documents and Settings\folder'
   let expected = '![img](file://localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png)'
-  call s:assert.equals(expected, previm#relative_to_absolute_imgpath(arg_line, arg_dir))
+  call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
 endfunction
 "}}}
 let s:t = themis#suite('fetch_imgpath_elements') "{{{
