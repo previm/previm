@@ -154,14 +154,20 @@ function! previm#convert_to_content(lines)
   let converted_lines = []
   " TODO リストじゃなくて普通に文字列連結にする(テスト書く)
   for line in s:do_external_parse(a:lines)
+    " TODO エスケープの理由と順番の依存度が複雑
     let escaped = substitute(line, '\', '\\\\', 'g')
-    let escaped = substitute(escaped, '"', '\\"', 'g')
     let escaped = previm#relative_to_absolute_imgpath(escaped, mkd_dir)
+    let escaped = substitute(escaped, '"', '\\"', 'g')
     call add(converted_lines, escaped)
   endfor
   return join(converted_lines, "\\n")
 endfunction
 
+" convert example
+" if unix:
+"   ![alt](file://localhost/Users/kanno/Pictures/img.png "title")
+" if win:
+"   ![alt](file://localhost/C:\Documents%20and%20Settings\folder/pictures\img.png "title")
 function! previm#relative_to_absolute_imgpath(text, mkd_dir)
   let elem = previm#fetch_imgpath_elements(a:text)
   if empty(elem.path)
@@ -174,7 +180,7 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir)
     endif
   endfor
 
-  " escape backslash
+  " escape backslash for substitute (see pull/#34)
   let dir = substitute(a:mkd_dir, '\\', '\\\\', 'g')
   let elem.path = substitute(elem.path, '\\', '\\\\', 'g')
 
@@ -182,20 +188,39 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir)
   " 半角空白だけはエラーの原因になるのでURLエンコード対象とする
   let pre_slash = s:start_with(dir, '/') ? '' : '/'
   let local_path = substitute(dir.'/'.elem.path, ' ', '%20', 'g')
-  let prev_imgpath = printf('!\[%s\](%s)', elem.title, elem.path)
-  let new_imgpath = printf('![%s](file://localhost%s%s)', elem.title, pre_slash, local_path)
-  return substitute(a:text, prev_imgpath, new_imgpath, '')
+
+  let prev_imgpath = ''
+  let new_imgpath = ''
+  if empty(elem.title)
+    let prev_imgpath = printf('!\[%s\](%s)', elem.alt, elem.path)
+    let new_imgpath = printf('![%s](file://localhost%s%s)', elem.alt, pre_slash, local_path)
+  else
+    let prev_imgpath = printf('!\[%s\](%s "%s")', elem.alt, elem.path, elem.title)
+    let new_imgpath = printf('![%s](file://localhost%s%s "%s")', elem.alt, pre_slash, local_path, elem.title)
+  endif
+
+  " unify quote
+  let text = substitute(a:text, "'", '"', 'g')
+  return substitute(text, prev_imgpath, new_imgpath, '')
 endfunction
 
 function! previm#fetch_imgpath_elements(text)
-  let elem = {'title': '', 'path': ''}
+  let elem = {'alt': '', 'path': '', 'title': ''}
   let matched = matchlist(a:text, '!\[\(.*\)\](\(.*\))')
   if empty(matched)
     return elem
   endif
-  let elem.title = matched[1]
-  let elem.path = matched[2]
-  return elem
+  let elem.alt = matched[1]
+  return extend(elem, s:fetch_path_and_title(matched[2]))
+endfunction
+
+function! s:fetch_path_and_title(path)
+  let matched = matchlist(a:path, '\(.*\)\s\+["'']\(.*\)["'']')
+  if empty(matched)
+    return {'path': a:path}
+  endif
+  let trimmed_path = matchstr(matched[1],'^\s*\zs.\{-}\ze\s*$')
+  return {'path': trimmed_path, 'title': matched[2]}
 endfunction
 
 function! s:start_with(haystock, needle)
