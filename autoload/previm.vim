@@ -103,7 +103,6 @@ function! s:get_last_modified_time()
   return '(strftime cannot be performed.)'
 endfunction
 
-" TODO test
 function! s:escape_backslash(text)
   return escape(a:text, '\')
 endfunction
@@ -152,7 +151,6 @@ function! previm#convert_to_content(lines)
     let mkd_dir = s:escape_backslash(substitute(system('cygpath -wa ' . mkd_dir), "\n$", '', ''))
   endif
   let converted_lines = []
-  " TODO リストじゃなくて普通に文字列連結にする(テスト書く)
   for line in s:do_external_parse(a:lines)
     " TODO エスケープの理由と順番の依存度が複雑
     let escaped = substitute(line, '\', '\\\\', 'g')
