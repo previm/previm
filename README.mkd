@@ -9,6 +9,7 @@
 ## 対応フォーマット
 
 * Markdown
+    * support [mermaid](http://knsv.github.io/mermaid/index.html)
 * reStructuredText
 * textile
 
@@ -48,3 +49,19 @@ reStructuredTextの場合は`rst2html.py`が必要です。
 1. `:PrevimOpen` を実行してブラウザを開きます
 1. 元のVimバッファに戻り編集を続けます
 1. 変更の度にブラウザの表示内容が更新されます
+
+### mermaid
+
+[mermaid](http://knsv.github.io/mermaid/index.html)に対応しています。
+
+<pre>
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->E;
+```
+</pre>
+
+![previm](https://raw.github.com/wiki/kannokanno/previm/images/previm-example-mermaid.png)
