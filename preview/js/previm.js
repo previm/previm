@@ -2,10 +2,18 @@
 
 (function(_doc, _win) {
   var REFRESH_INTERVAL = 1000;
+  var marked_renderer = new marked.Renderer();
+  marked_renderer.code = function (code, language) {
+    if(language === 'mermaid'){
+      return '<div class="mermaid">' + code + '</div>';
+    } else {
+      return '<pre><code>' + code + '</code></pre>';
+    }
+  };
 
   function transform(filetype, content) {
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
-      return marked(content);
+      return marked(content, { renderer: marked_renderer });
     } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
       return content;
@@ -57,6 +65,7 @@
     }
     if (needReload && (typeof getContent === 'function') && (typeof getFileType === 'function')) {
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
+      mermaid.init();
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
       autoScroll('body');
     }

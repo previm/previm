@@ -164,8 +164,12 @@ Thus, |g:previm_open_cmd| need not be configured when using open-browser.vim.
 ==============================================================================
 CHANGELOG						*previm-changelog*
 
+1.7	2015-08-15
+        - support mermaid(https://github.com/knsv/mermaid)
+
 1.6	2014-09-15
         - support realtime refresh
+
 1.5.4	2014-09-06
         - support custom css
 
