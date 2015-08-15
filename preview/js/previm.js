@@ -34,11 +34,15 @@
   }
 
   // NOTE: Experimental
-  function autoScroll(id) {
+  //   ここで動的にpageYOffsetを取得すると画像表示前の高さになってしまう
+  //   そのため明示的にpageYOffsetを受け取るようにしている
+  function autoScroll(id, pageYOffset) {
     var relaxed = 0.95;
-    if((_doc.documentElement.clientHeight + _win.pageYOffset) / _doc.body.clientHeight > relaxed) {
-      var obj = document.getElementById(id);
+    var obj = document.getElementById(id);
+    if((_doc.documentElement.clientHeight + pageYOffset) / _doc.body.clientHeight > relaxed) {
       obj.scrollTop = obj.scrollHeight;
+    } else {
+      obj.scrollTop = pageYOffset;
     }
   }
 
@@ -64,10 +68,12 @@
       needReload = true;
     }
     if (needReload && (typeof getContent === 'function') && (typeof getFileType === 'function')) {
+      var beforePageYOffset = _win.pageYOffset;
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
+
       mermaid.init();
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
-      autoScroll('body');
+      autoScroll('body', beforePageYOffset);
     }
   }
 
