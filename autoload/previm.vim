@@ -78,6 +78,10 @@ endfunction
 function! s:function_template()
   let current_file = expand('%:p')
   return join([
+      \ 'function isShowHeader() {',
+      \ printf('return %s;', get(g:, 'previm_show_header', 1)),
+      \ '}',
+      \ '',
       \ 'function getFileName() {',
       \ printf('return "%s";', s:escape_backslash(current_file)),
       \ '}',
