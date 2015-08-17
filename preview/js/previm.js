@@ -46,6 +46,13 @@
     }
   }
 
+  function style_header() {
+    if (typeof isShowHeader === 'function') {
+      var style = isShowHeader() ? '' : 'none';
+      _doc.getElementById('header').style.display = style;
+    }
+  }
+
   function loadPreview() {
     var needReload = false;
     // These functions are defined as the file generated dynamically.
@@ -74,6 +81,7 @@
       mermaid.init();
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
       autoScroll('body', beforePageYOffset);
+      style_header();
     }
   }
 
