@@ -3,11 +3,13 @@
 (function(_doc, _win) {
   var REFRESH_INTERVAL = 1000;
   var marked_renderer = new marked.Renderer();
+  var defaultCodeBlockRenderer = marked_renderer.code;
+
   marked_renderer.code = function (code, language) {
     if(language === 'mermaid'){
       return '<div class="mermaid">' + code + '</div>';
     } else {
-      return '<pre><code>' + code + '</code></pre>';
+      return defaultCodeBlockRenderer.apply(this, arguments);
     }
   };
 
