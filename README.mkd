@@ -1,18 +1,33 @@
+[README in English](https://github.com/kannokanno/previm/blob/master/README-en.mkd)
+
 ## Previm
 
 プレビュー用のVimプラグインです。  
 
-![previm](https://raw.github.com/kannokanno/previm/master/previm-example.png)
+![previm](https://raw.github.com/wiki/kannokanno/previm/images/previm-example.gif)
 
 ## 対応フォーマット
 
 * Markdown
+    * support [mermaid](http://knsv.github.io/mermaid/index.html)
+* reStructuredText
 * textile
 
 ## 依存
 
-必須なものはありません。
+### 変換のため
 
+Markdownとtextileの場合は必須なものはありません。  
+reStructuredTextの場合は`rst2html.py`が必要です。  
+`docutils`をインストールすると`rst2html.py`コマンドが使えるようになります。
+
+    % pip install docutils
+    % rst2html.py --version
+    rst2html.py (Docutils 0.12 [release], Python 2.7.5, on darwin)
+
+### プレビューを開くため
+
+必須なものはありません。  
 [open-browser.vim](https://github.com/tyru/open-browser.vim)は任意で使用できます。
 
 
@@ -33,4 +48,20 @@
     ```
 1. `:PrevimOpen` を実行してブラウザを開きます
 1. 元のVimバッファに戻り編集を続けます
-1. 保存の度にブラウザの表示内容が更新されます
+1. 変更の度にブラウザの表示内容が更新されます
+
+### mermaid
+
+[mermaid](http://knsv.github.io/mermaid/index.html)に対応しています。
+
+<pre>
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->E;
+```
+</pre>
+
+![previm](https://raw.github.com/wiki/kannokanno/previm/images/previm-example-mermaid.png)
