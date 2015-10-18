@@ -9,6 +9,7 @@ Vim plugin for preview.
 ## Supported file formats
 
 * Markdown
+    * support [mermaid](http://knsv.github.io/mermaid/index.html)
 * reStructuredText(required rst2html.py)
 * textile
 
@@ -48,3 +49,19 @@ It can, however, be integrated with [open-browser.vim](https://github.com/tyru/o
 3. Run `:PrevimOpen` to open browser to preview
 4. Back to Vim to edit your file
 5. Update the file, and the content for previewing will be updated automatically
+
+### mermaid
+
+Support [mermaid](http://knsv.github.io/mermaid/index.html)
+
+<pre>
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->E;
+```
+</pre>
+
+![previm](https://raw.github.com/wiki/kannokanno/previm/images/previm-example-mermaid.png)

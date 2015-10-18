@@ -145,6 +145,19 @@ g:previm_custom_css_path			*g:previm_custom_css_path*
 	let g:previm_disable_default_css = 1
 	let g:previm_custom_css_path = '/Users/kanno/tmp/some.css'
 
+g:previm_show_header					*g:previm_show_header*
+	Type:Num
+
+	If the value is 1, it will display a header at the time of preview.
+	The header displays the file name and update datetime that you are editing.
+
+	If the value is 0, it does not display the header at the time of preview.
+	It is set to 1 by default.
+
+>
+	" .vimrc
+	let g:previm_show_header = 0
+
 
 ==============================================================================
 USING WITH OPEN-BROWSER.VIM				*previm-openbrowser*
@@ -164,8 +177,15 @@ Thus, |g:previm_open_cmd| need not be configured when using open-browser.vim.
 ==============================================================================
 CHANGELOG						*previm-changelog*
 
+1.7.1	2015-08-17
+        - support hidden header
+
+1.7	2015-08-15
+        - support mermaid(https://github.com/knsv/mermaid)
+
 1.6	2014-09-15
         - support realtime refresh
+
 1.5.4	2014-09-06
         - support custom css
 

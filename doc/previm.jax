@@ -144,6 +144,19 @@ g:previm_custom_css_path			*g:previm_custom_css_path*
 	let g:previm_disable_default_css = 1
 	let g:previm_custom_css_path = '/Users/kanno/tmp/some.css'
 
+g:previm_show_header					*g:previm_show_header*
+	型:数値
+
+	値が1ならば、プレビュー時にヘッダーを表示します。
+	ヘッダーには編集しているファイル名と更新日時が表示されます。
+
+	値が0ならば、プレビュー時にヘッダーを表示しません。
+	デフォルトでは1に設定されています。
+
+>
+	" .vimrc
+	let g:previm_show_header = 0
+
 
 ==============================================================================
 open-browser.vimの使用					*previm-openbrowser*
@@ -161,6 +174,12 @@ open-browser.vimの使用					*previm-openbrowser*
 
 ==============================================================================
 更新履歴						*previm-changelog*
+
+1.7.1	2015-08-17
+        - support hidden header
+
+1.7	2015-08-15
+        - support mermaid(https://github.com/knsv/mermaid)
 
 1.6	2014-09-15
         - support realtime refresh

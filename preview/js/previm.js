@@ -2,7 +2,16 @@
 
 (function(_doc, _win) {
   var REFRESH_INTERVAL = 1000;
+  var marked_renderer = new marked.Renderer();
+  var defaultCodeBlockRenderer = marked_renderer.code;
   var toc;
+  marked_renderer.code = function (code, language) {
+    if(language === 'mermaid'){
+      return '<div class="mermaid">' + code + '</div>';
+    } else {
+      return defaultCodeBlockRenderer.apply(this, arguments);
+    }
+  };
 
   function transform(filetype, content) {
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
@@ -18,7 +27,6 @@
           return '<li>'+text+'</li>';
         }
       };
-
       marked.setOptions({
         gfm: true,
         tables: true,
@@ -50,11 +58,22 @@
   }
 
   // NOTE: Experimental
-  function autoScroll(id) {
+  //   ここで動的にpageYOffsetを取得すると画像表示前の高さになってしまう
+  //   そのため明示的にpageYOffsetを受け取るようにしている
+  function autoScroll(id, pageYOffset) {
     var relaxed = 0.95;
-    if((_doc.documentElement.clientHeight + _win.pageYOffset) / _doc.body.clientHeight > relaxed) {
       var obj = document.getElementById(id);
+    if((_doc.documentElement.clientHeight + pageYOffset) / _doc.body.clientHeight > relaxed) {
       obj.scrollTop = obj.scrollHeight;
+    } else {
+      obj.scrollTop = pageYOffset;
+    }
+  }
+
+  function style_header() {
+    if (typeof isShowHeader === 'function') {
+      var style = isShowHeader() ? '' : 'none';
+      _doc.getElementById('header').style.display = style;
     }
   }
 
@@ -84,10 +103,12 @@
       needReload = true;
     }
     if (needReload && (typeof getContent === 'function') && (typeof getFileType === 'function')) {
+      var beforePageYOffset = _win.pageYOffset;
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
+      mermaid.init();
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
-      autoScroll('body');
-
+      autoScroll('body', beforePageYOffset);
+      style_header();
       // apply fancybox
       var i;
       for (i = 0; i < _doc.images.length; i++) {
