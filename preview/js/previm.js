@@ -15,10 +15,8 @@
 
   function transform(filetype, content) {
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
-      var renderer = new marked.Renderer();
-
       // custom renderer for GitHub Task List Like
-      renderer.listitem = function(text) {
+      marked_renderer.listitem = function(text) {
         if (/\[ \]/.test(text)) {
           return '<li class="task-list-item enabled"><input class="task-list-item-checkbox" type="checkbox" />'+text.replace(/\[ \]/g, '')+'</li>';
         } else if (/\[x\]/.test(text)) {
@@ -37,7 +35,7 @@
         smartypants: false,
         langPrefix: ''
       });
-      return marked(content, { renderer: renderer });
+      return marked(content, { renderer: marked_renderer });
     } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
       return content;
