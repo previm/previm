@@ -69,7 +69,7 @@ endfunction
 
 let s:base_dir = expand('<sfile>:p:h')
 function! previm#make_preview_file_path(path)
-  return s:base_dir . '/../preview/' . a:path
+  return substitute(s:base_dir, "\\", "/", "g") . '/../preview/' . a:path
 endfunction
 
 " NOTE: getFileType()の必要性について。
