@@ -13,8 +13,12 @@ function! previm#open(preview_html_file)
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
     call s:system(g:previm_open_cmd . ' '''  . a:preview_html_file . '''')
   elseif s:exists_openbrowser()
+    let path = a:preview_html_file
     " fix temporary(the cause unknown)
-    call s:apply_openbrowser('file:///' . a:preview_html_file)
+    if has('win32') || has('win64')
+      let path = fnamemodify(path, ':p:gs?\\?/?g')
+    endif
+    call s:apply_openbrowser('file:///' . path)
   else
     call s:echo_err('Command for the open can not be found. show detail :h previm#open')
   endif
