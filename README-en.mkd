@@ -10,6 +10,7 @@ Vim plugin for preview.
 
 * Markdown
     * support [mermaid](http://knsv.github.io/mermaid/index.html)
+    * support [PlantUML](http://plantuml.com/)
 * reStructuredText(required rst2html.py)
 * textile
 
@@ -65,3 +66,18 @@ graph TD;
 </pre>
 
 ![previm](https://raw.github.com/wiki/kannokanno/previm/images/previm-example-mermaid.png)
+
+
+### PlantUML
+
+Supper [PlantUML](http://plantuml.com/)
+
+
+<pre>
+```uml
+Bob->Alice : hello
+```
+</pre>
+
+![previm_plantuml](http://plantuml.com/plantuml/img/SyfFqhLppCbCJbMmKiX8pSd9vm80)
+

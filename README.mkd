@@ -10,6 +10,7 @@
 
 * Markdown
     * support [mermaid](http://knsv.github.io/mermaid/index.html)
+    * support [PlantUML](http://plantuml.com/)
 * reStructuredText
 * textile
 
@@ -65,3 +66,17 @@ graph TD;
 </pre>
 
 ![previm](https://raw.github.com/wiki/kannokanno/previm/images/previm-example-mermaid.png)
+
+### PlantUML
+
+[PlantUML](http://plantuml.com/)に対応しています。
+
+
+<pre>
+```uml
+ボブ->アリス : こんにちわ
+```
+</pre>
+
+![previm_plantuml](http://plantuml.com/plantuml/img/0IG0s__ZWvpZWvOjFkE2ekE3gkE2kI0w8EE1a-E2a-E1g-E1eUE2Zme0)
+
