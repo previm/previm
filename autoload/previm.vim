@@ -14,7 +14,11 @@ function! previm#open(preview_html_file)
     call s:system(g:previm_open_cmd . ' '''  . a:preview_html_file . '''')
   elseif s:exists_openbrowser()
     " fix temporary(the cause unknown)
-    call s:apply_openbrowser('file:///' . a:preview_html_file)
+    let rootslash = ""
+    if a:preview_html_file[0] != "/"
+      let rootslash = "/"
+    endif
+    call s:apply_openbrowser('file://' . rootslash . a:preview_html_file)
   else
     call s:echo_err('Command for the open can not be found. show detail :h previm#open')
   endif
