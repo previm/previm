@@ -125,6 +125,12 @@ function! s:t.get_alt_and_path()
   call s:assert.equals(previm#fetch_imgpath_elements(arg), expected)
 endfunction
 
+function! s:t.get_alt_and_path_from_image_in_link()
+  let arg = '[![IMG](path/img.png)](path/some/file)'
+  let expected = {'alt': 'IMG', 'path': 'path/img.png', 'title': ''}
+  call s:assert.equals(previm#fetch_imgpath_elements(arg), expected)
+endfunction
+
 function! s:t.get_title_from_double_quote()
   let arg = '![IMG](path/img.png  "image")'
   let expected = {'alt': 'IMG', 'path': 'path/img.png', 'title': 'image'}
