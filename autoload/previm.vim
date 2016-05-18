@@ -11,7 +11,12 @@ let s:newline_character = "\n"
 function! previm#open(preview_html_file)
   call previm#refresh()
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
+  if has('win32') || has('win64') && g:previm_open_cmd =~ 'firefox'
+    " windows+firefox環境
+    call s:system(g:previm_open_cmd . ' '''  . substitute(a:preview_html_file,'\/','\\','g') . '''')
+  else
     call s:system(g:previm_open_cmd . ' '''  . a:preview_html_file . '''')
+  endif
   elseif s:exists_openbrowser()
     let path = a:preview_html_file
     " fix temporary(the cause unknown)
