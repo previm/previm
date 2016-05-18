@@ -87,7 +87,6 @@ text.actor {
 /** Section styling */
 .section {
   stroke: none;
-  opacity: 0.2;
 }
 .section0 {
   fill: rgba(102, 102, 255, 0.49);
@@ -98,7 +97,6 @@ text.actor {
 .section1,
 .section3 {
   fill: white;
-  opacity: 0.2;
 }
 .sectionTitle0 {
   fill: #333333;
