@@ -2,7 +2,7 @@
 
 Vim plugin for preview.
 
-###ScreenShot
+### ScreenShot
 
 ![previm](https://raw.github.com/wiki/kannokanno/previm/images/previm-example.gif)
 
