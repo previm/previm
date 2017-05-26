@@ -144,9 +144,9 @@ function! s:do_external_parse(lines)
   "       その時に混乱を招かないように設定でrst2htmlへのパスを持つことはしない
   let cmd = ''
   if executable("rst2html.py") ==# 1
-    let cmd = "rst2html.py"
+    let cmd = "LC_ALL=en_US.UTF-8; rst2html.py"
   elseif executable("rst2html") ==# 1
-    let cmd = "rst2html"
+    let cmd = "LC_ALL=en_US.UTF-8; rst2html"
   endif
 
   if empty(cmd)
