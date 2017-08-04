@@ -2,7 +2,7 @@
 
 (function(_doc, _win) {
   var REFRESH_INTERVAL = 1000;
-  var markdownit = new _win.markdownit('commonmark')
+  var markdownit = new _win.markdownit()
                            .use(_win.markdownitAbbr)
                            .use(_win.markdownitDeflist)
                            .use(_win.markdownitFootnote)
