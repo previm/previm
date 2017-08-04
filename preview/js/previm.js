@@ -9,12 +9,15 @@
                    .use(_win.markdownitSub)
                    .use(_win.markdownitSup);
 
-  md.highlight = function (code, language) {
-    if(language === 'mermaid'){
-      return '<div class="mermaid">' + code + '</div>';
-    } else {
-      return '';
+  // Override default 'fence' ruler for 'mermaid' support
+  var original_fence = md.renderer.rules.fence;
+  md.renderer.rules.fence = function fence(tokens, idx, options, env, slf) {
+    var token = tokens[idx];
+    var langName = token.info.trim().split(/\s+/g)[0];
+    if (langName === 'mermaid') {
+      return '<div class="mermaid">' + token.content + '</div>';
     }
+    return original_fence(tokens, idx, options, env, slf);
   };
 
   function transform(filetype, content) {
