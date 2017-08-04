@@ -4,8 +4,7 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:V = vital#of('previm')
-let s:File = s:V.import('System.File')
+let s:File = vital#previm#import('System.File')
 
 let s:newline_character = "\n"
 
