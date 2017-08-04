@@ -2,7 +2,7 @@
 
 (function(_doc, _win) {
   var REFRESH_INTERVAL = 1000;
-  var md = new _win.markdownit({linkify: true})
+  var md = new _win.markdownit({html: true, linkify: true})
                    .use(_win.markdownitAbbr)
                    .use(_win.markdownitDeflist)
                    .use(_win.markdownitFootnote)
