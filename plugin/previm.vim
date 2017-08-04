@@ -9,10 +9,10 @@ let g:loaded_previm = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:setup_setting()
+function! s:setup_setting() abort
   augroup Previm
     autocmd! * <buffer>
-    if get(g:, "previm_enable_realtime", 0) ==# 1
+    if get(g:, 'previm_enable_realtime', 0) ==# 1
       " NOTE: It is too frequently in TextChanged/TextChangedI
       autocmd CursorHold,CursorHoldI,InsertLeave,BufWritePost <buffer> call previm#refresh()
     else
