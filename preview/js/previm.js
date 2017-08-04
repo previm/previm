@@ -2,14 +2,14 @@
 
 (function(_doc, _win) {
   var REFRESH_INTERVAL = 1000;
-  var markdownit = new _win.markdownit()
-                           .use(_win.markdownitAbbr)
-                           .use(_win.markdownitDeflist)
-                           .use(_win.markdownitFootnote)
-                           .use(_win.markdownitSub)
-                           .use(_win.markdownitSup);
+  var md = new _win.markdownit()
+                   .use(_win.markdownitAbbr)
+                   .use(_win.markdownitDeflist)
+                   .use(_win.markdownitFootnote)
+                   .use(_win.markdownitSub)
+                   .use(_win.markdownitSup);
 
-  markdownit.highlight = function (code, language) {
+  md.highlight = function (code, language) {
     if(language === 'mermaid'){
       return '<div class="mermaid">' + code + '</div>';
     } else {
@@ -19,7 +19,7 @@
 
   function transform(filetype, content) {
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
-      return markdownit.render(content);
+      return md.render(content);
     } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
       return content;
