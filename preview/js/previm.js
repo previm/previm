@@ -2,20 +2,27 @@
 
 (function(_doc, _win) {
   var REFRESH_INTERVAL = 1000;
-  var marked_renderer = new marked.Renderer();
-  var defaultCodeBlockRenderer = marked_renderer.code;
+  var md = new _win.markdownit({html: true, linkify: true})
+                   .use(_win.markdownitAbbr)
+                   .use(_win.markdownitDeflist)
+                   .use(_win.markdownitFootnote)
+                   .use(_win.markdownitSub)
+                   .use(_win.markdownitSup);
 
-  marked_renderer.code = function (code, language) {
-    if(language === 'mermaid'){
-      return '<div class="mermaid">' + code + '</div>';
-    } else {
-      return defaultCodeBlockRenderer.apply(this, arguments);
+  // Override default 'fence' ruler for 'mermaid' support
+  var original_fence = md.renderer.rules.fence;
+  md.renderer.rules.fence = function fence(tokens, idx, options, env, slf) {
+    var token = tokens[idx];
+    var langName = token.info.trim().split(/\s+/g)[0];
+    if (langName === 'mermaid') {
+      return '<div class="mermaid">' + token.content + '</div>';
     }
+    return original_fence(tokens, idx, options, env, slf);
   };
 
   function transform(filetype, content) {
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
-      return marked(content, { renderer: marked_renderer });
+      return md.render(content);
     } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
       return content;

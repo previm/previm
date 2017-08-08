@@ -11,7 +11,7 @@ endfunction
 
 function! s:t.not_exists_escaped()
   let arg = ['aaabbb', 'あいうえお漢字']
-  let expected = 
+  let expected =
         \   'aaabbb' . s:newline
         \ . 'あいうえお漢字'
   call s:assert.equals(previm#convert_to_content(arg), expected)
@@ -69,7 +69,7 @@ function! s:t.replace_path_when_relative()
   let rel_path = 'previm/some/path/img.png'
   let arg_line = printf('![img](%s)', rel_path)
   let arg_dir = '/Users/foo/tmp'
-  let expected = printf('![img](file://localhost%s/%s)', arg_dir, rel_path)
+  let expected = printf('![img](//localhost%s/%s)', arg_dir, rel_path)
   call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
 endfunction
 
@@ -77,7 +77,7 @@ function! s:t.urlencoded_path()
   let rel_path = 'previm\some\path\img.png'
   let arg_line = printf('![img](%s)', rel_path)
   let arg_dir = 'C:\Documents and Settings\folder'
-  let expected = '![img](file://localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png)'
+  let expected = '![img](//localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png)'
   call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
 endfunction
 
@@ -85,7 +85,7 @@ function! s:t.with_title_from_double_quote()
   let rel_path = 'previm\some\path\img.png'
   let arg_line = printf('![img](%s "title")', rel_path)
   let arg_dir = 'C:\Documents and Settings\folder'
-  let expected = '![img](file://localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png "title")'
+  let expected = '![img](//localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png "title")'
   call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
 endfunction
 
@@ -93,7 +93,7 @@ function! s:t.with_title_from_single_quote()
   let rel_path = 'previm\some\path\img.png'
   let arg_line = printf("![img](%s 'title')", rel_path)
   let arg_dir = 'C:\Documents and Settings\folder'
-  let expected = '![img](file://localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png "title")'
+  let expected = '![img](//localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png "title")'
   call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
 endfunction
 
@@ -101,7 +101,7 @@ function! s:t.not_only_img()
   let rel_path = 'previm/some/path/img.png'
   let arg_line = printf('| a | ![img](%s) |', rel_path)
   let arg_dir  = '/Users/foo/tmp'
-  let expected = printf('| a | ![img](file://localhost%s/%s) |', arg_dir, rel_path)
+  let expected = printf('| a | ![img](//localhost%s/%s) |', arg_dir, rel_path)
   call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
 endfunction
 "}}}

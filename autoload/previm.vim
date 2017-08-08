@@ -1,17 +1,17 @@
+scriptencoding utf-8
 " AUTHOR: kanno <akapanna@gmail.com>
 " License: This file is placed in the public domain.
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:V = vital#of('previm')
-let s:File = s:V.import('System.File')
+let s:File = vital#previm#import('System.File')
 
 let s:newline_character = "\n"
 
-function! previm#open(preview_html_file)
+function! previm#open(preview_html_file) abort
   call previm#refresh()
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
-    if has('win32') || has('win64') && g:previm_open_cmd =~ 'firefox'
+    if has('win32') || has('win64') && g:previm_open_cmd =~? 'firefox'
       " windows+firefox環境
       call s:system(g:previm_open_cmd . ' '''  . substitute(a:preview_html_file,'\/','\\','g') . '''')
     else
@@ -29,7 +29,7 @@ function! previm#open(preview_html_file)
   endif
 endfunction
 
-function! s:exists_openbrowser()
+function! s:exists_openbrowser() abort
   try
     call openbrowser#load()
     return 1
@@ -38,7 +38,7 @@ function! s:exists_openbrowser()
   endtry
 endfunction
 
-function! s:apply_openbrowser(path)
+function! s:apply_openbrowser(path) abort
   let saved_in_vim = g:openbrowser_open_filepath_in_vim
   try
     let g:openbrowser_open_filepath_in_vim = 0
@@ -48,12 +48,12 @@ function! s:apply_openbrowser(path)
   endtry
 endfunction
 
-function! previm#refresh()
+function! previm#refresh() abort
   call previm#refresh_css()
   call previm#refresh_js()
 endfunction
 
-function! previm#refresh_css()
+function! previm#refresh_css() abort
   let css = []
   if get(g:, 'previm_disable_default_css', 0) !=# 1
     call extend(css, ["@import url('origin.css');",  "@import url('lib/github.css');"])
@@ -71,13 +71,13 @@ function! previm#refresh_css()
 endfunction
 
 " TODO: test(refresh_cssと同じように)
-function! previm#refresh_js()
+function! previm#refresh_js() abort
   let encoded_lines = split(iconv(s:function_template(), &encoding, 'utf-8'), s:newline_character)
   call writefile(encoded_lines, previm#make_preview_file_path('js/previm-function.js'))
 endfunction
 
 let s:base_dir = expand('<sfile>:p:h')
-function! previm#make_preview_file_path(path)
+function! previm#make_preview_file_path(path) abort
   return s:base_dir . '/../preview/' . a:path
 endfunction
 
@@ -85,7 +85,7 @@ endfunction
 " js側でファイル名の拡張子から取得すればこの関数は不要だが、
 " その場合「.txtだが内部的なファイルタイプがmarkdown」といった場合に動かなくなる。
 " そのためVim側できちんとファイルタイプを返すようにしている。
-function! s:function_template()
+function! s:function_template() abort
   let current_file = expand('%:p')
   return join([
       \ 'function isShowHeader() {',
@@ -110,18 +110,18 @@ function! s:function_template()
       \], s:newline_character)
 endfunction
 
-function! s:get_last_modified_time()
+function! s:get_last_modified_time() abort
   if exists('*strftime')
-    return strftime("%Y/%m/%d (%a) %H:%M:%S")
+    return strftime('%Y/%m/%d (%a) %H:%M:%S')
   endif
   return '(strftime cannot be performed.)'
 endfunction
 
-function! s:escape_backslash(text)
+function! s:escape_backslash(text) abort
   return escape(a:text, '\')
 endfunction
 
-function! s:system(cmd)
+function! s:system(cmd) abort
   if get(g:, 'previm_disable_vimproc', 0)
     return system(a:cmd)
   endif
@@ -135,22 +135,22 @@ function! s:system(cmd)
   endtry
 endfunction
 
-function! s:do_external_parse(lines)
-  if &filetype !=# "rst"
+function! s:do_external_parse(lines) abort
+  if &filetype !=# 'rst'
     return a:lines
   endif
   " NOTE: 本来は外部コマンドに頼りたくない
   "       いずれjsパーサーが出てきたときに移行するが、
   "       その時に混乱を招かないように設定でrst2htmlへのパスを持つことはしない
   let cmd = ''
-  if executable("rst2html.py") ==# 1
-    let cmd = "rst2html.py"
-  elseif executable("rst2html") ==# 1
-    let cmd = "rst2html"
+  if executable('rst2html.py') ==# 1
+    let cmd = 'rst2html.py'
+  elseif executable('rst2html') ==# 1
+    let cmd = 'rst2html'
   endif
 
   if empty(cmd)
-    call s:echo_err("rst2html.py or rst2html has not been installed, you can not run")
+    call s:echo_err('rst2html.py or rst2html has not been installed, you can not run')
     return a:lines
   endif
   let temp = tempname()
@@ -158,9 +158,9 @@ function! s:do_external_parse(lines)
   return split(s:system(cmd . ' ' . s:escape_backslash(temp)), "\n")
 endfunction
 
-function! previm#convert_to_content(lines)
+function! previm#convert_to_content(lines) abort
   let mkd_dir = s:escape_backslash(expand('%:p:h'))
-  if has("win32unix")
+  if has('win32unix')
     " convert cygwin path to windows path
     let mkd_dir = s:escape_backslash(substitute(system('cygpath -wa ' . mkd_dir), "\n$", '', ''))
   endif
@@ -180,12 +180,12 @@ endfunction
 "   ![alt](file://localhost/Users/kanno/Pictures/img.png "title")
 " if win:
 "   ![alt](file://localhost/C:\Documents%20and%20Settings\folder/pictures\img.png "title")
-function! previm#relative_to_absolute_imgpath(text, mkd_dir)
+function! previm#relative_to_absolute_imgpath(text, mkd_dir) abort
   let elem = previm#fetch_imgpath_elements(a:text)
   if empty(elem.path)
     return a:text
   endif
-  for protocol in ['http://', 'https://', 'file://']
+  for protocol in ['//', 'http://', 'https://', 'file://']
     if s:start_with(elem.path, protocol)
       " is absolute path
       return a:text
@@ -205,10 +205,10 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir)
   let new_imgpath = ''
   if empty(elem.title)
     let prev_imgpath = printf('!\[%s\](%s)', elem.alt, elem.path)
-    let new_imgpath = printf('![%s](file://localhost%s%s)', elem.alt, pre_slash, local_path)
+    let new_imgpath = printf('![%s](//localhost%s%s)', elem.alt, pre_slash, local_path)
   else
     let prev_imgpath = printf('!\[%s\](%s "%s")', elem.alt, elem.path, elem.title)
-    let new_imgpath = printf('![%s](file://localhost%s%s "%s")', elem.alt, pre_slash, local_path, elem.title)
+    let new_imgpath = printf('![%s](//localhost%s%s "%s")', elem.alt, pre_slash, local_path, elem.title)
   endif
 
   " unify quote
@@ -216,7 +216,7 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir)
   return substitute(text, prev_imgpath, new_imgpath, '')
 endfunction
 
-function! previm#fetch_imgpath_elements(text)
+function! previm#fetch_imgpath_elements(text) abort
   let elem = {'alt': '', 'path': '', 'title': ''}
   let matched = matchlist(a:text, '!\[\([^\]]*\)\](\([^)]*\))')
   if empty(matched)
@@ -226,7 +226,7 @@ function! previm#fetch_imgpath_elements(text)
   return extend(elem, s:fetch_path_and_title(matched[2]))
 endfunction
 
-function! s:fetch_path_and_title(path)
+function! s:fetch_path_and_title(path) abort
   let matched = matchlist(a:path, '\(.*\)\s\+["'']\(.*\)["'']')
   if empty(matched)
     return {'path': a:path}
@@ -235,11 +235,11 @@ function! s:fetch_path_and_title(path)
   return {'path': trimmed_path, 'title': matched[2]}
 endfunction
 
-function! s:start_with(haystock, needle)
+function! s:start_with(haystock, needle) abort
   return stridx(a:haystock, a:needle) ==# 0
 endfunction
 
-function! s:echo_err(msg)
+function! s:echo_err(msg) abort
   echohl WarningMsg
   echomsg a:msg
   echohl None
