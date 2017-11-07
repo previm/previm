@@ -9,6 +9,12 @@
 ## 対応フォーマット
 
 * Markdown
+    * [CommonMark](http://commonmark.org/)
+    * [PHP markdown extra style abbreviation](https://github.com/markdown-it/markdown-it-abbr)
+    * [Pandoc style definition list](https://github.com/markdown-it/markdown-it-deflist)
+    * [Pandoc style footnote](https://github.com/markdown-it/markdown-it-footnote)
+    * [Pandoc style subscript](https://github.com/markdown-it/markdown-it-sub)
+    * [Pandoc style superscript](https://github.com/markdown-it/markdown-it-sup)
     * support [mermaid](http://knsv.github.io/mermaid/index.html)
 * reStructuredText
 * textile
@@ -100,3 +106,22 @@ graph TD;
     ```
     previmでhtml生成時間差waitのdelayを設定するのが重要 (上記例 5000[ms])
 
+```cs
+
+using System.IO.Compression;
+
+
+namespace MyApplication
+{
+    [Obsolete("...")]
+    class Program : IInterface
+    {
+        public static List<int> JustDoIt(int count)
+        {
+            Console.WriteLine($"Hello {Name}!");
+            return new List<int>(new int[] { 1, 2, 3 })
+        }
+    }
+}
+
+```

@@ -2,40 +2,28 @@
 
 (function(_doc, _win) {
   var REFRESH_INTERVAL = 1000;
-  var marked_renderer = new marked.Renderer();
-  var defaultCodeBlockRenderer = marked_renderer.code;
   var toc;
-  marked_renderer.code = function (code, language) {
-    if(language === 'mermaid'){
-      return '<div class="mermaid">' + code + '</div>';
-    } else {
-      return defaultCodeBlockRenderer.apply(this, arguments);
+  var md = new _win.markdownit({html: true, linkify: true, breaks: true})
+                   .use(_win.markdownitAbbr)
+                   .use(_win.markdownitDeflist)
+                   .use(_win.markdownitFootnote)
+                   .use(_win.markdownitSub)
+                   .use(_win.markdownitSup);
+
+  // Override default 'fence' ruler for 'mermaid' support
+  var original_fence = md.renderer.rules.fence;
+  md.renderer.rules.fence = function fence(tokens, idx, options, env, slf) {
+    var token = tokens[idx];
+    var langName = token.info.trim().split(/\s+/g)[0];
+    if (langName === 'mermaid') {
+      return '<div class="mermaid">' + token.content + '</div>';
     }
+    return original_fence(tokens, idx, options, env, slf);
   };
 
   function transform(filetype, content) {
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
-      // custom renderer for GitHub Task List Like
-      marked_renderer.listitem = function(text) {
-        if (/\[ \]/.test(text)) {
-          return '<li class="task-list-item enabled"><input class="task-list-item-checkbox" type="checkbox" />'+text.replace(/\[ \]/g, '')+'</li>';
-        } else if (/\[x\]/.test(text)) {
-          return '<li class="task-list-item enabled"><input class="task-list-item-checkbox" type="checkbox" checked="" />'+text.replace(/\[x\]/g, '')+'</li>';
-        } else {
-          return '<li>'+text+'</li>';
-        }
-      };
-      marked.setOptions({
-        gfm: true,
-        tables: true,
-        breaks: true,
-        pedantic: false,
-        sanitize: false,
-        smartLists: true,
-        smartypants: false,
-        langPrefix: ''
-      });
-      return marked(content, { renderer: marked_renderer });
+      return md.render(content);
     } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
       return content;
@@ -60,7 +48,7 @@
   //   そのため明示的にpageYOffsetを受け取るようにしている
   function autoScroll(id, pageYOffset) {
     var relaxed = 0.95;
-      var obj = document.getElementById(id);
+    var obj = document.getElementById(id);
     if((_doc.documentElement.clientHeight + pageYOffset) / _doc.body.clientHeight > relaxed) {
       obj.scrollTop = obj.scrollHeight;
     } else {
@@ -159,5 +147,3 @@
   loadPreview();
   createTOC();
 })(document, window);
-
-

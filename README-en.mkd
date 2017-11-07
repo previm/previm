@@ -2,13 +2,19 @@
 
 Vim plugin for preview.
 
-###ScreenShot
+### ScreenShot
 
 ![previm](https://raw.github.com/wiki/kannokanno/previm/images/previm-example.gif)
 
 ## Supported file formats
 
 * Markdown
+    * [CommonMark](http://commonmark.org/)
+    * [PHP markdown extra style abbreviation](https://github.com/markdown-it/markdown-it-abbr)
+    * [Pandoc style definition list](https://github.com/markdown-it/markdown-it-deflist)
+    * [Pandoc style footnote](https://github.com/markdown-it/markdown-it-footnote)
+    * [Pandoc style subscript](https://github.com/markdown-it/markdown-it-sub)
+    * [Pandoc style superscript](https://github.com/markdown-it/markdown-it-sup)
     * support [mermaid](http://knsv.github.io/mermaid/index.html)
 * reStructuredText(required rst2html.py)
 * textile

@@ -204,6 +204,9 @@ dl dd > :first-child {
 dl dd > :last-child {
   margin-bottom: 0;
 }
+img {
+  width: 100%;
+}
 
 .shadow {
   -webkit-box-shadow: 0 5px 15px #000;
@@ -220,12 +223,5 @@ dl dd > :last-child {
 @media print {
   table, pre {
     page-break-inside: avoid;
-  }
-  #header {
-    display:none;
-  }
-
-  #last-modified {
-    display:none;
   }
 }
