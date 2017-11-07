@@ -106,22 +106,3 @@ graph TD;
     ```
     previmでhtml生成時間差waitのdelayを設定するのが重要 (上記例 5000[ms])
 
-```cs
-
-using System.IO.Compression;
-
-
-namespace MyApplication
-{
-    [Obsolete("...")]
-    class Program : IInterface
-    {
-        public static List<int> JustDoIt(int count)
-        {
-            Console.WriteLine($"Hello {Name}!");
-            return new List<int>(new int[] { 1, 2, 3 })
-        }
-    }
-}
-
-```
