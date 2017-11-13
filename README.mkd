@@ -15,6 +15,7 @@
     * [Pandoc style footnote](https://github.com/markdown-it/markdown-it-footnote)
     * [Pandoc style subscript](https://github.com/markdown-it/markdown-it-sub)
     * [Pandoc style superscript](https://github.com/markdown-it/markdown-it-sup)
+    * [Emoji plugin for markdown-it](https://github.com/markdown-it/markdown-it-emoji)
     * support [mermaid](http://knsv.github.io/mermaid/index.html)
 * reStructuredText
 * textile
@@ -79,6 +80,8 @@ graph TD;
     - h1をタイトルとして中央表示するように変更(ページ内にはh1は一つが望ましい)
 - GitHub Task List 対応  
     ![tasklist](https://raw.github.com/wiki/beckorz/previm/images/tasklist_like_github.jpg)
+- Emoji 対応
+    markdown-it パーサーのEmojiプラグインにて。
 - 画像のFancybox対応  
     ![tasklist](https://raw.github.com/wiki/beckorz/previm/images/example_fancybox.GIF)
 - 目次生成対応  
