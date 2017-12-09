@@ -7,7 +7,8 @@
                    .use(_win.markdownitDeflist)
                    .use(_win.markdownitFootnote)
                    .use(_win.markdownitSub)
-                   .use(_win.markdownitSup);
+                   .use(_win.markdownitSup)
+                   .use(_win.markdownitCheckbox);
 
   // Override default 'fence' ruler for 'mermaid' support
   var original_fence = md.renderer.rules.fence;
