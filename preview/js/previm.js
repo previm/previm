@@ -29,6 +29,8 @@
       return content;
     } else if(hasTargetFileType(filetype, ['textile'])) {
       return textile(content);
+    } else if(hasTargetFileType(filetype, ['org'])) {
+      return Vendor.orgConvertToHtml(content);
     }
     return 'Sorry. It is a filetype(' + filetype + ') that is not support<br /><br />' + content;
   }

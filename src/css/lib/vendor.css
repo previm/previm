@@ -1,0 +1,26 @@
+span.task-status {
+  padding: 0 0.2em;
+  margin-right: 0.8em;
+  color: white;
+}
+
+span.task-status.todo {
+  color: white;
+  background-color: rgb(39, 149, 182);
+}
+
+span.task-status.done {
+  color: white;
+  background-color: rgb(81, 143, 31);
+}
+
+.section-number {
+  padding-right: 0.8em;
+  font-weight: bold;
+  color: rgb(0, 90, 190);
+  font-style: italic;
+}
+
+.org-subscript-child {
+  font-size: 85%;
+}
