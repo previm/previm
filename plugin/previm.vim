@@ -25,7 +25,7 @@ endfunction
 
 augroup Previm
   autocmd!
-  autocmd FileType *{mkd,markdown,rst,textile}* call <SID>setup_setting()
+  autocmd FileType *{mkd,markdown,rst,textile,org}* call <SID>setup_setting()
 augroup END
 
 let &cpo = s:save_cpo

@@ -1,0 +1,21 @@
+{
+  "name": "previm",
+  "version": "1.7.1",
+  "main": "src/js/lib/vendor.js",
+  "repository": "https://github.com/kannokanno/previm.git",
+  "author": "kannokanno <akapanna@gmail.com>",
+  "private": true,
+  "scripts": {
+    "build": "webpack -p",
+    "format": "prettier --write --single-quote *.js src/**/*.*"
+  },
+  "dependencies": {
+    "org": "^0.2.0"
+  },
+  "devDependencies": {
+    "css-loader": "^0.28.7",
+    "prettier": "^1.9.2",
+    "style-loader": "^0.19.1",
+    "webpack": "^3.10.0"
+  }
+}
