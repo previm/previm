@@ -205,7 +205,7 @@ dl dd > :last-child {
   margin-bottom: 0;
 }
 img {
-  width: 100%;
+  max-width: 100%;
 }
 
 .shadow {
