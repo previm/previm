@@ -18,6 +18,7 @@ Vim plugin for preview.
     * support [mermaid](http://knsv.github.io/mermaid/index.html)
 * reStructuredText(required rst2html.py)
 * textile
+* AsciiDoc
 
 ## Dependencies
 
