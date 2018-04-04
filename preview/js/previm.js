@@ -29,6 +29,8 @@
       return content;
     } else if(hasTargetFileType(filetype, ['textile'])) {
       return textile(content);
+    } else if(hasTargetFileType(filetype, ['asciidoc'])) {
+      return new Asciidoctor().convert(content, { attributes: { showtitle: true } });
     }
     return 'Sorry. It is a filetype(' + filetype + ') that is not support<br /><br />' + content;
   }
