@@ -13,7 +13,7 @@ function! previm#open(preview_html_file) abort
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
     if has('win32') || has('win64') && g:previm_open_cmd =~? 'firefox'
       " windows+firefox環境
-      call s:system(g:previm_open_cmd . ' '''  . substitute(a:preview_html_file,'\/','\\','g') . '''')
+      call s:system(g:previm_open_cmd . ' "'  . substitute(a:preview_html_file,'\/','\\','g') . '"')
     else
       call s:system(g:previm_open_cmd . ' '''  . a:preview_html_file . '''')
     endif
