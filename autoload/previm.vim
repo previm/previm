@@ -14,6 +14,8 @@ function! previm#open(preview_html_file) abort
     if has('win32') || has('win64') && g:previm_open_cmd =~? 'firefox'
       " windows+firefox環境
       call s:system(g:previm_open_cmd . ' "'  . substitute(a:preview_html_file,'\/','\\','g') . '"')
+    elseif has('win32unix') || has('win64unix')
+      call s:system(g:previm_open_cmd . ' '''  . system('cygpath -w ' . a:preview_html_file) . '''')
     else
       call s:system(g:previm_open_cmd . ' '''  . a:preview_html_file . '''')
     endif
@@ -22,6 +24,8 @@ function! previm#open(preview_html_file) abort
     " fix temporary(the cause unknown)
     if has('win32') || has('win64')
       let path = fnamemodify(path, ':p:gs?\\?/?g')
+    elseif has('win32unix') || has('win64unix')
+      let path = substitute(path,'\/','','')
     endif
     call s:apply_openbrowser('file:///' . path)
   else
