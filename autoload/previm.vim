@@ -84,7 +84,7 @@ endfunction
 let s:base_dir = fnamemodify(expand('<sfile>:p:h') . '/../preview', ':p')
 
 function! s:preview_directory()
-  return s:base_dir . '/' . sha256(expand('%:p')) . '-' . getpid()
+  return s:base_dir . sha256(expand('%:p'))[:15] . '-' . getpid()
 endfunction
 
 function! previm#make_preview_file_path(path) abort
