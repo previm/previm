@@ -176,6 +176,9 @@ open-browser.vimの使用					*previm-openbrowser*
 ==============================================================================
 更新履歴						*previm-changelog*
 
+1.8	2017-07-21
+        - support multiple previews
+
 1.7.1	2015-08-17
         - support hidden header
 

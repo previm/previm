@@ -81,9 +81,35 @@ function! previm#refresh_js() abort
   call writefile(encoded_lines, previm#make_preview_file_path('js/previm-function.js'))
 endfunction
 
-let s:base_dir = expand('<sfile>:p:h')
+let s:base_dir = fnamemodify(expand('<sfile>:p:h') . '/../preview', ':p')
+
+function! s:preview_directory()
+  return s:base_dir . sha256(expand('%:p'))[:15] . '-' . getpid()
+endfunction
+
 function! previm#make_preview_file_path(path) abort
-  return s:base_dir . '/../preview/' . a:path
+  let src = s:base_dir . '/_/' . a:path
+  let dst = s:preview_directory() . '/' . a:path
+  if !filereadable(dst)
+    augroup PrevimCleanup
+      au!
+      au VimLeave * call previm#cleanup_preview()
+    augroup END
+
+    let dir = fnamemodify(dst, ':p:h')
+	if !isdirectory(dir)
+      call mkdir(dir, 'p')
+    endif
+    call s:File.copy(src, dst)
+  endif
+  return dst
+endfunction
+
+function! previm#cleanup_preview()
+  let dst = s:preview_directory()
+  if isdirectory(dst)
+    call s:File.rmdir(dst, 'r')
+  endif
 endfunction
 
 " NOTE: getFileType()の必要性について。
