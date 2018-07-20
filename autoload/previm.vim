@@ -84,26 +84,24 @@ endfunction
 let s:base_dir = expand('<sfile>:p:h')
 function! previm#make_preview_file_path(path) abort
   let src = s:base_dir . '/../preview/_/' . a:path
-  let dst = s:base_dir . '/../preview/' . sha256(expand('%:p')) . '/' . a:path
+  let dst = s:base_dir . '/../preview/' . sha256(expand('%:p')) . '-' . getpid() . '/' . a:path
   if !filereadable(dst)
-    call mkdir(fnamemodify(dst, ':h'), 'p')
+    let dir = fnamemodify(dst, ':h')
+    augroup PrevimCleanup
+      au!
+      au VimLeave * call previm#cleanup_preview()
+    augroup END
+    call mkdir(dir, 'p')
     call s:File.copy(src, dst)
   endif
   return dst
 endfunction
 
-function! previm#clean_previews()
-  let dirs = map(split(glob(s:base_dir . '/../preview/*'), "\n"), 'fnamemodify(v:val, ":p")')
-  for d in dirs
-    let d = substitute(d, '[/\\]$', '', '')
-    if d !~# '_$'
-      try
-        call s:File.rmdir(d, 'r')
-        echomsg 'removed ' . fnamemodify(d, ':t')
-      catch
-      endtry
-    endif
-  endfor
+function! previm#cleanup_preview()
+  let dst = s:base_dir . '/../preview/' . sha256(expand('%:p')) . '-' . getpid()
+  if isdirectory(dst)
+    call s:File.rmdir(dst, 'r')
+  endif
 endfunction
 
 " NOTE: getFileType()の必要性について。
