@@ -81,13 +81,14 @@ function! previm#refresh_js() abort
   call writefile(encoded_lines, previm#make_preview_file_path('js/previm-function.js'))
 endfunction
 
-let s:base_dir = expand('<sfile>:p:h')
+let s:base_dir = fnamemodify(expand('<sfile>:p:h') . '/../preview', ':p')
+
 function! s:preview_directory()
-  return s:base_dir . '/../preview/' . sha256(expand('%:p')) . '-' . getpid()
+  return s:base_dir . '/' . sha256(expand('%:p')) . '-' . getpid()
 endfunction
 
 function! previm#make_preview_file_path(path) abort
-  let src = s:base_dir . '/../preview/_/' . a:path
+  let src = s:base_dir . '/_/' . a:path
   let dst = s:preview_directory() . '/' . a:path
   if !filereadable(dst)
     let dir = fnamemodify(dst, ':p:h')
