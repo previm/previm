@@ -178,7 +178,7 @@ Thus, |g:previm_open_cmd| need not be configured when using open-browser.vim.
 ==============================================================================
 CHANGELOG						*previm-changelog*
 
-1.8	2017-07-21
+1.8	2018-07-21
         - support multiple previews
 
 1.7.1	2015-08-17
