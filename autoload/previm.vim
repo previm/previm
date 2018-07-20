@@ -90,7 +90,7 @@ function! previm#make_preview_file_path(path) abort
   let src = s:base_dir . '/../preview/_/' . a:path
   let dst = s:preview_directory() . '/' . a:path
   if !filereadable(dst)
-    let dir = fnamemodify(dst, ':h')
+    let dir = fnamemodify(dst, ':p:h')
     augroup PrevimCleanup
       au!
       au VimLeave * call previm#cleanup_preview()
