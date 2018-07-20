@@ -4,7 +4,7 @@ Vim plugin for preview.
 
 ### ScreenShot
 
-![previm](https://raw.github.com/wiki/kannokanno/previm/images/previm-example.gif)
+![previm](https://raw.github.com/wiki/previm/previm/images/previm-example.gif)
 
 ## Supported file formats
 
@@ -71,4 +71,4 @@ graph TD;
 ```
 </pre>
 
-![previm](https://raw.github.com/wiki/kannokanno/previm/images/previm-example-mermaid.png)
+![previm](https://raw.github.com/wiki/previm/previm/images/previm-example-mermaid.png)

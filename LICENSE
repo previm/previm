@@ -1,7 +1,7 @@
 Using open source codes' LICENSES
 
 * marked.min.js
-  [preview/js/lib/marked.min.js](https://github.com/kannokanno/previm/blob/master/preview/js/lib/marked.min.js)
+  [preview/js/lib/marked.min.js](https://github.com/previm/previm/blob/master/preview/js/lib/marked.min.js)
 
 Copyright (c) 2011-2014, Christopher Jeffrey (https://github.com/chjj/)
 
@@ -26,9 +26,9 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 
 * highlight.pack.js
-  [preview/js/lib/highlight.pack.js](https://github.com/kannokanno/previm/blob/master/preview/js/lib/highlight.pack.js)
+  [preview/js/lib/highlight.pack.js](https://github.com/previm/previm/blob/master/preview/js/lib/highlight.pack.js)
 * github.css
-  [preview/css/lib/github.css](https://github.com/kannokanno/previm/blob/master/preview/css/lib/github.css)
+  [preview/css/lib/github.css](https://github.com/previm/previm/blob/master/preview/css/lib/github.css)
 
 Copyright (c) 2006, Ivan Sagalaev
 All rights reserved.
