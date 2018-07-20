@@ -2,6 +2,7 @@
 
 Version: 1.6
 Author: kanno <akapanna@gmail.com>
+Maintainer: previm developers
 
 ==============================================================================
 目次							*previm-contents*
@@ -28,7 +29,7 @@ Vimで編集した内容をブラウザでプレビューするための機能�
 	- reStructuredText(required rst2html.py)
 
 最新版:
-http://github.com/kannokanno/previm
+http://github.com/previm/previm
 
 
 ==============================================================================

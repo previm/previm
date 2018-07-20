@@ -1,4 +1,5 @@
 " AUTHOR: kanno <akapanna@gmail.com>
+" MAINTAINER: previm developers
 " License: This file is placed in the public domain.
 
 if exists('g:loaded_previm') && g:loaded_previm

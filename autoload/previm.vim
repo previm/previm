@@ -1,5 +1,6 @@
 scriptencoding utf-8
 " AUTHOR: kanno <akapanna@gmail.com>
+" MAINTAINER: previm developers
 " License: This file is placed in the public domain.
 let s:save_cpo = &cpo
 set cpo&vim
