@@ -83,7 +83,27 @@ endfunction
 
 let s:base_dir = expand('<sfile>:p:h')
 function! previm#make_preview_file_path(path) abort
-  return s:base_dir . '/../preview/' . a:path
+  let src = s:base_dir . '/../preview/_/' . a:path
+  let dst = s:base_dir . '/../preview/' . sha256(expand('%:p')) . '/' . a:path
+  if !filereadable(dst)
+    call mkdir(fnamemodify(dst, ':h'), 'p')
+    call s:File.copy(src, dst)
+  endif
+  return dst
+endfunction
+
+function! previm#clean_previews()
+  let dirs = map(split(glob(s:base_dir . '/../preview/*'), "\n"), 'fnamemodify(v:val, ":p")')
+  for d in dirs
+    let d = substitute(d, '[/\\]$', '', '')
+    if d !~# '_$'
+      try
+        call s:File.rmdir(d, 'r')
+        echomsg 'removed ' . fnamemodify(d, ':t')
+      catch
+      endtry
+    endif
+  endfor
 endfunction
 
 " NOTE: getFileType()の必要性について。
