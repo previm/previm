@@ -82,9 +82,13 @@ function! previm#refresh_js() abort
 endfunction
 
 let s:base_dir = expand('<sfile>:p:h')
+function! s:preview_directory()
+  return s:base_dir . '/../preview/' . sha256(expand('%:p')) . '-' . getpid()
+endfunction
+
 function! previm#make_preview_file_path(path) abort
   let src = s:base_dir . '/../preview/_/' . a:path
-  let dst = s:base_dir . '/../preview/' . sha256(expand('%:p')) . '-' . getpid() . '/' . a:path
+  let dst = s:preview_directory() . '/' . a:path
   if !filereadable(dst)
     let dir = fnamemodify(dst, ':h')
     augroup PrevimCleanup
@@ -98,7 +102,7 @@ function! previm#make_preview_file_path(path) abort
 endfunction
 
 function! previm#cleanup_preview()
-  let dst = s:base_dir . '/../preview/' . sha256(expand('%:p')) . '-' . getpid()
+  let dst = s:preview_directory()
   if isdirectory(dst)
     call s:File.rmdir(dst, 'r')
   endif
