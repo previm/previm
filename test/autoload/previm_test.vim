@@ -1,3 +1,5 @@
+scriptencoding utf-8
+
 let s:newline = "\\n"
 let s:assert = themis#helper('assert')
 
