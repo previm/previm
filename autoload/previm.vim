@@ -91,24 +91,20 @@ function! previm#make_preview_file_path(path) abort
   let src = s:base_dir . '/_/' . a:path
   let dst = s:preview_directory() . '/' . a:path
   if !filereadable(dst)
-    augroup PrevimCleanup
-      au!
-      au VimLeave * call previm#cleanup_preview()
-    augroup END
-
     let dir = fnamemodify(dst, ':p:h')
 	if !isdirectory(dir)
       call mkdir(dir, 'p')
     endif
+
+    exe printf("au VimLeave * call previm#cleanup_preview('%s')", dir)
     call s:File.copy(src, dst)
   endif
   return dst
 endfunction
 
-function! previm#cleanup_preview()
-  let dst = s:preview_directory()
-  if isdirectory(dst)
-    call s:File.rmdir(dst, 'r')
+function! previm#cleanup_preview(dir)
+  if isdirectory(a:dir)
+    call s:File.rmdir(a:dir, 'r')
   endif
 endfunction
 
