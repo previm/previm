@@ -22,7 +22,6 @@ function! s:setup_setting() abort
   augroup END
 
   command! -buffer -nargs=0 PrevimOpen call previm#open(previm#make_preview_file_path('index.html'))
-  command! -buffer -nargs=0 CleanPrevimPreviews call previm#clean_previews()
 endfunction
 
 augroup Previm
