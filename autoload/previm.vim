@@ -61,7 +61,7 @@ endfunction
 function! previm#refresh_css() abort
   let css = []
   if get(g:, 'previm_disable_default_css', 0) !=# 1
-    call extend(css, ["@import url('origin.css');",  "@import url('lib/github.css');"])
+    call extend(css, ["@import url('../../_/css/origin.css');", "@import url('../../_/css/lib/github.css');"])
   endif
   if exists('g:previm_custom_css_path')
     let css_path = expand(g:previm_custom_css_path)
