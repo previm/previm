@@ -9,6 +9,8 @@
                    .use(_win.markdownitSub)
                    .use(_win.markdownitSup)
                    .use(_win.markdownitCheckbox);
+  var katex_options = {}
+  katex_plugin(md, katex_options);
 
   // Override default 'fence' ruler for 'mermaid' support
   var original_fence = md.renderer.rules.fence;
