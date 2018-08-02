@@ -80,18 +80,19 @@ graph TD;
     - h1をタイトルとして中央表示するように変更(ページ内にはh1は一つが望ましい)
 - GitHub Task List 対応  
     ![tasklist](https://raw.github.com/wiki/beckorz/previm/images/tasklist_like_github.jpg)
-- Emoji 対応
+- Emoji 対応 :sushi:
     markdown-it パーサーのEmojiプラグインにて。
-- 画像のFancybox対応  
-    ![tasklist](https://raw.github.com/wiki/beckorz/previm/images/example_fancybox.GIF)
+- 画像サムネイルのFancybox対応  
+    ![Thumbnail](https://raw.github.com/wiki/beckorz/previm/images/example_fancybox.GIF)
 - 目次生成対応  
-    ![tasklist](https://raw.github.com/wiki/beckorz/previm/images/example_toc.GIF)
+    ![CreateTOC](https://raw.github.com/wiki/beckorz/previm/images/example_toc.GIF)
     - https://github.com/mubaidr/jquery.tocify.js (not original tocify.js, Automatic update compatible version)
     - NOTE: 目次がh2,h3と順に作成していないと目次が正しく表示されない(h1は生成しない)
 - wkhtmltopdf でPDF生成される@printのメディアクエリーにそれなりに対応
     - Windowsでの、wkhtmltopdf 出力例
+
     ```bat
-    SET PREVIM_DATA=file:///%HOMEDRIVE%/%homepath%/.vim/bundle/previm/preview/index.html
+    SET PREVIM_DATA=file:///%USERPROFILE%/vimfiles/cache/dein/repos/github.com/beckorz/previm/preview/index.html
 
     wkhtmltopdf ^
       --print-media-type ^
