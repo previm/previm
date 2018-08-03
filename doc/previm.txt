@@ -2,6 +2,7 @@
 
 Version: 1.6
 Author: kanno <akapanna@gmail.com>
+Maintainer: previm developers
 
 ==============================================================================
 CONTENTS						*previm-contents*
@@ -28,7 +29,7 @@ browsers. It achieves something similar to real-time previewing.
 	- reStructuredText(required rst2html.py)
 
 Latest revision:
-http://github.com/kannokanno/previm
+http://github.com/previm/previm
 
 
 ==============================================================================
@@ -176,6 +177,12 @@ Thus, |g:previm_open_cmd| need not be configured when using open-browser.vim.
 
 ==============================================================================
 CHANGELOG						*previm-changelog*
+
+1.8.1	2018-07-21
+        - fixes minor bugs
+
+1.8	2018-07-21
+        - support multiple previews
 
 1.7.1	2015-08-17
         - support hidden header

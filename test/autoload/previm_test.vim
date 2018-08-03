@@ -1,3 +1,5 @@
+scriptencoding utf-8
+
 let s:newline = "\\n"
 let s:assert = themis#helper('assert')
 
@@ -176,12 +178,14 @@ function! s:t.teardown()
   endif
 endfunction
 
+let s:default_origin_css_path = "@import url('../../_/css/origin.css');"
+let s:default_github_css_path = "@import url('../../_/css/lib/github.css');"
 function! s:t.default_content_if_not_exists_setting()
   call previm#refresh_css()
   let actual = readfile(previm#make_preview_file_path('css/previm.css'))
   call s:assert.equals([
-        \ "@import url('origin.css');",
-        \ "@import url('lib/github.css');",
+        \ s:default_origin_css_path,
+        \ s:default_github_css_path
         \ ], actual)
 endfunction
 
@@ -190,8 +194,8 @@ function! s:t.default_content_if_invalid_setting()
   call previm#refresh_css()
   let actual = readfile(previm#make_preview_file_path('css/previm.css'))
   call s:assert.equals([
-        \ "@import url('origin.css');",
-        \ "@import url('lib/github.css');",
+        \ s:default_origin_css_path,
+        \ s:default_github_css_path
         \ ], actual)
 endfunction
 
@@ -214,3 +218,4 @@ function! s:t.empty_if_not_exists_file()
   call s:assert.equals(actual, [])
 endfunction
 "}}}
+"

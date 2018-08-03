@@ -1,5 +1,6 @@
 scriptencoding utf-8
 " AUTHOR: kanno <akapanna@gmail.com>
+" MAINTAINER: previm developers
 " License: This file is placed in the public domain.
 let s:save_cpo = &cpo
 set cpo&vim
@@ -13,7 +14,9 @@ function! previm#open(preview_html_file) abort
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
     if has('win32') || has('win64') && g:previm_open_cmd =~? 'firefox'
       " windows+firefox環境
-      call s:system(g:previm_open_cmd . ' '''  . substitute(a:preview_html_file,'\/','\\','g') . '''')
+      call s:system(g:previm_open_cmd . ' "'  . substitute(a:preview_html_file,'\/','\\','g') . '"')
+    elseif has('win32unix') || has('win64unix')
+      call s:system(g:previm_open_cmd . ' '''  . system('cygpath -w ' . a:preview_html_file) . '''')
     else
       call s:system(g:previm_open_cmd . ' '''  . a:preview_html_file . '''')
     endif
@@ -22,6 +25,8 @@ function! previm#open(preview_html_file) abort
     " fix temporary(the cause unknown)
     if has('win32') || has('win64')
       let path = fnamemodify(path, ':p:gs?\\?/?g')
+    elseif has('win32unix') || has('win64unix')
+      let path = substitute(path,'\/','','')
     endif
     call s:apply_openbrowser('file:///' . path)
   else
@@ -53,10 +58,16 @@ function! previm#refresh() abort
   call previm#refresh_js()
 endfunction
 
+let s:default_origin_css_path = "@import url('../../_/css/origin.css');"
+let s:default_github_css_path = "@import url('../../_/css/lib/github.css');"
+
 function! previm#refresh_css() abort
   let css = []
   if get(g:, 'previm_disable_default_css', 0) !=# 1
-    call extend(css, ["@import url('origin.css');",  "@import url('lib/github.css');"])
+    call extend(css, [
+          \ s:default_origin_css_path,
+          \ s:default_github_css_path
+          \ ])
   endif
   if exists('g:previm_custom_css_path')
     let css_path = expand(g:previm_custom_css_path)
@@ -76,9 +87,31 @@ function! previm#refresh_js() abort
   call writefile(encoded_lines, previm#make_preview_file_path('js/previm-function.js'))
 endfunction
 
-let s:base_dir = expand('<sfile>:p:h')
+let s:base_dir = fnamemodify(expand('<sfile>:p:h') . '/../preview', ':p')
+
+function! s:preview_directory()
+  return s:base_dir . sha256(expand('%:p'))[:15] . '-' . getpid()
+endfunction
+
 function! previm#make_preview_file_path(path) abort
-  return s:base_dir . '/../preview/' . a:path
+  let src = s:base_dir . '/_/' . a:path
+  let dst = s:preview_directory() . '/' . a:path
+  if !filereadable(dst)
+    let dir = fnamemodify(dst, ':p:h')
+	if !isdirectory(dir)
+      call mkdir(dir, 'p')
+    endif
+
+    exe printf("au VimLeave * call previm#cleanup_preview('%s')", dir)
+    call s:File.copy(src, dst)
+  endif
+  return dst
+endfunction
+
+function! previm#cleanup_preview(dir)
+  if isdirectory(a:dir)
+    call s:File.rmdir(a:dir, 'r')
+  endif
 endfunction
 
 " NOTE: getFileType()の必要性について。
@@ -163,6 +196,8 @@ function! previm#convert_to_content(lines) abort
   if has('win32unix')
     " convert cygwin path to windows path
     let mkd_dir = s:escape_backslash(substitute(system('cygpath -wa ' . mkd_dir), "\n$", '', ''))
+  elseif has('win32') || has('win64')
+    let mkd_dir = substitute(mkd_dir, '\\', '/', 'g')
   endif
   let converted_lines = []
   for line in s:do_external_parse(a:lines)

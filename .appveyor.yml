@@ -1,0 +1,23 @@
+version: '{build}'
+clone_depth: 10
+environment:
+  matrix:
+    - VIM_URL: http://vim-jp.org/redirects/koron/vim-kaoriya/latest/win64/
+      THEMIS_PROFILE: vim-profile-win-latest.txt
+install:
+  - ps: |
+      $zip = $Env:APPVEYOR_BUILD_FOLDER + '\vim.zip'
+      $vim = $Env:APPVEYOR_BUILD_FOLDER + '\vim\'
+      $redirect = Invoke-WebRequest -URI $Env:VIM_URL
+      (New-Object Net.WebClient).DownloadFile($redirect.Links[0].href, $zip)
+      [Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') > $null
+      [System.IO.Compression.ZipFile]::ExtractToDirectory($zip, $vim)
+      $Env:THEMIS_VIM = $vim + (Get-ChildItem $vim).Name + '\vim.exe'
+
+  - 'git -c advice.detachedHead=false clone https://github.com/thinca/vim-themis --quiet --branch v1.5.4 --single-branch --depth 1 %TEMP%\vim-themis'
+build: off
+test_script:
+  - '%THEMIS_VIM% --version'
+  - '%TEMP%\vim-themis\bin\themis.bat test/ -r --reporter dot'
+
+deploy: off

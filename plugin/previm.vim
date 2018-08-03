@@ -1,4 +1,5 @@
 " AUTHOR: kanno <akapanna@gmail.com>
+" MAINTAINER: previm developers
 " License: This file is placed in the public domain.
 
 if exists('g:loaded_previm') && g:loaded_previm
@@ -9,7 +10,7 @@ let g:loaded_previm = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! s:setup_setting() abort
+function! s:install_previm() abort
   augroup Previm
     autocmd! * <buffer>
     if get(g:, 'previm_enable_realtime', 0) ==# 1
@@ -25,7 +26,7 @@ endfunction
 
 augroup Previm
   autocmd!
-  autocmd FileType *{mkd,markdown,rst,textile}* call <SID>setup_setting()
+  autocmd FileType *{mkd,markdown,rst,textile,asciidoc}* call <SID>install_previm()
 augroup END
 
 let &cpo = s:save_cpo

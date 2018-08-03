@@ -31,6 +31,8 @@
       return content;
     } else if(hasTargetFileType(filetype, ['textile'])) {
       return textile(content);
+    } else if(hasTargetFileType(filetype, ['asciidoc'])) {
+      return new Asciidoctor().convert(content, { attributes: { showtitle: true } });
     }
     return 'Sorry. It is a filetype(' + filetype + ') that is not support<br /><br />' + content;
   }
@@ -93,6 +95,7 @@
     if (needReload && (typeof getContent === 'function') && (typeof getFileType === 'function')) {
       var beforePageYOffset = _win.pageYOffset;
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
+
       mermaid.init();
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
       autoScroll('body', beforePageYOffset);

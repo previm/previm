@@ -2,6 +2,7 @@
 
 Version: 1.6
 Author: kanno <akapanna@gmail.com>
+Maintainer: previm developers
 
 ==============================================================================
 目次							*previm-contents*
@@ -28,7 +29,7 @@ Vimで編集した内容をブラウザでプレビューするための機能�
 	- reStructuredText(required rst2html.py)
 
 最新版:
-http://github.com/kannokanno/previm
+http://github.com/previm/previm
 
 
 ==============================================================================
@@ -174,6 +175,12 @@ open-browser.vimの使用					*previm-openbrowser*
 
 ==============================================================================
 更新履歴						*previm-changelog*
+
+1.8.1	2018-07-21
+        - fixes minor bugs
+
+1.8	2018-07-21
+        - support multiple previews
 
 1.7.1	2015-08-17
         - support hidden header

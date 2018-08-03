@@ -1,10 +1,13 @@
-[README in English](https://github.com/kannokanno/previm/blob/master/README-en.mkd)
+[README in English](https://github.com/previm/previm/blob/master/README-en.mkd)
 
 ## Previm
 
+[![TravisCI](https://travis-ci.org/previm/previm.svg?branch=master)](https://travis-ci.org/previm/previm) [![AppVeyor](https://ci.appveyor.com/api/projects/status/r12pom6aaiom3kqy?svg=true)](https://ci.appveyor.com/project/mattn/previm)
+
+
 プレビュー用のVimプラグインです。  
 
-![previm](https://raw.github.com/wiki/kannokanno/previm/images/previm-example.gif)
+![previm](https://raw.github.com/wiki/previm/previm/images/previm-example.gif)
 
 ## 対応フォーマット
 
@@ -15,10 +18,12 @@
     * [Pandoc style footnote](https://github.com/markdown-it/markdown-it-footnote)
     * [Pandoc style subscript](https://github.com/markdown-it/markdown-it-sub)
     * [Pandoc style superscript](https://github.com/markdown-it/markdown-it-sup)
-    * [Emoji plugin for markdown-it](https://github.com/markdown-it/markdown-it-emoji)
+    * [Emoji syntax plugin for markdown-it markdown parser](https://github.com/markdown-it/markdown-it-emoji)
+    * [A markdown-it plugin to create GitHub-style task lists](https://github.com/revin/markdown-it-task-lists)
     * support [mermaid](http://knsv.github.io/mermaid/index.html)
 * reStructuredText
 * textile
+* AsciiDoc
 
 ## 依存
 
@@ -71,15 +76,16 @@ graph TD;
 ```
 </pre>
 
-![previm](https://raw.github.com/wiki/kannokanno/previm/images/previm-example-mermaid.png)
+![previm](https://raw.github.com/wiki/previm/previm/images/previm-example-mermaid.png)
+
 ## オリジナルとの変更点
 - リンクを外部リンクで開く
 - css
     - GitHub風cssに変更
+        - &lt;kbd&gt;&lt;/kbd&gt; 対応
+        - GitHub風タスクリストを markdown-it-checkbox ではなく、 markdown-it-task-lists を使用して、GitHub Tasklist の見た目に近づけた
     - 画像をMacのスクリーンショットのようにdropshadowを追加
     - h1をタイトルとして中央表示するように変更(ページ内にはh1は一つが望ましい)
-- GitHub Task List 対応  
-    ![tasklist](https://raw.github.com/wiki/beckorz/previm/images/tasklist_like_github.jpg)
 - Emoji 対応 :sushi:
     markdown-it パーサーのEmojiプラグインにて。
 - 画像サムネイルのFancybox対応  
