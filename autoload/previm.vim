@@ -196,6 +196,7 @@ function! previm#convert_to_content(lines) abort
   if has('win32unix')
     " convert cygwin path to windows path
     let mkd_dir = s:escape_backslash(substitute(system('cygpath -wa ' . mkd_dir), "\n$", '', ''))
+    let mkd_dir = substitute(mkd_dir, '\\', '/', 'g')
   elseif has('win32') || has('win64')
     let mkd_dir = substitute(mkd_dir, '\\', '/', 'g')
   endif
