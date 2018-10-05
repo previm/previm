@@ -12,7 +12,7 @@ let s:newline_character = "\n"
 function! previm#open(preview_html_file) abort
   call previm#refresh()
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
-    if has('win32') || has('win64') && g:previm_open_cmd =~? 'firefox'
+    if has('win32') && g:previm_open_cmd =~? 'firefox'
       " windows+firefox環境
       call s:system(g:previm_open_cmd . ' "'  . substitute(a:preview_html_file,'\/','\\','g') . '"')
     elseif has('win32unix') || has('win64unix')
@@ -23,7 +23,7 @@ function! previm#open(preview_html_file) abort
   elseif s:exists_openbrowser()
     let path = a:preview_html_file
     " fix temporary(the cause unknown)
-    if has('win32') || has('win64')
+    if has('win32')
       let path = fnamemodify(path, ':p:gs?\\?/?g')
     elseif has('win32unix') || has('win64unix')
       let path = substitute(path,'\/','','')
@@ -175,12 +175,17 @@ function! s:do_external_parse(lines) abort
   " NOTE: 本来は外部コマンドに頼りたくない
   "       いずれjsパーサーが出てきたときに移行するが、
   "       その時に混乱を招かないように設定でrst2htmlへのパスを持つことはしない
+  let candidates = ['rst2html.py', 'rst2html']
   let cmd = ''
-  if executable('rst2html.py') ==# 1
-    let cmd = 'rst2html.py'
-  elseif executable('rst2html') ==# 1
-    let cmd = 'rst2html'
+  if has('win32') || has('win64')
+    let candidates = reverse(candidates)
   endif
+  for candidate in candidates
+    if executable('rst2html.py') ==# 1
+      let cmd = candidate
+      break
+    endif
+  endfor
 
   if empty(cmd)
     call s:echo_err('rst2html.py or rst2html has not been installed, you can not run')
@@ -197,7 +202,7 @@ function! previm#convert_to_content(lines) abort
     " convert cygwin path to windows path
     let mkd_dir = s:escape_backslash(substitute(system('cygpath -wa ' . mkd_dir), "\n$", '', ''))
     let mkd_dir = substitute(mkd_dir, '\\', '/', 'g')
-  elseif has('win32') || has('win64')
+  elseif has('win32')
     let mkd_dir = substitute(mkd_dir, '\\', '/', 'g')
   endif
   let converted_lines = []
