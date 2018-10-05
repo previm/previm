@@ -181,7 +181,7 @@ function! s:do_external_parse(lines) abort
     let candidates = reverse(candidates)
   endif
   for candidate in candidates
-    if executable('rst2html.py') ==# 1
+    if executable(candidate) ==# 1
       let cmd = candidate
       break
     endif
