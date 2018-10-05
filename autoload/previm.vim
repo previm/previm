@@ -177,7 +177,7 @@ function! s:do_external_parse(lines) abort
   "       その時に混乱を招かないように設定でrst2htmlへのパスを持つことはしない
   let candidates = ['rst2html.py', 'rst2html']
   let cmd = ''
-  if has('win32') || has('win64')
+  if has('win32')
     let candidates = reverse(candidates)
   endif
   for candidate in candidates
