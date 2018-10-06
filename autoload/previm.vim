@@ -200,9 +200,10 @@ function! previm#convert_to_content(lines) abort
   let mkd_dir = s:escape_backslash(expand('%:p:h'))
   if has('win32unix')
     " convert cygwin path to windows path
-    let mkd_dir = s:escape_backslash(substitute(system('cygpath -wa ' . mkd_dir), "\n$", '', ''))
+    let mkd_dir = substitute(system('cygpath -wa ' . mkd_dir), "\n$", '', '')
+    let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
   elseif has('win32')
-    let mkd_dir = substitute(mkd_dir, '\\', '/', 'g')
+    let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
   endif
   let converted_lines = []
   for line in s:do_external_parse(a:lines)
