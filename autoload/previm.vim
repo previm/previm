@@ -103,7 +103,9 @@ function! previm#make_preview_file_path(path) abort
     endif
 
     exe printf("au VimLeave * call previm#cleanup_preview('%s')", dir)
-    call s:File.copy(src, dst)
+    if filereadable(src)
+      call s:File.copy(src, dst)
+    endif
   endif
   return dst
 endfunction
