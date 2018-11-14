@@ -196,7 +196,6 @@ function! s:t.default_content_if_invalid_setting()
   call s:assert.equals([
         \ s:default_origin_css_path,
         \ s:default_github_css_path,
-        \ '@import url(''user_custom.css'');'
         \ ], actual)
 endfunction
 
