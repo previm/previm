@@ -229,7 +229,7 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir) abort
   if empty(elem.path)
     return a:text
   endif
-  for protocol in ['//', 'http://', 'https://', 'file://']
+  for protocol in ['//', 'http://', 'https://']
     if s:start_with(elem.path, protocol)
       " is absolute path
       return a:text
@@ -253,12 +253,17 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir) abort
 
   let prev_imgpath = ''
   let new_imgpath = ''
+  let path_prefix = '//localhost'
+  if s:start_with(local_path, 'file://')
+    let path_prefix = ''
+    let local_path = local_path[7:]
+  endif
   if empty(elem.title)
     let prev_imgpath = printf('!\[%s\](%s)', elem.alt, elem.path)
-    let new_imgpath = printf('![%s](//localhost%s%s)', elem.alt, pre_slash, local_path)
+    let new_imgpath = printf('![%s](%s%s%s)', elem.alt, path_prefix, pre_slash, local_path)
   else
     let prev_imgpath = printf('!\[%s\](%s "%s")', elem.alt, elem.path, elem.title)
-    let new_imgpath = printf('![%s](//localhost%s%s "%s")', elem.alt, pre_slash, local_path, elem.title)
+    let new_imgpath = printf('![%s](%s%s%s "%s")', elem.alt, path_prefix, pre_slash, local_path, elem.title)
   endif
 
   " unify quote
