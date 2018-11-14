@@ -304,5 +304,11 @@ function! s:echo_err(msg) abort
   echohl None
 endfunction
 
+function! previm#wipe_cache()
+  for path in filter(split(globpath(s:base_dir, '*'), "\n"), 'isdirectory(v:val) && v:val !~ "_$"')
+    call previm#cleanup_preview(path)
+  endfor
+endfunction
+
 let &cpo = s:save_cpo
 unlet! s:save_cpo
