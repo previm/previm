@@ -191,7 +191,9 @@ endfunction
 
 function! s:t.default_content_if_invalid_setting()
   let g:previm_disable_default_css = 2
-  unlet g:previm_custom_css_path
+  if exists('g:previm_custom_css_path')
+    unlet g:previm_custom_css_path
+  endif
   call previm#refresh_css()
   let actual = readfile(previm#make_preview_file_path('css/previm.css'))
   call s:assert.equals([
