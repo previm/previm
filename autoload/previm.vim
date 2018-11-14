@@ -28,6 +28,7 @@ function! previm#open(preview_html_file) abort
     elseif has('win32unix')
       let path = substitute(path,'\/','','')
     endif
+    let path = substitute(path,' ','%20','g')
     call s:apply_openbrowser('file:///' . path)
   else
     call s:echo_err('Command for the open can not be found. show detail :h previm#open')
@@ -235,14 +236,20 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir) abort
     endif
   endfor
 
-  " escape backslash for substitute (see pull/#34)
-  let dir = substitute(a:mkd_dir, '\\', '\\\\', 'g')
-  let elem.path = substitute(elem.path, '\\', '\\\\', 'g')
+  if s:is_absolute_path(elem.path)
+    " ローカルの絶対パスはそのままとする
+    let pre_slash = '/'
+    let local_path = substitute(elem.path, ' ', '%20', 'g')
+  else
+    " escape backslash for substitute (see pull/#34)
+    let dir = substitute(a:mkd_dir, '\\', '\\\\', 'g')
+    let elem.path = substitute(elem.path, '\\', '\\\\', 'g')
 
-  " マルチバイトの解釈はブラウザに任せるのでURLエンコードしない
-  " 半角空白だけはエラーの原因になるのでURLエンコード対象とする
-  let pre_slash = s:start_with(dir, '/') ? '' : '/'
-  let local_path = substitute(dir.'/'.elem.path, ' ', '%20', 'g')
+    " マルチバイトの解釈はブラウザに任せるのでURLエンコードしない
+    " 半角空白だけはエラーの原因になるのでURLエンコード対象とする
+    let pre_slash = s:start_with(dir, '/') ? '' : '/'
+    let local_path = substitute(dir.'/'.elem.path, ' ', '%20', 'g')
+  endif
 
   let prev_imgpath = ''
   let new_imgpath = ''
@@ -276,6 +283,10 @@ function! s:fetch_path_and_title(path) abort
   endif
   let trimmed_path = matchstr(matched[1],'^\s*\zs.\{-}\ze\s*$')
   return {'path': trimmed_path, 'title': matched[2]}
+endfunction
+
+function! s:is_absolute_path(path) abort
+  return fnamemodify(a:path, ':p') == a:path
 endfunction
 
 function! s:start_with(haystock, needle) abort
