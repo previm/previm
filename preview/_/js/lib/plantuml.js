@@ -55,7 +55,7 @@ function compress(a) {
 }
 
 function loadPlantUML() {
-  var umls = document.querySelectorAll('code.lang-uml');
+  var umls = document.querySelectorAll('code.language-plantuml');
   Array.prototype.slice.call(umls).forEach(function(el) {
     var text = el.textContent
     var url = compress(text);
