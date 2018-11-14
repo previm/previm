@@ -291,7 +291,10 @@ function! s:fetch_path_and_title(path) abort
 endfunction
 
 function! s:is_absolute_path(path) abort
-  return fnamemodify(a:path, ':p') == a:path
+  if has('win32')
+    return tolower(substitute(a:path, '\', '/', 'g')) =~ '^/\|^[a-z]:/'
+  endif
+  return a:path =~ '^/'
 endfunction
 
 function! s:start_with(haystock, needle) abort
