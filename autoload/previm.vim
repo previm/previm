@@ -14,7 +14,7 @@ function! previm#open(preview_html_file) abort
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
     if has('win32') && g:previm_open_cmd =~? 'firefox'
       " windows+firefox環境
-      call s:system(g:previm_open_cmd . ' "'  . substitute(a:preview_html_file,'\/','\\','g') . '"')
+      call s:system(g:previm_open_cmd . ' "file:///'  . fnamemodify(a:preview_html_file, ':p:gs?\\?/?g') . '"')
     elseif has('win32unix')
       call s:system(g:previm_open_cmd . ' '''  . system('cygpath -w ' . a:preview_html_file) . '''')
     else
