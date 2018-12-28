@@ -93,10 +93,14 @@ g:previm_open_cmd					*g:previm_open_cmd*
 	いない場合はopenbrowser#openを試みます。
 	|previm-openbrowser| も参照してください。
 
-	以下の設定例は、MacにてFirefoxで開く場合です。
+	以下の設定例は、MacにてFirefox, Google Chromeで開く場合です。
 >
 	" .vimrc
+        # open by FireFox
 	let g:previm_open_cmd = 'open -a Firefox'
+
+        # open with Google Chrome
+        let g:previm_open_cmd = 'open -a Google\ Chrome'
 <
 
 g:previm_enable_realtime			*g:previm_enable_realtime*
