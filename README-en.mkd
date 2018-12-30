@@ -39,13 +39,6 @@ It can, however, be integrated with [open-browser.vim](https://github.com/tyru/o
     * `:help g:previm_open_cmd` for more details
     * You can skip this setting if you're using open-browser.
 2. Start editing the file of Markdown.(`filetype` is `markdown`)
-    * __NOTE__: In the case of `.md`, `filetype` becomes a `modula2`. If so, please describe in `.vimrc` this setting
-    ```vim
-    augroup PrevimSettings
-        autocmd!
-        autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
-    augroup END
-    ```
 3. Run `:PrevimOpen` to open browser to preview
 4. Back to Vim to edit your file
 5. Update the file, and the content for previewing will be updated automatically
