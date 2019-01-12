@@ -92,6 +92,7 @@
 
       mermaid.init();
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
+      replaceCodeToTchart();
       autoScroll('body', beforePageYOffset);
       style_header();
     }
@@ -122,6 +123,44 @@
       target.attachEvent('on' + type, function() { listener.apply(target, arguments); });
     } else {
       // do nothing
+    }
+  }
+
+  // Use Timing Chart Formatter
+  // https://github.com/osamutake/tchart-coffee
+  function replaceCodeToTchart(){
+    var codes = _doc.getElementsByClassName('language-tchart');
+    for (var i = codes.length-1; i >= 0; i--){
+      var code = codes[i];
+      var svg = TimingChart.format(code.textContent);
+      var div = _doc.createElement('div');
+      div.className = 'tchart';
+      div.innerHTML = svg;
+      var pre = code.parentNode
+      pre.parentNode.replaceChild(div, pre);
+    }
+
+    //ブラウザ上から右クリックでsvg単体で保存できるようにする
+    var codes = _doc.getElementsByClassName('tchart');
+    for(var i = codes.length-1 ; i >= 0 ; i--){
+        var code = codes[i];
+        var svg = code.querySelector("svg");
+        var svgData = new XMLSerializer().serializeToString(svg);
+        var canvas = document.createElement("canvas");
+        canvas.width = svg.width.baseVal.value;
+        canvas.height = svg.height.baseVal.value;
+
+        var ctx = canvas.getContext("2d");
+        var image = new Image;
+        image.onload = function(){
+            ctx.drawImage( image, 0, 0 );
+            var a = document.createElement("a");
+            a.href = canvas.toDataURL("image/png");
+            a.setAttribute("download", "image.png");
+            a.dispatchEvent(new CustomEvent("click"));
+        }
+        image.src = "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(svgData)));
+        code.replaceChild(image,svg);
     }
   }
 
