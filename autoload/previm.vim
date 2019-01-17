@@ -202,7 +202,11 @@ function! s:do_external_parse(lines) abort
   endif
   let temp = tempname()
   call writefile(a:lines, temp)
-  return split(s:system(cmd . ' ' . s:escape_backslash(temp)), "\n")
+  if has('win32')
+    return split(s:system('python ' . exepath(cmd) . ' ' . s:escape_backslash(temp)), "\n")
+  else
+    return split(s:system(cmd . ' ' . s:escape_backslash(temp)), "\n")
+  endif
 endfunction
 
 function! previm#convert_to_content(lines) abort
