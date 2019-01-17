@@ -103,7 +103,10 @@ function! previm#make_preview_file_path(path) abort
       call mkdir(dir, 'p')
     endif
 
-    exe printf("au VimLeave * call previm#cleanup_preview('%s')", dir)
+    augroup PrevimCleanup
+      au!
+      exe printf("au VimLeave * call previm#cleanup_preview('%s')", dir)
+    augroup END
     if filereadable(src)
       call s:File.copy(src, dst)
     endif
