@@ -37,6 +37,12 @@ endfunction
 
 function! s:exists_openbrowser() abort
   try
+    let l:plugin = dein#get('open-browser.vim')
+    if has_key(l:plugin, 'sourced')
+      if l:plugin.sourced == 0
+        call dein#source('open-browser.vim')
+      endif
+    endif
     call openbrowser#load()
     return 1
   catch /E117.*/
