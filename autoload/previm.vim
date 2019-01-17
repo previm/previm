@@ -116,7 +116,10 @@ endfunction
 
 function! previm#cleanup_preview(dir)
   if isdirectory(a:dir)
-    call s:File.rmdir(a:dir, 'r')
+    try
+      call s:File.rmdir(a:dir, 'r')
+    catch
+    endtry
   endif
 endfunction
 
