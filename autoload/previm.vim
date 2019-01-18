@@ -37,9 +37,8 @@ endfunction
 
 function! s:exists_openbrowser() abort
   try
-    let l:plugin = dein#get('open-browser.vim')
-    if has_key(l:plugin, 'sourced')
-      if l:plugin.sourced == 0
+    if get(g:, 'spacevim_plugin_manager', '') ==# 'dein'
+      if get(dein#get('open-browser.vim'), 'sourced', 0) == 0
         call dein#source('open-browser.vim')
       endif
     endif
