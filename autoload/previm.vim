@@ -90,7 +90,7 @@ endfunction
 
 let s:base_dir = fnamemodify(expand('<sfile>:p:h') . '/../preview', ':p')
 
-function! s:preview_directory()
+function! s:preview_directory() abort
   return s:base_dir . sha256(expand('%:p'))[:15] . '-' . getpid()
 endfunction
 
@@ -114,7 +114,7 @@ function! previm#make_preview_file_path(path) abort
   return dst
 endfunction
 
-function! previm#cleanup_preview(dir)
+function! previm#cleanup_preview(dir) abort
   if isdirectory(a:dir)
     try
       call s:File.rmdir(a:dir, 'r')
