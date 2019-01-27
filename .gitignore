@@ -1,2 +1,3 @@
-preview/_
+preview/**
+!preview/_
 doc/tags*

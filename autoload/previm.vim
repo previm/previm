@@ -12,10 +12,10 @@ let s:newline_character = "\n"
 function! previm#open(preview_html_file) abort
   call previm#refresh()
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
-    if has('win32') || has('win64') && g:previm_open_cmd =~? 'firefox'
+    if has('win32') && g:previm_open_cmd =~? 'firefox'
       " windows+firefox環境
-      call s:system(g:previm_open_cmd . ' "'  . substitute(a:preview_html_file,'\/','\\','g') . '"')
-    elseif has('win32unix') || has('win64unix')
+      call s:system(g:previm_open_cmd . ' "file:///'  . fnamemodify(a:preview_html_file, ':p:gs?\\?/?g') . '"')
+    elseif has('win32unix')
       call s:system(g:previm_open_cmd . ' '''  . system('cygpath -w ' . a:preview_html_file) . '''')
     else
       call s:system(g:previm_open_cmd . ' '''  . a:preview_html_file . '''')
@@ -23,11 +23,12 @@ function! previm#open(preview_html_file) abort
   elseif s:exists_openbrowser()
     let path = a:preview_html_file
     " fix temporary(the cause unknown)
-    if has('win32') || has('win64')
+    if has('win32')
       let path = fnamemodify(path, ':p:gs?\\?/?g')
-    elseif has('win32unix') || has('win64unix')
+    elseif has('win32unix')
       let path = substitute(path,'\/','','')
     endif
+    let path = substitute(path,' ','%20','g')
     call s:apply_openbrowser('file:///' . path)
   else
     call s:echo_err('Command for the open can not be found. show detail :h previm#open')
@@ -89,7 +90,7 @@ endfunction
 
 let s:base_dir = fnamemodify(expand('<sfile>:p:h') . '/../preview', ':p')
 
-function! s:preview_directory()
+function! s:preview_directory() abort
   return s:base_dir . sha256(expand('%:p'))[:15] . '-' . getpid()
 endfunction
 
@@ -102,15 +103,23 @@ function! previm#make_preview_file_path(path) abort
       call mkdir(dir, 'p')
     endif
 
-    exe printf("au VimLeave * call previm#cleanup_preview('%s')", dir)
-    call s:File.copy(src, dst)
+    augroup PrevimCleanup
+      au!
+      exe printf("au VimLeave * call previm#cleanup_preview('%s')", dir)
+    augroup END
+    if filereadable(src)
+      call s:File.copy(src, dst)
+    endif
   endif
   return dst
 endfunction
 
-function! previm#cleanup_preview(dir)
+function! previm#cleanup_preview(dir) abort
   if isdirectory(a:dir)
-    call s:File.rmdir(a:dir, 'r')
+    try
+      call s:File.rmdir(a:dir, 'r')
+    catch
+    endtry
   endif
 endfunction
 
@@ -175,12 +184,17 @@ function! s:do_external_parse(lines) abort
   " NOTE: 本来は外部コマンドに頼りたくない
   "       いずれjsパーサーが出てきたときに移行するが、
   "       その時に混乱を招かないように設定でrst2htmlへのパスを持つことはしない
+  let candidates = ['rst2html.py', 'rst2html']
   let cmd = ''
-  if executable('rst2html.py') ==# 1
-    let cmd = 'rst2html.py'
-  elseif executable('rst2html') ==# 1
-    let cmd = 'rst2html'
+  if has('win32')
+    let candidates = reverse(candidates)
   endif
+  for candidate in candidates
+    if executable(candidate) ==# 1
+      let cmd = candidate
+      break
+    endif
+  endfor
 
   if empty(cmd)
     call s:echo_err('rst2html.py or rst2html has not been installed, you can not run')
@@ -195,9 +209,10 @@ function! previm#convert_to_content(lines) abort
   let mkd_dir = s:escape_backslash(expand('%:p:h'))
   if has('win32unix')
     " convert cygwin path to windows path
-    let mkd_dir = s:escape_backslash(substitute(system('cygpath -wa ' . mkd_dir), "\n$", '', ''))
-  elseif has('win32') || has('win64')
-    let mkd_dir = substitute(mkd_dir, '\\', '/', 'g')
+    let mkd_dir = substitute(system('cygpath -wa ' . mkd_dir), "\n$", '', '')
+    let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
+  elseif has('win32')
+    let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
   endif
   let converted_lines = []
   for line in s:do_external_parse(a:lines)
@@ -220,30 +235,41 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir) abort
   if empty(elem.path)
     return a:text
   endif
-  for protocol in ['//', 'http://', 'https://', 'file://']
+  for protocol in ['//', 'http://', 'https://']
     if s:start_with(elem.path, protocol)
       " is absolute path
       return a:text
     endif
   endfor
 
-  " escape backslash for substitute (see pull/#34)
-  let dir = substitute(a:mkd_dir, '\\', '\\\\', 'g')
-  let elem.path = substitute(elem.path, '\\', '\\\\', 'g')
+  if s:is_absolute_path(elem.path)
+    " ローカルの絶対パスはそのままとする
+    let pre_slash = '/'
+    let local_path = substitute(elem.path, ' ', '%20', 'g')
+  else
+    " escape backslash for substitute (see pull/#34)
+    let dir = substitute(a:mkd_dir, '\\', '\\\\', 'g')
+    let elem.path = substitute(elem.path, '\\', '\\\\', 'g')
 
-  " マルチバイトの解釈はブラウザに任せるのでURLエンコードしない
-  " 半角空白だけはエラーの原因になるのでURLエンコード対象とする
-  let pre_slash = s:start_with(dir, '/') ? '' : '/'
-  let local_path = substitute(dir.'/'.elem.path, ' ', '%20', 'g')
+    " マルチバイトの解釈はブラウザに任せるのでURLエンコードしない
+    " 半角空白だけはエラーの原因になるのでURLエンコード対象とする
+    let pre_slash = s:start_with(dir, '/') ? '' : '/'
+    let local_path = substitute(dir.'/'.elem.path, ' ', '%20', 'g')
+  endif
 
   let prev_imgpath = ''
   let new_imgpath = ''
+  let path_prefix = '//localhost'
+  if s:start_with(local_path, 'file://')
+    let path_prefix = ''
+    let local_path = local_path[7:]
+  endif
   if empty(elem.title)
     let prev_imgpath = printf('!\[%s\](%s)', elem.alt, elem.path)
-    let new_imgpath = printf('![%s](//localhost%s%s)', elem.alt, pre_slash, local_path)
+    let new_imgpath = printf('![%s](%s%s%s)', elem.alt, path_prefix, pre_slash, local_path)
   else
     let prev_imgpath = printf('!\[%s\](%s "%s")', elem.alt, elem.path, elem.title)
-    let new_imgpath = printf('![%s](//localhost%s%s "%s")', elem.alt, pre_slash, local_path, elem.title)
+    let new_imgpath = printf('![%s](%s%s%s "%s")', elem.alt, path_prefix, pre_slash, local_path, elem.title)
   endif
 
   " unify quote
@@ -270,6 +296,13 @@ function! s:fetch_path_and_title(path) abort
   return {'path': trimmed_path, 'title': matched[2]}
 endfunction
 
+function! s:is_absolute_path(path) abort
+  if has('win32')
+    return tolower(substitute(a:path, '\', '/', 'g')) =~ '^/\|^[a-z]:/'
+  endif
+  return a:path =~ '^/'
+endfunction
+
 function! s:start_with(haystock, needle) abort
   return stridx(a:haystock, a:needle) ==# 0
 endfunction
@@ -278,6 +311,12 @@ function! s:echo_err(msg) abort
   echohl WarningMsg
   echomsg a:msg
   echohl None
+endfunction
+
+function! previm#wipe_cache()
+  for path in filter(split(globpath(s:base_dir, '*'), "\n"), 'isdirectory(v:val) && v:val !~ "_$"')
+    call previm#cleanup_preview(path)
+  endfor
 endfunction
 
 let &cpo = s:save_cpo
