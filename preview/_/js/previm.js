@@ -2,6 +2,24 @@
 
 (function(_doc, _win) {
   var REFRESH_INTERVAL = 1000;
+  var md = new _win.markdownit({html: true, linkify: true})
+                   .use(_win.markdownitAbbr)
+                   .use(_win.markdownitDeflist)
+                   .use(_win.markdownitFootnote)
+                   .use(_win.markdownitSub)
+                   .use(_win.markdownitSup)
+                   .use(_win.markdownitCheckbox);
+
+  // Override default 'fence' ruler for 'mermaid' support
+  var original_fence = md.renderer.rules.fence;
+  md.renderer.rules.fence = function fence(tokens, idx, options, env, slf) {
+    var token = tokens[idx];
+    var langName = token.info.trim().split(/\s+/g)[0];
+    if (langName === 'mermaid') {
+      return '<div class="mermaid">' + token.content + '</div>';
+    }
+    return original_fence(tokens, idx, options, env, slf);
+  };
 
   function transform(filetype, content) {
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
@@ -24,6 +42,8 @@
       return content;
     } else if(hasTargetFileType(filetype, ['textile'])) {
       return textile(content);
+    } else if(hasTargetFileType(filetype, ['asciidoc'])) {
+      return new Asciidoctor().convert(content, { attributes: { showtitle: true } });
     }
     return 'Sorry. It is a filetype(' + filetype + ') that is not support<br /><br />' + content;
   }
@@ -39,11 +59,22 @@
   }
 
   // NOTE: Experimental
-  function autoScroll(id) {
+  //   ここで動的にpageYOffsetを取得すると画像表示前の高さになってしまう
+  //   そのため明示的にpageYOffsetを受け取るようにしている
+  function autoScroll(id, pageYOffset) {
     var relaxed = 0.95;
-    if((_doc.documentElement.clientHeight + _win.pageYOffset) / _doc.body.clientHeight > relaxed) {
-      var obj = document.getElementById(id);
+    var obj = document.getElementById(id);
+    if((_doc.documentElement.clientHeight + pageYOffset) / _doc.body.clientHeight > relaxed) {
       obj.scrollTop = obj.scrollHeight;
+    } else {
+      obj.scrollTop = pageYOffset;
+    }
+  }
+
+  function style_header() {
+    if (typeof isShowHeader === 'function') {
+      var style = isShowHeader() ? '' : 'none';
+      _doc.getElementById('header').style.display = style;
     }
   }
 
@@ -69,8 +100,13 @@
       needReload = true;
     }
     if (needReload && (typeof getContent === 'function') && (typeof getFileType === 'function')) {
+      var beforePageYOffset = _win.pageYOffset;
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
-      autoScroll('body');
+
+      mermaid.init();
+      Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
+      autoScroll('body', beforePageYOffset);
+      style_header();
       $("img").wrap("<a href='' class='fancybox1' rel='fancybox'></a>");
       $("img").addClass('fancybox-img');
       $("img").each(function(){

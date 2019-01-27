@@ -203,6 +203,9 @@ dl dd > :first-child {
 dl dd > :last-child {
   margin-bottom: 0;
 }
+img {
+  max-width: 100%;
+}
 
 .shadow {
   -webkit-box-shadow: 0 5px 15px #000;

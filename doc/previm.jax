@@ -2,6 +2,7 @@
 
 Version: 1.6
 Author: kanno <akapanna@gmail.com>
+Maintainer: previm developers
 
 ==============================================================================
 目次							*previm-contents*
@@ -28,7 +29,7 @@ Vimで編集した内容をブラウザでプレビューするための機能�
 	- reStructuredText(required rst2html.py)
 
 最新版:
-http://github.com/kannokanno/previm
+http://github.com/previm/previm
 
 
 ==============================================================================
@@ -92,10 +93,14 @@ g:previm_open_cmd					*g:previm_open_cmd*
 	いない場合はopenbrowser#openを試みます。
 	|previm-openbrowser| も参照してください。
 
-	以下の設定例は、MacにてFirefoxで開く場合です。
+	以下の設定例は、MacにてFirefox, Google Chromeで開く場合です。
 >
 	" .vimrc
+        # open with FireFox
 	let g:previm_open_cmd = 'open -a Firefox'
+
+        # open with Google Chrome
+        let g:previm_open_cmd = 'open -a Google\ Chrome'
 <
 
 g:previm_enable_realtime			*g:previm_enable_realtime*
@@ -144,6 +149,19 @@ g:previm_custom_css_path			*g:previm_custom_css_path*
 	let g:previm_disable_default_css = 1
 	let g:previm_custom_css_path = '/Users/kanno/tmp/some.css'
 
+g:previm_show_header					*g:previm_show_header*
+	型:数値
+
+	値が1ならば、プレビュー時にヘッダーを表示します。
+	ヘッダーには編集しているファイル名と更新日時が表示されます。
+
+	値が0ならば、プレビュー時にヘッダーを表示しません。
+	デフォルトでは1に設定されています。
+
+>
+	" .vimrc
+	let g:previm_show_header = 0
+
 
 ==============================================================================
 open-browser.vimの使用					*previm-openbrowser*
@@ -161,6 +179,18 @@ open-browser.vimの使用					*previm-openbrowser*
 
 ==============================================================================
 更新履歴						*previm-changelog*
+
+1.8.1	2018-07-21
+        - fixes minor bugs
+
+1.8	2018-07-21
+        - support multiple previews
+
+1.7.1	2015-08-17
+        - support hidden header
+
+1.7	2015-08-15
+        - support mermaid(https://github.com/knsv/mermaid)
 
 1.6	2014-09-15
         - support realtime refresh
