@@ -1,4 +1,3 @@
-preview/css/previm.css
-preview/css/user_custom.css
-preview/js/previm-function.js
+preview/**
+!preview/_
 doc/tags*
