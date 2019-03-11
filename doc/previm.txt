@@ -55,15 +55,6 @@ open-browser.vim.
 4. Go back to the buffer and edit some more.
 5. Changes are reflected on the page shown in the browser each update.
 
-Note: If `.md` files are recognized as `modula2` rather than `markdown`, add
-the following to your .vimrc.
-
-	" .vimrc
-	augroup PrevimSettings
-	  autocmd!
-	  autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
-	augroup END
-
 ==============================================================================
 COMMANDS						*previm-command*
 
