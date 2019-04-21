@@ -54,16 +54,6 @@ Markdownの場合を例とします。他の形式についても基本的な操
 4. 元のVimバッファに戻り編集を続けます。
 5. 変更の度にブラウザの表示内容が更新されます。
 
-注意:拡張子が`.md`の場合は`markdown`ではなく`modula2`として認識されてしまいます。
-その場合は以下の設定を.vimrcに記述してください
-
-
-	" .vimrc
-	augroup PrevimSettings
-	  autocmd!
-	  autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
-	augroup END
-
 ==============================================================================
 コマンド						*previm-command*
 
