@@ -54,7 +54,7 @@ It can, however, be integrated with [open-browser.vim](https://github.com/tyru/o
 
 ### mermaid
 
-Support [mermaid](http://knsv.github.io/mermaid/index.html)
+Support [mermaid](http://knsv.github.io/mermaid/)
 
 <pre>
 ```mermaid

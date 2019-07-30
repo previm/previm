@@ -55,7 +55,7 @@ reStructuredTextの場合は`rst2html.py`が必要です。
 
 ### mermaid
 
-[mermaid](http://knsv.github.io/mermaid/index.html)に対応しています。
+[mermaid](http://knsv.github.io/mermaid/)に対応しています。
 
 <pre>
 ```mermaid
