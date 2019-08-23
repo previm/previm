@@ -17,6 +17,7 @@ Vim plugin for preview.
     * [Pandoc style footnote](https://github.com/markdown-it/markdown-it-footnote)
     * [Pandoc style subscript](https://github.com/markdown-it/markdown-it-sub)
     * [Pandoc style superscript](https://github.com/markdown-it/markdown-it-sup)
+    * [East Asian Line Breaks](https://github.com/markdown-it/markdown-it-cjk-breaks)
     * support [mermaid](http://knsv.github.io/mermaid/index.html)
 * reStructuredText(required rst2html.py)
 * textile
