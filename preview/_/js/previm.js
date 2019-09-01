@@ -2,14 +2,16 @@
 
 (function(_doc, _win) {
   var REFRESH_INTERVAL = 1000;
-  var md = new _win.markdownit({html: true, linkify: true})
+  var toc;
+  var md = new _win.markdownit({html: true, linkify: true, breaks: true})
                    .use(_win.markdownitAbbr)
                    .use(_win.markdownitDeflist)
                    .use(_win.markdownitFootnote)
                    .use(_win.markdownitSub)
                    .use(_win.markdownitSup)
-                   .use(_win.markdownitCheckbox)
-                   .use(_win.markdownitCjkBreaks);
+                   .use(_win.markdownitCjkBreaks)
+                   .use(_win.markdownitTaskLists, { enabled: true })
+                   .use(_win.markdownitEmoji);
 
   // Override default 'fence' ruler for 'mermaid' support
   var original_fence = md.renderer.rules.fence;
@@ -24,20 +26,7 @@
 
   function transform(filetype, content) {
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
-      marked.setOptions({
-        gfm: true,
-        tables: true,
-        breaks: false,
-        pedantic: false,
-        sanitize: false,
-        smartLists: true,
-        smartypants: false,
-        langPrefix: '',
-        highlight: function (code) {
-          return hljs.highlightAuto(code).value;
-        }
-      });
-      return marked(content);
+      return md.render(content);
     } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
       return content;
@@ -79,6 +68,10 @@
     }
   }
 
+  function createTOC() {
+    toc = $("#toc").tocify({selectors: "h2,h3,h4,h5,h6"}).data("toc-tocify");
+  }
+
   function loadPreview() {
     var needReload = false;
     // These functions are defined as the file generated dynamically.
@@ -108,13 +101,24 @@
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
       autoScroll('body', beforePageYOffset);
       style_header();
-      $("img").wrap("<a href='' class='fancybox1' rel='fancybox'></a>");
-      $("img").addClass('fancybox-img');
-      $("img").each(function(){
-        var href = $(this).attr('src');
-        $(this).parent().attr('href', href);    // apply parent a tag([a href]) from img src
-      })
+      // apply fancybox
+      var i;
+      for (i = 0; i < _doc.images.length; i++) {
+        var elem = _doc.images[i];
+
+        elem.setAttribute('class', 'fancybox-img'); // add Style Sheet Class
+        elem.outerHTML = '<a href="" class="fancybox1" rel="fancybox" title="'+elem.alt+'">'+elem.outerHTML+'</a>'; // insert Before a tag
+        _doc.images[i].parentNode.setAttribute('href', elem.src);  // copy src to parent a tag href (for fancybox)
+
+        // clean up
+        elem = null;
+      }
       $(".fancybox1").fancybox();
+      // external link
+      for (i = 0; i < _doc.links.length; i++) {
+        _doc.links[i].setAttribute('target', '_blank');
+      }
+      toc.update();
     }
   }
 
@@ -147,4 +151,5 @@
   }
 
   loadPreview();
+  createTOC();
 })(document, window);
