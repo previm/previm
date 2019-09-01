@@ -18,6 +18,7 @@
     * [Pandoc style footnote](https://github.com/markdown-it/markdown-it-footnote)
     * [Pandoc style subscript](https://github.com/markdown-it/markdown-it-sub)
     * [Pandoc style superscript](https://github.com/markdown-it/markdown-it-sup)
+    * [East Asian Line Breaks](https://github.com/markdown-it/markdown-it-cjk-breaks)
     * [Emoji syntax plugin for markdown-it markdown parser](https://github.com/markdown-it/markdown-it-emoji)
     * [A markdown-it plugin to create GitHub-style task lists](https://github.com/revin/markdown-it-task-lists)
     * support [mermaid](http://knsv.github.io/mermaid/index.html)
@@ -57,7 +58,7 @@ reStructuredTextの場合は`rst2html.py`が必要です。
 
 ### mermaid
 
-[mermaid](http://knsv.github.io/mermaid/index.html)に対応しています。
+[mermaid](http://knsv.github.io/mermaid/)に対応しています。
 
 <pre>
 ```mermaid

@@ -9,6 +9,7 @@
                    .use(_win.markdownitFootnote)
                    .use(_win.markdownitSub)
                    .use(_win.markdownitSup)
+                   .use(_win.markdownitCjkBreaks)
                    .use(_win.markdownitTaskLists, { enabled: true })
                    .use(_win.markdownitEmoji);
 

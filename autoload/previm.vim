@@ -220,6 +220,7 @@ function! previm#convert_to_content(lines) abort
     let escaped = substitute(line, '\', '\\\\', 'g')
     let escaped = previm#relative_to_absolute_imgpath(escaped, mkd_dir)
     let escaped = substitute(escaped, '"', '\\"', 'g')
+    let escaped = substitute(escaped, '\r', '\\r', 'g')
     call add(converted_lines, escaped)
   endfor
   return join(converted_lines, "\\n")
