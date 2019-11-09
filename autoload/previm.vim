@@ -17,6 +17,8 @@ function! previm#open(preview_html_file) abort
       call s:system(g:previm_open_cmd . ' "file:///'  . fnamemodify(a:preview_html_file, ':p:gs?\\?/?g') . '"')
     elseif has('win32unix')
       call s:system(g:previm_open_cmd . ' '''  . system('cygpath -w ' . a:preview_html_file) . '''')
+    elseif get(g:, 'previm_wsl_mode', 0) ==# 1
+      call s:system(g:previm_open_cmd . ' '''  . system('wslpath -w ' . a:preview_html_file) . '''')
     else
       call s:system(g:previm_open_cmd . ' '''  . a:preview_html_file . '''')
     endif
