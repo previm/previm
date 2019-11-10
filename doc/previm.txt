@@ -155,6 +155,19 @@ g:previm_show_header					*g:previm_show_header*
 	let g:previm_show_header = 0
 
 
+g:previm_plantuml_imageprefix			*g:previm_plantuml_imageprefix*
+	Type:String
+
+	Specify endpoint of plantuml server if you want to use it in local.
+
+	If the value is not specified, http://plantuml.com/plantuml/img/ is
+	used.
+
+>
+	" .vimrc
+	let g:previm_plantuml_imageprefix = 'http://localhost:8888/plantuml/img'
+
+
 ==============================================================================
 USING WITH OPEN-BROWSER.VIM				*previm-openbrowser*
 
