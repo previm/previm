@@ -151,6 +151,9 @@ function! s:function_template() abort
       \ 'function getContent() {',
       \ printf('return "%s";', previm#convert_to_content(getline(1, '$'))),
       \ '}',
+      \ 'function getOptions() {',
+      \ printf('return %s;', previm#options()),
+      \ '}',
       \], s:newline_character)
 endfunction
 
@@ -320,6 +323,15 @@ function! previm#wipe_cache()
   for path in filter(split(globpath(s:base_dir, '*'), "\n"), 'isdirectory(v:val) && v:val !~ "_$"')
     call previm#cleanup_preview(path)
   endfor
+endfunction
+
+function! previm#options()
+  if !exists('*json_encode')
+    return '{}'
+  endif
+  return json_encode({
+  \   'plantuml_imageprefix': get(g:, 'previm_plantuml_imageprefix', v:null)
+  \ })
 endfunction
 
 let &cpo = s:save_cpo
