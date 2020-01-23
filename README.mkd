@@ -19,7 +19,8 @@
     * [Pandoc style subscript](https://github.com/markdown-it/markdown-it-sub)
     * [Pandoc style superscript](https://github.com/markdown-it/markdown-it-sup)
     * [East Asian Line Breaks](https://github.com/markdown-it/markdown-it-cjk-breaks)
-    * support [mermaid](http://knsv.github.io/mermaid/index.html)
+    * [mermaid](http://knsv.github.io/mermaid/index.html)
+    * [PlantUML](https://github.com/plantuml/plantuml).
 * reStructuredText
 * textile
 * AsciiDoc
@@ -76,3 +77,21 @@ graph TD;
 </pre>
 
 ![previm](https://raw.github.com/wiki/previm/previm/images/previm-example-mermaid.png)
+
+### PlantUML
+
+[PlantUML](https://github.com/plantuml/plantuml) に対応しています。
+
+<pre>
+```plantuml
+@startuml
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
+
+Alice -> Bob: Another authentication Request
+Alice <-- Bob: another authentication Response
+@enduml
+```
+</pre>
+
+![PlantUML preview](https://user-images.githubusercontent.com/546312/72982432-6acf4480-3e22-11ea-856e-4d0042452539.png)
