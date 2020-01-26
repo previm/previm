@@ -18,7 +18,8 @@ Vim plugin for preview.
     * [Pandoc style subscript](https://github.com/markdown-it/markdown-it-sub)
     * [Pandoc style superscript](https://github.com/markdown-it/markdown-it-sup)
     * [East Asian Line Breaks](https://github.com/markdown-it/markdown-it-cjk-breaks)
-    * support [mermaid](http://knsv.github.io/mermaid/index.html)
+    * [mermaid](http://knsv.github.io/mermaid/index.html)
+    * [PlantUML](https://github.com/plantuml/plantuml).
 * reStructuredText(required rst2html.py)
 * textile
 * AsciiDoc
@@ -53,6 +54,13 @@ It can, however, be integrated with [open-browser.vim](https://github.com/tyru/o
 4. Back to Vim to edit your file
 5. Update the file, and the content for previewing will be updated automatically
 
+There is an issue using Safari 13.0.3, which page transition stops after "Loading...".
+
+You need to set up below to make previm work on Safari.
+
+1. Safari > Preference > Advanced > check "Show develop menu" in menubar
+2. Develop > Disable Local File Restrictions
+
 ### mermaid
 
 Support [mermaid](http://knsv.github.io/mermaid/)
@@ -68,3 +76,21 @@ graph TD;
 </pre>
 
 ![previm](https://raw.github.com/wiki/previm/previm/images/previm-example-mermaid.png)
+
+### PlantUML
+
+Support [PlantUML](https://github.com/plantuml/plantuml).
+
+<pre>
+```plantuml
+@startuml
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
+
+Alice -> Bob: Another authentication Request
+Alice <-- Bob: another authentication Response
+@enduml
+```
+</pre>
+
+![PlantUML preview](https://user-images.githubusercontent.com/546312/72982432-6acf4480-3e22-11ea-856e-4d0042452539.png)
