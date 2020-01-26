@@ -152,6 +152,17 @@ g:previm_show_header					*g:previm_show_header*
 	" .vimrc
 	let g:previm_show_header = 0
 
+g:previm_plantuml_imageprefix			*g:previm_plantuml_imageprefix*
+	型:文字列
+
+	plantuml をローカルサーバで使用する場合のエンドポイントを指定します。
+
+	未指定の場合は http://plantuml.com/plantuml/img/ が使われます。
+
+>
+	" .vimrc
+	let g:previm_plantuml_imageprefix = 'http://localhost:8888/plantuml/img'
+
 
 ==============================================================================
 open-browser.vimの使用					*previm-openbrowser*

@@ -49,16 +49,20 @@ function encode6bit(a) {
   return "?"
 }
 
-function compress(a) {
+function compress(prefix, a) {
   a = unescape(encodeURIComponent(a));
+  if (prefix) {
+    return prefix + encode64(zip_deflate(a, 9));
+  }
   return "http://plantuml.com/plantuml/img/" + encode64(zip_deflate(a, 9));
 }
 
 function loadPlantUML() {
   var umls = document.querySelectorAll('code.language-plantuml');
+  var prefix = getOptions().plantuml_imageprefix;
   Array.prototype.slice.call(umls).forEach(function(el) {
     var text = el.textContent
-    var url = compress(text);
+    var url = compress(prefix, text);
     el.parentNode.outerHTML = '<div><img src="' + url + '" /></div>'
   });
 }
