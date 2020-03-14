@@ -9,7 +9,8 @@
                    .use(_win.markdownitSub)
                    .use(_win.markdownitSup)
                    .use(_win.markdownitMathjax())
-                   .use(_win.markdownitCheckbox);
+                   .use(_win.markdownitCheckbox)
+                   .use(_win.markdownitCjkBreaks);
 
   // Override default 'fence' ruler for 'mermaid' support
   var original_fence = md.renderer.rules.fence;
@@ -92,6 +93,9 @@
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
 
       mermaid.init();
+
+      loadPlantUML();
+
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
       renderMathInElement(document.body);
       autoScroll('body', beforePageYOffset);
