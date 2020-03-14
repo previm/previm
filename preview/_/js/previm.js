@@ -8,6 +8,7 @@
                    .use(_win.markdownitFootnote)
                    .use(_win.markdownitSub)
                    .use(_win.markdownitSup)
+                   .use(_win.markdownitMathjax())
                    .use(_win.markdownitCheckbox);
 
   // Override default 'fence' ruler for 'mermaid' support
@@ -92,6 +93,7 @@
 
       mermaid.init();
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
+      renderMathInElement(document.body);
       autoScroll('body', beforePageYOffset);
       style_header();
     }
