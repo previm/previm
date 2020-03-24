@@ -9,6 +9,7 @@
                    .use(_win.markdownitSub)
                    .use(_win.markdownitSup)
                    .use(_win.markdownitMathjax())
+                   .use(_win.markdownitEmoji)
                    .use(_win.markdownitCheckbox)
                    .use(_win.markdownitCjkBreaks);
 
