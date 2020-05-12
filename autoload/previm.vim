@@ -9,6 +9,8 @@ let s:File = vital#previm#import('System.File')
 
 let s:newline_character = "\n"
 
+" 0:unknown, 1:mkdir in preview folder of the plugin, 2:mkdir in the same folder of text file
+let b:previm_mode = get(g:, 'previm_mode', 0)
 function! previm#open(preview_html_file) abort
   call previm#refresh()
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
@@ -98,12 +100,34 @@ endfunction
 
 let s:base_dir = fnamemodify(expand('<sfile>:p:h') . '/../preview', ':p')
 
+function! s:preview_base_directory() abort
+  if b:previm_mode == 1
+    return s:base_dir
+  elseif b:previm_mode == 2
+    return fnamemodify(expand('%:p:h'), ':p')
+  endif
+endfunction
+
 function! s:preview_directory() abort
-  return s:base_dir . sha256(expand('%:p'))[:15] . '-' . getpid()
+  return s:preview_base_directory() . sha256(expand('%:p'))[:15] . '-' . getpid()
 endfunction
 
 function! previm#make_preview_file_path(path) abort
-  let src = s:base_dir . '/_/' . a:path
+  if b:previm_mode == 0
+    let l:text = ['Select previm mode:', '1. original(default)', '2. local dir']
+    let b:previm_mode = inputlist(l:text)
+    if b:previm_mode <=0
+      let b:previm_mode = 1
+    elseif b:previm_mode >= len(l:text)
+      let b:previm_mode = 1
+    endif
+  endif
+  if b:previm_mode == 2
+    if !isdirectory(s:preview_base_directory() . '_')
+      call s:File.copy_dir(s:base_dir . '_', s:preview_base_directory() . '_')
+    endif
+  endif
+  let src = s:preview_base_directory() . '/_/' . a:path
   let dst = s:preview_directory() . '/' . a:path
   if !filereadable(dst)
     let dir = fnamemodify(dst, ':p:h')
@@ -333,6 +357,10 @@ function! previm#wipe_cache()
   for path in filter(split(globpath(s:base_dir, '*'), "\n"), 'isdirectory(v:val) && v:val !~ "_$"')
     call previm#cleanup_preview(path)
   endfor
+  if b:previm_mode == 2
+    call previm#cleanup_preview(s:preview_base_directory() . '_')
+    call previm#cleanup_preview(s:preview_directory())
+  endif
 endfunction
 
 function! previm#options()
