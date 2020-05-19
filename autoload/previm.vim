@@ -8,6 +8,7 @@ set cpo&vim
 let s:File = vital#previm#import('System.File')
 
 let s:newline_character = "\n"
+let s:bookdir = "build"
 
 function! previm#open(preview_html_file) abort
   call previm#refresh()
@@ -49,6 +50,88 @@ function! previm#open2(preview_html_file) abort
     call s:File.copy_dir(s:base_dir . '_', s:preview_base_directory() . '_')
   endif
   call previm#open(previm#make_preview_file_path('index.html'))
+endfunction
+
+function! previm#book() abort
+  let l:root = s:rootpath()
+  let l:bookdir = "/" . s:bookdir
+  if !isdirectory(l:root . l:bookdir)
+    call s:File.copy_dir(s:base_dir . 'book_', l:root . l:bookdir)
+  endif
+  call s:book_nodes(l:root)
+  call previm#open(l:root . l:bookdir . '/index.html')
+endfunction
+
+function! s:book_nodes(root) abort
+  let l:bookdir = "/" . s:bookdir
+  let l:contentpath = "js/out/"
+  let l:filelist = globpath(a:root, "**/*.{mkd,md,rst}", 0, 1)
+  let l:skiplen = strlen(a:root) + 1
+  let l:sep = strpart(l:filelist[0], l:skiplen-1, 1)
+  let l:idx = 1
+  let l:basedirs = []
+  let l:outtxt = ["const treenodes = ["]
+  for l:item in l:filelist
+    let l:relitem = strpart(l:item, l:skiplen)
+    let l:parts = split(l:relitem, l:sep)
+    if (len(l:parts) > 1) && l:parts[0] == s:bookdir
+        continue
+    endif
+    let l:j = 0
+    let l:fprefix = 0
+    while l:j < len(l:parts) - 1
+        if l:fprefix == 0
+            if l:j >= len(l:basedirs)
+                let l:fprefix = 1
+                call add(l:outtxt, repeat("  ", l:j+1) . "{ id: " . l:idx . ", name: '" . l:parts[l:j] . "', children: [")
+                let l:idx = l:idx + 1
+            else
+                if l:basedirs[l:j] != l:parts[l:j]
+                    let l:fprefix = 1
+                    let l:k = len(l:basedirs)
+                    while l:k > l:j
+                        call add(l:outtxt, repeat("  ", l:k+1) . "],")
+                        let l:k = l:k - 1
+                        call add(l:outtxt, repeat("  ", l:k+1) . "},")
+                    endwhile
+                    call add(l:outtxt, repeat("  ", l:j+1) . "{ id: " . l:idx . ", name: '" . l:parts[l:j] . "', children: [")
+                    let l:idx = l:idx + 1
+                endif
+            endif
+        else
+            call add(l:outtxt, repeat("  ", l:j+1) . "{ id: " . l:idx . ", name: '" . l:parts[l:j] . "', children: [")
+            let l:idx = l:idx + 1
+        endif
+        let l:j = l:j + 1
+    endwhile
+    let l:targetfile = l:contentpath . sha256(l:relitem)[:15] . ".js"
+    call add(l:outtxt, repeat("  ", l:j+1) . "{ id: " . l:idx . ", name: '" . l:parts[l:j] . "', doc: '" . l:targetfile . "' },")
+    if getftime(l:item) > getftime(a:root . l:bookdir . "/" . l:targetfile)
+        if bufexists(l:item)
+            silent! exe "b " . bufnr(l:item)
+            let l:encoded_lines = split(iconv(s:function_template(), &encoding, 'utf-8'), s:newline_character)
+            call writefile(encoded_lines, a:root . l:bookdir . "/" . l:targetfile)
+        else
+            silent! exe "edit ". l:item
+            let l:encoded_lines = split(iconv(s:function_template(), &encoding, 'utf-8'), s:newline_character)
+            call writefile(encoded_lines, a:root . l:bookdir . "/" . l:targetfile)
+            silent! exe "bdelete"
+        endif
+    endif
+    let l:idx = l:idx + 1
+    if l:fprefix > 0
+        let l:basedirs = copy(l:parts)
+        call remove(l:basedirs, -1)
+    endif
+  endfor
+  let l:k = len(l:basedirs)
+  while l:k > 0
+      call add(l:outtxt, repeat("  ", l:k+1) . "],")
+      let l:k = l:k - 1
+      call add(l:outtxt, repeat("  ", l:k+1) . "},")
+  endwhile
+  call add(l:outtxt, "]")
+  call writefile(l:outtxt, a:root . l:bookdir . "/" . l:contentpath . "nodes.js")
 endfunction
 
 function! s:exists_openbrowser() abort
@@ -375,6 +458,10 @@ function! previm#options()
   \   'plantuml_imageprefix': get(g:, 'previm_plantuml_imageprefix', v:null)
   \ })
 endfunction
+
+func! s:rootpath()
+  return SpaceVim#plugins#projectmanager#current_root()
+endf
 
 let &cpo = s:save_cpo
 unlet! s:save_cpo

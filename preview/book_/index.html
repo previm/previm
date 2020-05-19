@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet"> -->
+        <link href="css/lib/materialdesignicons.min.css" rel="stylesheet">
+        <link href="css/lib/vuetify.min.css" rel="stylesheet">
+        <link type="text/css" href="css/origin.css" rel="stylesheet" media="all" />
+        <link type="text/css" href="css/lib/github.css" rel="stylesheet" media="all" />
+        <link type="text/css" href="css/lib/mermaid.min.css" rel="stylesheet" media="all" />
+        <link rel="stylesheet" href="js/lib/katex/katex.min.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+        <style>
+          /* Fix #43 */
+          .section,
+          .section0,
+          .section1,
+          .section2,
+          .section3 {
+            opacity: unset;
+          }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <v-app>
+                <v-navigation-drawer v-model="drawer" width="512" app>
+                    <v-sheet class="pa-4 primary lighten-2">
+                        <v-text-field v-model="treenodesearch" label="查找标题" dark flat solo-inverted hide-details clearable clear-icon="mdi-close-circle-outline"></v-text-field>
+                    </v-sheet>
+                    <v-treeview :items="treeitems" :search="treenodesearch" :filter="treefilter" @update:active="treenode_active" dense activatable open-on-click open-all></v-treeview>
+                </v-navigation-drawer>
+                <v-app-bar app color="indigo" dark>
+                    <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+                    <v-toolbar-title>BookPreview</v-toolbar-title>
+                </v-app-bar>
+                <v-content>
+                    <v-container>
+                        <div id="header">
+                            <span id="markdown-file-name">Loading...</span>
+                            <span id="current-doc" hidden></span>
+                            <small><span id="last-modified"></span></small>
+                        </div>
+                        <div id="preview"></div>
+                        <div id="footer">
+                            <script src="js/lib/markdown-it.min.js"></script>
+                            <script src="js/lib/markdown-it-abbr.min.js"></script>
+                            <script src="js/lib/markdown-it-deflist.min.js"></script>
+                            <script src="js/lib/markdown-it-footnote.min.js"></script>
+                            <script src="js/lib/markdown-it-sub.min.js"></script>
+                            <script src="js/lib/markdown-it-sup.min.js"></script>
+                            <script src="js/lib/markdown-it-mathjax.js"></script>
+                            <script src="js/lib/markdown-it-checkbox.min.js"></script>
+                            <script src="js/lib/markdown-it-cjk-breaks.min.js"></script>
+                            <script src="js/lib/markdown-it-emoji.min.js"></script>
+                            <script src="js/lib/highlight.pack.js"></script>
+                            <script src="js/lib/textile.min.js"></script>
+                            <script src="js/lib/mermaid.min.js"></script>
+                            <script src="js/lib/katex/katex.min.js"></script>
+                            <script src="js/lib/katex/contrib/auto-render.min.js"></script>
+                            <!-- script src="js/lib/asciidoctor.min.js"></script -->
+                            <script src="js/lib/zip_deflate.js"></script>
+                            <script src="js/lib/plantuml.js"></script>
+                            <script src="js/previm.js"></script>
+                            <div id="monitor"></div>
+                        </div>
+                    </v-container>
+                </v-content>
+            </v-app>
+        </div>
+
+        <script src="js/lib/vue.min.js"></script>
+        <script src="js/lib/vuetify.min.js"></script>
+        <script src="js/out/nodes.js"></script>
+        <script>
+            new Vue({
+                el: '#app',
+                vuetify: new Vuetify(),
+                data: () => ({
+                    drawer: false,
+                    treenodesearch: null,
+                    treeitems: treenodes,
+                }),
+                methods: {
+                    treenode_active(a) {
+                        var x = this.treeitems
+                        var y
+                        var finding = true
+                        while (finding) {
+                            for (var i = 0; i < x.length; i++) {
+                                if (x[i].id == a[0]) {
+                                    y = x[i]
+                                    finding = false
+                                    break
+                                } else if (x[i].id > a[0]) {
+                                    break
+                                }
+                            }
+                            if (finding) x = x[i-1].children
+                        }
+                        document.getElementById('current-doc').innerHTML = y.doc
+                        this.drawer = false
+                    },
+                },
+                computed: {
+                    treefilter () {
+                        return (item, search, textKey) => item[textKey].indexOf(search) > -1
+                    },
+                },
+            })
+        </script>
+    </body>
+</html>
