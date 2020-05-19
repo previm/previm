@@ -224,12 +224,16 @@ function! previm#convert_to_content(lines) abort
   for line in s:do_external_parse(a:lines)
     " TODO エスケープの理由と順番の依存度が複雑
     let escaped = substitute(line, '\', '\\\\', 'g')
-    let escaped = previm#relative_to_absolute_imgpath(escaped, mkd_dir)
+    let escaped = previm#convert_relative_to_absolute_imgpath(escaped, mkd_dir)
     let escaped = substitute(escaped, '"', '\\"', 'g')
     let escaped = substitute(escaped, '\r', '\\r', 'g')
     call add(converted_lines, escaped)
   endfor
   return join(converted_lines, "\\n")
+endfunction
+
+function! previm#convert_relative_to_absolute_imgpath(text, mkd_dir) abort
+  return substitute(a:text, '!\[[^\]]*\]([^)]*)', '\=previm#relative_to_absolute_imgpath(submatch(0), a:mkd_dir)', 'g')
 endfunction
 
 " convert example
@@ -287,6 +291,7 @@ endfunction
 function! previm#fetch_imgpath_elements(text) abort
   let elem = {'alt': '', 'path': '', 'title': ''}
   let matched = matchlist(a:text, '!\[\([^\]]*\)\](\([^)]*\))')
+  echomsg string(matched)
   if empty(matched)
     return elem
   endif
@@ -305,7 +310,7 @@ endfunction
 
 function! s:is_absolute_path(path) abort
   if has('win32')
-    return tolower(substitute(a:path, '\', '/', 'g')) =~ '^/\|^[a-z]:/'
+    return tolower(substitute(a:path, '\', '/', 'g')) =~# '^/\|^[a-z]:/'
   endif
   return a:path =~ '^/'
 endfunction
