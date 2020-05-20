@@ -459,8 +459,32 @@ function! previm#options()
   \ })
 endfunction
 
-func! s:rootpath()
-  return SpaceVim#plugins#projectmanager#current_root()
+func! s:rootpath(...)
+    let l:rootpattern = [".git", ".svn", ".root"]
+    if a:0 > 0
+        let l:rootpattern = l:rootpattern + a:1
+    endif
+    let l:curpath = expand("%:p:h")
+    while 1
+        for l:item in readdir(l:curpath)
+            if index(l:rootpattern, l:item) >= 0
+                if has('win32unix')
+                  " convert cygwin path to windows path
+                  let l:curpath = substitute(system('cygpath -wa ' . l:curpath), "\n$", '', '')
+                  let l:curpath = substitute(l:curpath, '\', '/', 'g')
+                elseif has('win32')
+                  let l:curpath = substitute(l:curpath, '\', '/', 'g')
+                endif
+                return l:curpath
+            endif
+        endfor
+        let l:newpath = fnamemodify(l:curpath, ":h")
+        if l:newpath == l:curpath
+            return ""
+        else
+            let l:curpath = l:newpath
+        endif
+    endwhile
 endf
 
 let &cpo = s:save_cpo
