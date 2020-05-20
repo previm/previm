@@ -53,6 +53,7 @@ function! previm#open2(preview_html_file) abort
 endfunction
 
 function! previm#book() abort
+  let b:refresh_mode = 3
   let l:root = s:rootpath()
   let l:bookdir = "/" . s:bookdir
   if !isdirectory(l:root . l:bookdir)
@@ -65,7 +66,7 @@ endfunction
 function! s:book_nodes(root) abort
   let l:bookdir = "/" . s:bookdir
   let l:contentpath = "js/out/"
-  let l:filelist = globpath(a:root, "**/*.{mkd,md,rst}", 0, 1)
+  let l:filelist = globpath(a:root, "**/*.{markdown,mdown,mkd,mkdn,mdwn,md,rst}", 0, 1)
   let l:skiplen = strlen(a:root) + 1
   let l:sep = strpart(l:filelist[0], l:skiplen-1, 1)
   let l:idx = 1
@@ -159,11 +160,31 @@ function! s:apply_openbrowser(path) abort
 endfunction
 
 function! previm#refresh() abort
-  if get(b:, 'refresh_mode', 0) <= 0
+  let l:previm_mode = get(b:, 'refresh_mode', 0)
+  if l:previm_mode <= 0
     return
+  elseif l:previm_mode <= 2
+    call previm#refresh_css()
+    call previm#refresh_js()
+  else
+    let l:bookdir = "/" . s:bookdir
+    let l:contentpath = "js/out/"
+    let l:root = s:rootpath()
+    let l:skiplen = strlen(l:root) + 1
+    let l:sep = "/"
+    let l:item = expand("%:p")
+    if has('win32unix')
+      " convert cygwin path to windows path
+      let l:item = substitute(system('cygpath -wa ' . l:item), "\n$", '', '')
+      let l:item = substitute(l:item, '\', '/', 'g')
+    elseif has('win32')
+      let l:item = substitute(l:item, '\', '/', 'g')
+    endif
+    let l:relitem = strpart(l:item, l:skiplen)
+    let l:targetfile = l:contentpath . sha256(l:relitem)[:15] . ".js"
+    let encoded_lines = split(iconv(s:function_template(), &encoding, 'utf-8'), s:newline_character)
+    call writefile(encoded_lines, l:root . l:bookdir . "/" . l:targetfile)
   endif
-  call previm#refresh_css()
-  call previm#refresh_js()
 endfunction
 
 let s:default_origin_css_path = "@import url('../../_/css/origin.css');"
@@ -390,6 +411,15 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir) abort
     let path_prefix = ''
     let local_path = local_path[7:]
   endif
+  if (get(b:, 'refresh_mode', 0) == 3) && (path_prefix != '')
+    let l:root = s:rootpath() . "/"
+    let l:simple = substitute(local_path, '//', '/', 'g')
+    if s:start_with(l:simple, l:root)
+      let path_prefix = ".."
+      let let pre_slash = "/"
+      let local_path = strpart(l:simple, strlen(l:root))
+    endif
+  endif
   if empty(elem.title)
     let prev_imgpath = printf('!\[%s\](%s)', elem.alt, elem.path)
     let new_imgpath = printf('![%s](%s%s%s)', elem.alt, path_prefix, pre_slash, local_path)
@@ -443,9 +473,14 @@ function! previm#wipe_cache()
   for path in filter(split(globpath(s:base_dir, '*'), "\n"), 'isdirectory(v:val) && v:val !~ "_$"')
     call previm#cleanup_preview(path)
   endfor
-  if get(b:, 'refresh_mode', 0) == 2
+  let l:previm_mode = get(b:, 'refresh_mode', 0)
+  if l:previm_mode == 2
     call previm#cleanup_preview(s:preview_base_directory() . '_')
     call previm#cleanup_preview(s:preview_directory())
+  elseif l:previm_mode == 3
+    let l:root = s:rootpath()
+    let l:bookdir = "/" . s:bookdir
+    call previm#cleanup_preview(l:root . l:bookdir)
   endif
   let b:refresh_mode = 0
 endfunction
