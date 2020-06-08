@@ -39,12 +39,12 @@ function! previm#open(preview_html_file) abort
   endif
 endfunction
 
-function! previm#open1(preview_html_file) abort
+function! previm#open1() abort
   let b:refresh_mode = 1
   call previm#open(previm#make_preview_file_path('index.html'))
 endfunction
 
-function! previm#open2(preview_html_file) abort
+function! previm#open2() abort
   let b:refresh_mode = 2
   if !isdirectory(s:preview_base_directory() . '_')
     call s:File.copy_dir(s:base_dir . '_', s:preview_base_directory() . '_')
@@ -416,7 +416,7 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir) abort
     let l:simple = substitute(local_path, '//', '/', 'g')
     if s:start_with(l:simple, l:root)
       let path_prefix = ".."
-      let let pre_slash = "/"
+      let pre_slash = "/"
       let local_path = strpart(l:simple, strlen(l:root))
     endif
   endif

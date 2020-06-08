@@ -21,8 +21,8 @@ function! s:install_previm() abort
     endif
   augroup END
 
-  command! -buffer -nargs=0 PrevimOpen call previm#open1(previm#make_preview_file_path('index.html'))
-  command! -buffer -nargs=0 PrevimLocal call previm#open2(previm#make_preview_file_path('index.html'))
+  command! -buffer -nargs=0 PrevimOpen call previm#open1()
+  command! -buffer -nargs=0 PrevimLocal call previm#open2()
   command! -buffer -nargs=0 PrevimBook call previm#book()
   command! -buffer -nargs=0 PrevimWipeCache call previm#wipe_cache()
 endfunction
