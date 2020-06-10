@@ -73,8 +73,15 @@ function! s:book_nodes(root) abort
   let l:basedirs = []
   let l:outtxt = ["const treenodes = ["]
   for l:item in l:filelist
+    if has('win32unix')
+      " convert cygwin path to windows path
+      let l:item = substitute(system('cygpath -wa ' . l:item), "\n$", '', '')
+      let l:item = substitute(l:item, '\', '/', 'g')
+    elseif has('win32')
+      let l:item = substitute(l:item, '\', '/', 'g')
+    endif
     let l:relitem = strpart(l:item, l:skiplen)
-    let l:parts = split(l:relitem, l:sep)
+    let l:parts = split(l:relitem, '/')
     if (len(l:parts) > 1) && l:parts[0] == s:bookdir
         continue
     endif
