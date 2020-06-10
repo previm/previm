@@ -8,7 +8,7 @@ set cpo&vim
 let s:File = vital#previm#import('System.File')
 
 let s:newline_character = "\n"
-let s:bookdir = "build"
+let s:bookdir = "_build"
 
 function! previm#open(preview_html_file) abort
   call previm#refresh()
