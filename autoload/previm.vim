@@ -82,8 +82,12 @@ function! s:book_nodes(root) abort
     endif
     let l:relitem = strpart(l:item, l:skiplen)
     let l:parts = split(l:relitem, '/')
-    if (len(l:parts) > 1) && l:parts[0] == s:bookdir
-        continue
+    if len(l:parts) > 1
+        if l:parts[0] == s:bookdir
+            continue
+        elseif strpart(l:parts[0], 0, 1) == '_'
+            continue
+        endif
     endif
     let l:j = 0
     let l:fprefix = 0

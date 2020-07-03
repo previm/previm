@@ -21,8 +21,6 @@ body {
   padding: 20px;
   text-align: left;
   color: #333;
-  width: auto;
-  max-width: 920px;
 }
 
 body > *:first-child {
@@ -216,7 +214,6 @@ img {
 
 @media screen and (min-width: 914px) {
     body {
-        width: 854px;
         margin:0 auto;
     }
 }
