@@ -8,6 +8,8 @@
                    .use(_win.markdownitFootnote)
                    .use(_win.markdownitSub)
                    .use(_win.markdownitSup)
+                   .use(_win.markdownitIns)
+                   .use(_win.markdownitMark)
                    .use(_win.markdownitMathjax())
                    .use(_win.markdownitEmoji)
                    .use(_win.markdownitCheckbox)
