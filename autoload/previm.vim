@@ -47,7 +47,7 @@ endfunction
 function! previm#open2() abort
   let b:refresh_mode = 2
   if !isdirectory(s:preview_base_directory() . '_')
-    call s:File.copy_dir(s:base_dir . '_', s:preview_base_directory() . '_')
+    call s:File.copy_dir(s:base_dir . 'local_', s:preview_directory())
   endif
   call previm#open(previm#make_preview_file_path('index.html'))
 endfunction
@@ -279,14 +279,24 @@ endfunction
 
 let s:default_origin_css_path = "@import url('../../_/css/origin.css');"
 let s:default_github_css_path = "@import url('../../_/css/lib/github.css');"
+let s:local_origin_css_path = "@import url('origin.css');"
+let s:local_github_css_path = "@import url('lib/github.css');"
 
 function! previm#refresh_css() abort
   let css = []
   if get(g:, 'previm_disable_default_css', 0) !=# 1
-    call extend(css, [
-          \ s:default_origin_css_path,
-          \ s:default_github_css_path
-          \ ])
+    let l:previm_mode = get(b:, 'refresh_mode', 0)
+    if l:previm_mode == 1
+      call extend(css, [
+            \ s:default_origin_css_path,
+            \ s:default_github_css_path
+            \ ])
+    elseif l:previm_mode == 2
+      call extend(css, [
+            \ s:local_origin_css_path,
+            \ s:local_github_css_path
+            \ ])
+    endif
   endif
   if exists('g:previm_custom_css_path')
     let css_path = expand(g:previm_custom_css_path)
@@ -324,18 +334,21 @@ function! s:preview_directory() abort
 endfunction
 
 function! previm#make_preview_file_path(path) abort
+  let l:previm_mode = get(b:, 'refresh_mode', 0)
   let src = s:preview_base_directory() . '/_/' . a:path
   let dst = s:preview_directory() . '/' . a:path
   if !filereadable(dst)
     let dir = fnamemodify(dst, ':p:h')
-	if !isdirectory(dir)
+    if !isdirectory(dir)
       call mkdir(dir, 'p')
     endif
 
-    augroup PrevimCleanup
-      au!
-      exe printf("au VimLeave * call previm#cleanup_preview('%s')", dir)
-    augroup END
+    if l:previm_mode <= 1
+      augroup PrevimCleanup
+        au!
+        exe printf("au VimLeave * call previm#cleanup_preview('%s')", dir)
+      augroup END
+    endif
     if filereadable(src)
       call s:File.copy(src, dst)
     endif
@@ -501,13 +514,27 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir) abort
     let path_prefix = ''
     let local_path = local_path[7:]
   endif
-  if (get(b:, 'refresh_mode', 0) == 3) && (path_prefix != '')
-    let l:root = s:rootpath() . "/"
+  if path_prefix != ''
+    let l:previm_mode = get(b:, 'refresh_mode', 0)
     let l:simple = substitute(local_path, '//', '/', 'g')
-    if s:start_with(l:simple, l:root)
-      let path_prefix = ".."
-      let pre_slash = "/"
-      let local_path = strpart(l:simple, strlen(l:root))
+    if l:previm_mode == 2
+        let l:previm_dir = s:preview_directory() . '/assets'
+        if !isdirectory(l:previm_dir)
+          call mkdir(l:previm_dir, 'p')
+        endif
+        let path_prefix = "assets"
+        let pre_slash = "/"
+        let local_path = split(l:simple, '/')[-1]
+        if getftime(l:simple) > getftime(l:previm_dir . "/" . local_path)
+          call s:File.copy(l:simple, l:previm_dir . "/" . local_path)
+        endif
+    elseif l:previm_mode == 3
+      let l:root = s:rootpath() . "/"
+      if s:start_with(l:simple, l:root)
+        let path_prefix = ".."
+        let pre_slash = "/"
+        let local_path = strpart(l:simple, strlen(l:root))
+      endif
     endif
   endif
   if empty(elem.title)
@@ -565,7 +592,6 @@ function! previm#wipe_cache()
   endfor
   let l:previm_mode = get(b:, 'refresh_mode', 0)
   if l:previm_mode == 2
-    call previm#cleanup_preview(s:preview_base_directory() . '_')
     call previm#cleanup_preview(s:preview_directory())
   elseif l:previm_mode == 3
     let l:root = s:rootpath()
