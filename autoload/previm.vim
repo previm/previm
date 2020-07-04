@@ -63,6 +63,82 @@ function! previm#book() abort
   call previm#open(l:root . l:bookdir . '/index.html')
 endfunction
 
+function! previm#patchdir() abort
+  let l:previm_mode = get(b:, 'refresh_mode', 0)
+  if l:previm_mode == 2
+    let l:rootdir = s:preview_directory()
+  elseif l:previm_mode == 3
+    let l:rootdir = s:rootpath() . "/" . s:bookdir
+  else
+    let l:rootdir = ''
+  endif
+  let l:setting = substitute(input("Custom setting file: ", l:rootdir, "file"), '\', '/', 'g')
+  let l:rootdir = substitute(input("Root dir: ", l:rootdir, "dir"), '\', '/', 'g')
+  if isdirectory(l:rootdir) && filereadable(l:setting)
+    if strpart(l:rootdir, len(l:rootdir) - 1) != '/'
+      let l:rootdir = l:rootdir . '/'
+    endif
+    let l:pat01 = '===================='
+    let l:pat02 = '--------------------'
+    let l:file1 = l:rootdir . 'index.html'
+    let l:file2 = l:rootdir . 'js/previm.js'
+    let l:pat11 = '<!-- Custom JS Start -->'
+    let l:pat12 = '<!-- Custom JS End -->'
+    let l:pat21 = '/* markdownitContainer Start */'
+    let l:pat22 = '/* markdownitContainer End */'
+    let l:pat23 = '/* Custom Render Start */'
+    let l:pat24 = '/* Custom Render End */'
+    let l:lines = readfile(l:setting)
+    let l:pos1 = index(l:lines, l:pat01)
+    let l:pos2 = index(l:lines, l:pat02)
+    let l:replace22 = remove(l:lines, l:pos2 + 1, len(l:lines) - 1)
+    let l:replace21 = remove(l:lines, l:pos1 + 1, l:pos2 - 1)
+    let l:replace11 = remove(l:lines, 0, l:pos1 - 1)
+
+    let l:lines = readfile(l:file1)
+    let l:pos1 = index(l:lines, l:pat11)
+    let l:pos2 = index(l:lines, l:pat12)
+    if (l:pos1 >= 0) && (l:pos2 >= 0)
+      if l:pos2 - l:pos1 > 1
+        call remove(l:lines, l:pos1 + 1, l:pos2 - 1)
+      endif
+      let l:pos2 = l:pos1 + 1
+      for l:item in l:replace11
+        call insert(l:lines, l:item, l:pos2)
+        let l:pos2 = l:pos2 + 1
+      endfor
+      call writefile(l:lines, l:file1)
+    endif
+
+    let l:lines = readfile(l:file2)
+    let l:pos1 = index(l:lines, l:pat23)
+    let l:pos2 = index(l:lines, l:pat24)
+    if (l:pos1 >= 0) && (l:pos2 >= 0)
+      if l:pos2 - l:pos1 > 1
+        call remove(l:lines, l:pos1 + 1, l:pos2 - 1)
+      endif
+      let l:pos2 = l:pos1 + 1
+      for l:item in l:replace22
+        call insert(l:lines, l:item, l:pos2)
+        let l:pos2 = l:pos2 + 1
+      endfor
+    endif
+    let l:pos1 = index(l:lines, l:pat21)
+    let l:pos2 = index(l:lines, l:pat22)
+    if (l:pos1 >= 0) && (l:pos2 >= 0)
+      if l:pos2 - l:pos1 > 1
+        call remove(l:lines, l:pos1 + 1, l:pos2 - 1)
+      endif
+      let l:pos2 = l:pos1 + 1
+      for l:item in l:replace21
+        call insert(l:lines, l:item, l:pos2)
+        let l:pos2 = l:pos2 + 1
+      endfor
+    endif
+    call writefile(l:lines, l:file2)
+  endif
+endfunction
+
 function! s:book_nodes(root) abort
   let l:bookdir = "/" . s:bookdir
   let l:contentpath = "js/out/"
@@ -72,6 +148,9 @@ function! s:book_nodes(root) abort
   let l:idx = 1
   let l:basedirs = []
   let l:outtxt = ["const treenodes = ["]
+  if !isdirectory(a:root . l:bookdir . "/" . l:contentpath)
+    call mkdir(a:root . l:bookdir . "/" . l:contentpath, 'p')
+  endif
   for l:item in l:filelist
     if has('win32unix')
       " convert cygwin path to windows path

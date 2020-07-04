@@ -13,6 +13,8 @@
                    .use(_win.markdownitMathjax())
                    .use(_win.markdownitEmoji)
                    .use(_win.markdownitCheckbox)
+/* markdownitContainer Start */
+/* markdownitContainer End */
                    .use(_win.markdownitCjkBreaks);
 
   // Override default 'fence' ruler for 'mermaid' support
@@ -101,6 +103,8 @@
 
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
       renderMathInElement(document.body);
+/* Custom Render Start */
+/* Custom Render End */
       autoScroll('body', beforePageYOffset);
       style_header();
     }

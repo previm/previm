@@ -24,6 +24,7 @@ function! s:install_previm() abort
   command! -buffer -nargs=0 PrevimOpen call previm#open1()
   command! -buffer -nargs=0 PrevimLocal call previm#open2()
   command! -buffer -nargs=0 PrevimBook call previm#book()
+  command! -buffer -nargs=0 PrevimPatch call previm#patchdir()
   command! -buffer -nargs=0 PrevimWipeCache call previm#wipe_cache()
 endfunction
 
