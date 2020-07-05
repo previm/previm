@@ -13,6 +13,7 @@
                    .use(_win.markdownitMathjax())
                    .use(_win.markdownitEmoji)
                    .use(_win.markdownitCheckbox)
+                   .use(_win.markdownitMultimdTable)
 /* markdownitContainer Start */
 /* markdownitContainer End */
                    .use(_win.markdownitCjkBreaks);
@@ -72,6 +73,15 @@
     }
   }
 
+  function addAnchors(dom, level) {
+    for (var l = 1; l <= level; l++) {
+      var elemlist = dom.getElementsByTagName('h' + l);
+      for (var i = 0; i < elemlist.length; i++) {
+        elemlist[i].id = elemlist[i].innerText;
+      }
+    }
+  }
+
   function loadPreview() {
     if ((typeof getContent === 'function') && (typeof getFileType === 'function')) {
       var beforePageYOffset = _win.pageYOffset;
@@ -85,6 +95,7 @@
       renderMathInElement(document.body);
 /* Custom Render Start */
 /* Custom Render End */
+      addAnchors(document.body, 6);
       autoScroll('body', beforePageYOffset);
       style_header();
     }

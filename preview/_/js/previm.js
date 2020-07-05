@@ -13,6 +13,7 @@
                    .use(_win.markdownitMathjax())
                    .use(_win.markdownitEmoji)
                    .use(_win.markdownitCheckbox)
+                   .use(_win.markdownitMultimdTable)
                    .use(_win.markdownitCjkBreaks);
 
   // Override default 'fence' ruler for 'mermaid' support
@@ -70,6 +71,15 @@
     }
   }
 
+  function addAnchors(dom, level) {
+    for (var l = 1; l <= level; l++) {
+      var elemlist = dom.getElementsByTagName('h' + l);
+      for (var i = 0; i < elemlist.length; i++) {
+        elemlist[i].id = elemlist[i].innerText;
+      }
+    }
+  }
+
   function loadPreview() {
     var needReload = false;
     // These functions are defined as the file generated dynamically.
@@ -101,6 +111,7 @@
 
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
       renderMathInElement(document.body);
+      addAnchors(document.body, 6);
       autoScroll('body', beforePageYOffset);
       style_header();
     }

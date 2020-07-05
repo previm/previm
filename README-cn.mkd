@@ -54,6 +54,7 @@
     - markdown-it-emoji
     - markdown-it-ins
     - markdown-it-mark
+    - markdown-it-multimd-table
     - markdown-it-mathjax
     - katex
 4. 添加以下模式
@@ -83,4 +84,4 @@
     - 格式：`{% include "相对当前文件的路径" %}`
     - 功能：将指定文件的内容复制到这里，指定文件不存在时不处理
     - 对于Book模式，可以用`/`开头表示相对于根目录的路径
-
+7. 自动设置H1~H6的id，用于TOC的跳转
