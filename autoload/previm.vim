@@ -422,9 +422,44 @@ function! s:system(cmd) abort
   endtry
 endfunction
 
+function! s:expand_include(lines, fpath) abort
+  let l:i = 0
+  let l:lines = []
+  let l:previm_mode = get(b:, 'refresh_mode', 0)
+  while l:i < len(a:lines)
+    let l:pos = match(a:lines[l:i], "{%\\s\\+include\\s\\+\\(.\\{-2,}\\)\\s\\+%}")
+    if l:pos >= 0
+      let l:parts = matchlist(a:lines[l:i], "{%\\s\\+include\\s\\+\\(.\\{-2,}\\)\\s\\+%}")
+      let l:relpath = strpart(l:parts[1], 1, len(l:parts[1]) - 2)
+      if l:previm_mode == 3
+        if strpart(l:relpath[0], 0, 1) == '/'
+          let l:fullpath = s:rootpath() . l:relpath
+        else
+          let l:fullpath = fnamemodify(fnamemodify(a:fpath, ':h') . '/' . l:relpath, ':p')
+        endif
+      else
+        let l:fullpath = fnamemodify(fnamemodify(a:fpath, ':h') . '/' . l:relpath, ':p')
+      endif
+      if filereadable(l:fullpath)
+        let l:lines2 = readfile(l:fullpath)
+        let l:inner = s:expand_include(l:lines2, l:fullpath)
+        let l:inner[0] =  strpart(a:lines[l:i], 0, l:pos) . l:inner[0]
+        let l:inner[-1] = l:inner[-1] . strpart(a:lines[l:i], l:pos + len(l:parts[0]))
+        call extend(l:lines, l:inner)
+      else
+        call add(l:lines, a:lines[l:i])
+      endif
+    else
+      call add(l:lines, a:lines[l:i])
+    endif
+    let l:i = l:i + 1
+  endwhile
+  return l:lines
+endfunction
+
 function! s:do_external_parse(lines) abort
   if &filetype !=# 'rst'
-    return a:lines
+    return s:expand_include(a:lines, expand('%:p'))
   endif
   " NOTE: 本来は外部コマンドに頼りたくない
   "       いずれjsパーサーが出てきたときに移行するが、

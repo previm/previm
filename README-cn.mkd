@@ -79,3 +79,8 @@
             1. 需要插入`index.html`文件中的内容，例如`<script src="xxx"></script>`
             2. 需要插入`js/previm.js`文件中用于初始化markdown-it对象的代码片段，主要用于`markdown-it-container`的初始化部分
             3. 需要插入`js/previm.js`文件中用于追加渲染的代码片段
+6. 添加include功能
+    - 格式：`{% include "相对当前文件的路径" %}`
+    - 功能：将指定文件的内容复制到这里，指定文件不存在时不处理
+    - 对于Book模式，可以用`/`开头表示相对于根目录的路径
+
