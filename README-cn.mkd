@@ -1,0 +1,81 @@
+## Previm
+
+用于实时预览标记语言文本的Vim插件。
+
+## 支持的标记语言格式
+
+* Markdown
+* reStructuredText(需要使用`rst2html.py`进行转换)
+* textile
+* AsciiDoc(Book模式不支持)
+
+## 依赖软件/插件
+
+### 文件转换
+
+需要安装`docutils`以使用其中附带的`rst2html.py`。
+
+    % pip install docutils
+
+### 调用浏览器
+
+可以选装Vim插件[open-browser.vim](https://github.com/tyru/open-browser.vim)。
+※若不安装，则需要设置`g:previm_open_cmd`来规定调用浏览器的命令。
+
+### 自动任务
+
+可以选装Vim插件[asynctasks.vim](https://github.com/skywind3000/asynctasks.vim)。
+
+※依赖Vim插件[asyncrun.vim](https://github.com/skywind3000/asyncrun.vim)。
+
+使用GIT管理目录履历时，可以添加如下的两个文件来整合`asynctasks.vim`插件。
+
+    # .gitignore
+    _build/
+
+    # .tasks
+    [auto_commit]
+    command=git add -A && git commit -m "AutoCommit"
+    cwd=$(VIM_ROOT)
+    output=terminal
+
+## 基本使用方法
+
+1. 编辑一个文件（本插件支持的文件格式，比如Markdown）
+2. 执行`:PrevimOpen`打开浏览器查看
+3. 继续在Vim中编辑文件，浏览器会实时刷新内容
+
+## 与原版[previm](https://github.com/previm/previm)的区别
+
+1. 解决Windows环境下不能转换reStructuredText文件的问题
+2. 没有开启浏览器预览时，不在后台实时生成网页表示所需的js文件（手动执行`:PrevimWipeCache`后关闭预览）
+3. 添加以下插件
+    - markdown-it-container
+    - markdown-it-emoji
+    - markdown-it-ins
+    - markdown-it-mark
+    - markdown-it-mathjax
+    - katex
+4. 添加以下模式
+    - Local模式：用于发布
+        - 命令：`:PrevimLocal`
+        - 在当前文件所在的目录中建立发布用的网页目录（原版的模式是在插件的preview目录中）
+        - 网页目录中包含所需的所有资源文件（原版的模式是在两个目录中，其中一个是公用的`preview/_`目录）
+        - 文件中涉及的本地图片文件会自动复制到网页目录中（原版的模式是使用本地文件的绝对路径）
+        - **取消**了网页的定时自动刷新功能
+    - Book模式：用于存放个人知识库
+        - 命令：`:PrevimBook`
+        - 在网页中提供根目录中所有文档的链接（按照文档目录结构制作树形列表）
+            - 根目录以`.git`、`.svn`、`.root`文件/目录所在位置确定
+            - 生成的网页目录名为：`_build`，存放在根目录中
+            - 搜索文档时，忽略根目录中以`_`开头的子目录中的所有文件
+            - 文档中涉及的本地图片文件，如果在根目录（含根目录的各级子目录）中，会转换成相对路径，否则还是采用绝对路径
+        - **取消**了对AsciiDoc格式的支持
+5. 追加自定义渲染功能
+    - 命令：`:PrevimPatch`
+    - 选择网页根目录和自定义配置文件之后会修改`index.html`和`js/previm.js`文件
+        - 仅对Local模式和Book模式有效
+        - 自定义配置文件使用20个`=`和20个`-`分隔成3部分
+            1. 需要插入`index.html`文件中的内容，例如`<script src="xxx"></script>`
+            2. 需要插入`js/previm.js`文件中用于初始化markdown-it对象的代码片段，主要用于`markdown-it-container`的初始化部分
+            3. 需要插入`js/previm.js`文件中用于追加渲染的代码片段
