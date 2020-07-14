@@ -9,6 +9,7 @@ let s:File = vital#previm#import('System.File')
 
 let s:newline_character = "\n"
 let s:bookdir = "_build"
+let s:bookroot = ""
 
 function! previm#open(preview_html_file) abort
   call previm#refresh()
@@ -41,11 +42,13 @@ endfunction
 
 function! previm#open1() abort
   let b:refresh_mode = 1
+  let s:bookroot = ""
   call previm#open(previm#make_preview_file_path('index.html'))
 endfunction
 
 function! previm#open2() abort
   let b:refresh_mode = 2
+  let s:bookroot = ""
   if !isdirectory(s:preview_base_directory() . '_')
     call s:File.copy_dir(s:base_dir . 'local_', s:preview_directory())
   endif
@@ -54,21 +57,21 @@ endfunction
 
 function! previm#book() abort
   let b:refresh_mode = 3
-  let l:root = s:rootpath()
+  let s:bookroot = s:rootpath()
   let l:bookdir = "/" . s:bookdir
-  if !isdirectory(l:root . l:bookdir)
-    call s:File.copy_dir(s:base_dir . 'book_', l:root . l:bookdir)
+  if !isdirectory(s:bookroot . l:bookdir)
+    call s:File.copy_dir(s:base_dir . 'book_', s:bookroot . l:bookdir)
   endif
-  call s:book_nodes(l:root)
-  call previm#open(l:root . l:bookdir . '/index.html')
+  call s:book_nodes(s:bookroot)
+  call previm#open(s:bookroot . l:bookdir . '/index.html')
 endfunction
 
 function! previm#patchdir() abort
   let l:previm_mode = get(b:, 'refresh_mode', 0)
   if l:previm_mode == 2
     let l:rootdir = s:preview_directory()
-  elseif l:previm_mode == 3
-    let l:rootdir = s:rootpath() . "/" . s:bookdir
+  elseif s:bookroot != ""
+    let l:rootdir = s:bookroot . "/" . s:bookdir
   else
     let l:rootdir = ''
   endif
@@ -251,16 +254,19 @@ endfunction
 
 function! previm#refresh() abort
   let l:previm_mode = get(b:, 'refresh_mode', 0)
-  if l:previm_mode <= 0
-    return
-  elseif l:previm_mode <= 2
+  if (l:previm_mode == 0) && (s:bookroot != "")
+    if s:bookroot == s:rootpath()
+      let b:refresh_mode = 3
+      let l:previm_mode = 3
+    endif
+  endif
+  if (l:previm_mode <= 2) && (l:previm_mode >= 1)
     call previm#refresh_css()
     call previm#refresh_js()
-  else
+  elseif l:previm_mode == 3
     let l:bookdir = "/" . s:bookdir
     let l:contentpath = "js/out/"
-    let l:root = s:rootpath()
-    let l:skiplen = strlen(l:root) + 1
+    let l:skiplen = strlen(s:bookroot) + 1
     let l:sep = "/"
     let l:item = expand("%:p")
     if has('win32unix')
@@ -273,7 +279,7 @@ function! previm#refresh() abort
     let l:relitem = strpart(l:item, l:skiplen)
     let l:targetfile = l:contentpath . sha256(l:relitem)[:15] . ".js"
     let encoded_lines = split(iconv(s:function_template(), &encoding, 'utf-8'), s:newline_character)
-    call writefile(encoded_lines, l:root . l:bookdir . "/" . l:targetfile)
+    call writefile(encoded_lines, s:bookroot . l:bookdir . "/" . l:targetfile)
   endif
 endfunction
 
@@ -343,7 +349,7 @@ function! previm#make_preview_file_path(path) abort
       call mkdir(dir, 'p')
     endif
 
-    if l:previm_mode <= 1
+    if l:previm_mode == 1
       augroup PrevimCleanup
         au!
         exe printf("au VimLeave * call previm#cleanup_preview('%s')", dir)
@@ -426,14 +432,15 @@ function! s:expand_include(lines, fpath) abort
   let l:i = 0
   let l:lines = []
   let l:previm_mode = get(b:, 'refresh_mode', 0)
+  let l:includeptn = get(g:, 'previm#includeptn', "<!--\\s*{%\\s\\+include\\s\\+\\(.\\{-2,}\\)\\s\\+%}\\s*-->")
   while l:i < len(a:lines)
-    let l:pos = match(a:lines[l:i], "{%\\s\\+include\\s\\+\\(.\\{-2,}\\)\\s\\+%}")
+    let l:pos = match(a:lines[l:i], l:includeptn)
     if l:pos >= 0
-      let l:parts = matchlist(a:lines[l:i], "{%\\s\\+include\\s\\+\\(.\\{-2,}\\)\\s\\+%}")
+      let l:parts = matchlist(a:lines[l:i], l:includeptn)
       let l:relpath = strpart(l:parts[1], 1, len(l:parts[1]) - 2)
       if l:previm_mode == 3
         if strpart(l:relpath[0], 0, 1) == '/'
-          let l:fullpath = s:rootpath() . l:relpath
+          let l:fullpath = s:bookroot . l:relpath
         else
           let l:fullpath = fnamemodify(fnamemodify(a:fpath, ':h') . '/' . l:relpath, ':p')
         endif
@@ -564,7 +571,7 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir) abort
           call s:File.copy(l:simple, l:previm_dir . "/" . local_path)
         endif
     elseif l:previm_mode == 3
-      let l:root = s:rootpath() . "/"
+      let l:root = s:bookroot . "/"
       if s:start_with(l:simple, l:root)
         let path_prefix = ".."
         let pre_slash = "/"
@@ -629,11 +636,11 @@ function! previm#wipe_cache()
   if l:previm_mode == 2
     call previm#cleanup_preview(s:preview_directory())
   elseif l:previm_mode == 3
-    let l:root = s:rootpath()
     let l:bookdir = "/" . s:bookdir
-    call previm#cleanup_preview(l:root . l:bookdir)
+    call previm#cleanup_preview(s:bookroot . l:bookdir)
   endif
   let b:refresh_mode = 0
+  let s:bookroot = ""
 endfunction
 
 function! previm#options()
