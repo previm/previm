@@ -198,6 +198,23 @@ function! s:book_nodes(root) abort
         endif
         let l:j = l:j + 1
     endwhile
+    if len(l:parts) <= 1
+      if len(l:basedirs) > 0
+        let l:k = len(l:basedirs)
+        while l:k > 0
+            call add(l:outtxt, repeat("  ", l:k+1) . "],")
+            let l:k = l:k - 1
+            call add(l:outtxt, repeat("  ", l:k+1) . "},")
+        endwhile
+        let l:basedirs = copy(l:parts)
+        call remove(l:basedirs, -1)
+      endif
+    else
+      if l:fprefix > 0
+          let l:basedirs = copy(l:parts)
+          call remove(l:basedirs, -1)
+      endif
+    endif
     let l:targetfile = l:contentpath . sha256(l:relitem)[:15] . ".js"
     call add(l:outtxt, repeat("  ", l:j+1) . "{ id: " . l:idx . ", name: '" . l:parts[l:j] . "', doc: '" . l:targetfile . "' },")
     if getftime(l:item) > getftime(a:root . l:bookdir . "/" . l:targetfile)
@@ -213,10 +230,6 @@ function! s:book_nodes(root) abort
         endif
     endif
     let l:idx = l:idx + 1
-    if l:fprefix > 0
-        let l:basedirs = copy(l:parts)
-        call remove(l:basedirs, -1)
-    endif
   endfor
   let l:k = len(l:basedirs)
   while l:k > 0
