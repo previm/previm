@@ -291,8 +291,14 @@ function! previm#refresh() abort
     endif
     let l:relitem = strpart(l:item, l:skiplen)
     let l:targetfile = l:contentpath . sha256(l:relitem)[:15] . ".js"
-    let encoded_lines = split(iconv(s:function_template(), &encoding, 'utf-8'), s:newline_character)
-    call writefile(encoded_lines, s:bookroot . l:bookdir . "/" . l:targetfile)
+    if filereadable(s:bookroot . l:bookdir . "/" . l:targetfile)
+      " update js file
+      let encoded_lines = split(iconv(s:function_template(), &encoding, 'utf-8'), s:newline_character)
+      call writefile(encoded_lines, s:bookroot . l:bookdir . "/" . l:targetfile)
+    else
+      " new markdown file, re-generate filelist
+      call s:book_nodes(s:bookroot)
+    endif
   endif
 endfunction
 
