@@ -291,7 +291,6 @@ endfunction
 function! previm#fetch_imgpath_elements(text) abort
   let elem = {'alt': '', 'path': '', 'title': ''}
   let matched = matchlist(a:text, '!\[\([^\]]*\)\](\([^)]*\))')
-  echomsg string(matched)
   if empty(matched)
     return elem
   endif
