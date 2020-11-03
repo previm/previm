@@ -222,3 +222,6 @@ img {
     page-break-inside: avoid;
   }
 }
+.v-application pre code:after,.v-application pre code:before {
+    content:""
+}
