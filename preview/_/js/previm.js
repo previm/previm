@@ -13,7 +13,7 @@
                    .use(_win.markdownitMathjax())
                    .use(_win.markdownitEmoji)
                    .use(_win.markdownitCheckbox)
-                   .use(_win.markdownitMultimdTable)
+                   .use(_win.markdownitMultimdTable, {multiline: true, rowspan:true, headerless:true})
                    .use(_win.markdownitCjkBreaks);
 
   // Override default 'fence' ruler for 'mermaid' support
