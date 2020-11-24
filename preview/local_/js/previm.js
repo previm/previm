@@ -14,8 +14,29 @@
                    .use(_win.markdownitEmoji)
                    .use(_win.markdownitCheckbox)
                    .use(_win.markdownitMultimdTable, {multiline: true, rowspan:true, headerless:true})
+                   .use(_win.markdownitContainer, 'dynamic_block', {
+                     validate: function(params) {
+                       return params.trim().match(/^@\S+.*$/);
+                     },
+                     render: function (tokens, idx) {
+                       var m = tokens[idx].info.trim().split(/\s+/);
+                       if (tokens[idx].nesting === 1) {
+                         // opening tag
+                         var opentag = '<div class="' + m[0].slice(1) + '" id="' + idx + '" data-count="' + (m.length - 1) + '"';
+                         for (var i = 1; i < m.length; i++) {
+                             opentag += ' data-arg' + i + '="' + md.utils.escapeHtml(m[i]) + '"';
+                         }
+                         return opentag + '>';
+                       } else {
+                         // closing tag
+                         return '</div>\n';
+                       }
+                     }
+                   })
 /* markdownitContainer Start */
 /* markdownitContainer End */
+                   .use(_win.markdownItAnchor, { permalink: true, permalinkBefore: true, permalinkSymbol: '§' } )
+                   .use(_win.markdownItTocDoneRight )
                    .use(_win.markdownitCjkBreaks);
 
   // Override default 'fence' ruler for 'mermaid' support
@@ -73,15 +94,6 @@
     }
   }
 
-  function addAnchors(dom, level) {
-    for (var l = 1; l <= level; l++) {
-      var elemlist = dom.getElementsByTagName('h' + l);
-      for (var i = 0; i < elemlist.length; i++) {
-        elemlist[i].id = elemlist[i].innerText;
-      }
-    }
-  }
-
   function loadPreview() {
     if ((typeof getContent === 'function') && (typeof getFileType === 'function')) {
       var beforePageYOffset = _win.pageYOffset;
@@ -95,7 +107,6 @@
       renderMathInElement(document.body);
 /* Custom Render Start */
 /* Custom Render End */
-      addAnchors(document.body, 6);
       autoScroll('body', beforePageYOffset);
       style_header();
     }
