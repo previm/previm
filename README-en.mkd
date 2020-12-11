@@ -23,6 +23,7 @@ Vim plugin for preview.
 * reStructuredText(required rst2html.py)
 * textile
 * AsciiDoc
+* PlantUML
 
 ## Dependencies
 

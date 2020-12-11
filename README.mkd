@@ -24,6 +24,7 @@
 * reStructuredText
 * textile
 * AsciiDoc
+* PlantUML
 
 ## 依存
 

@@ -66,3 +66,12 @@ function loadPlantUML() {
     el.parentNode.outerHTML = '<div><img src="' + url + '" /></div>'
   });
 }
+
+function plantuml(content) {
+  var code = document.createElement('code');
+  code.className = 'language-plantuml';
+  code.textContent = content;
+  var div = document.createElement('div');
+  div.appendChild(code);
+  return div.outerHTML;
+}
