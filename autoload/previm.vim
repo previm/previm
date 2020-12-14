@@ -10,6 +10,9 @@ let s:File = vital#previm#import('System.File')
 let s:newline_character = "\n"
 let s:bookdir = "_build"
 let s:bookroot = ""
+let s:linkeddir = "_linked"
+let s:linkedroot = ""
+let s:local_mdfiles = []
 
 function! previm#open(preview_html_file) abort
   call previm#refresh()
@@ -43,12 +46,14 @@ endfunction
 function! previm#open1() abort
   let b:refresh_mode = 1
   let s:bookroot = ""
+  let s:linkedroot = ""
   call previm#open(previm#make_preview_file_path('index.html'))
 endfunction
 
 function! previm#open2() abort
   let b:refresh_mode = 2
   let s:bookroot = ""
+  let s:linkedroot = ""
   if !isdirectory(s:preview_base_directory() . '_')
     call s:File.copy_dir(s:base_dir . 'local_', s:preview_directory())
   endif
@@ -57,6 +62,7 @@ endfunction
 
 function! previm#book() abort
   let b:refresh_mode = 3
+  let s:linkedroot = ""
   let s:bookroot = s:rootpath()
   let l:bookdir = "/" . s:bookdir
   if !isdirectory(s:bookroot . l:bookdir)
@@ -66,12 +72,47 @@ function! previm#book() abort
   call previm#open(s:bookroot . l:bookdir . '/index.html')
 endfunction
 
+function! previm#linked() abort
+  let b:refresh_mode = 4
+  let s:bookroot = ""
+  let s:linkedroot = s:rootpath()
+  let l:linkeddir = "/" . s:linkeddir
+  if !isdirectory(s:linkedroot . l:linkeddir)
+    call s:File.copy_dir(s:base_dir . 'linked_', s:linkedroot . l:linkeddir)
+  endif
+  let l:todolist = [fnamemodify(expand('%:p'), ':p')]
+  let l:donelist = []
+  " create directory for js files
+  if !isdirectory(s:linkedroot . "/" . s:linkeddir . "/js/out/")
+    call mkdir(s:linkedroot . "/" . s:linkeddir . "/js/out/", 'p')
+  endif
+  " create js/previm-function.js
+  let l:item = s:regular_filepath(l:todolist[0])
+  let l:targetfile = sha256(l:item)[:15] . ".js"
+  let l:encoded_lines = split(iconv(s:linked_default_template(l:targetfile), &encoding, 'utf-8'), s:newline_character)
+  call writefile(encoded_lines, s:linkedroot . "/" . s:linkeddir . "/js/previm-function.js")
+  " generate js files
+  while len(l:todolist) > 0
+    let l:curfile = remove(l:todolist, 0)
+    call add(l:donelist, l:curfile)
+    call s:linked_nodes(s:linkedroot, l:curfile)
+    for l:item in s:local_mdfiles
+      if index(l:donelist, l:item) < 0
+        call add(l:todolist, l:item)
+      endif 
+    endfor
+  endwhile
+  call previm#open(s:linkedroot . l:linkeddir . '/index.html')
+endfunction
+
 function! previm#patchdir() abort
   let l:previm_mode = get(b:, 'refresh_mode', 0)
   if l:previm_mode == 2
     let l:rootdir = s:preview_directory()
   elseif s:bookroot != ""
     let l:rootdir = s:bookroot . "/" . s:bookdir
+  elseif s:linkedroot != ""
+    let l:rootdir = s:linkedroot . "/" . s:linkeddir
   else
     let l:rootdir = ''
   endif
@@ -155,13 +196,7 @@ function! s:book_nodes(root) abort
     call mkdir(a:root . l:bookdir . "/" . l:contentpath, 'p')
   endif
   for l:item in l:filelist
-    if has('win32unix')
-      " convert cygwin path to windows path
-      let l:item = substitute(system('cygpath -wa ' . l:item), "\n$", '', '')
-      let l:item = substitute(l:item, '\', '/', 'g')
-    elseif has('win32')
-      let l:item = substitute(l:item, '\', '/', 'g')
-    endif
+    let l:item = s:regular_filepath(l:item)
     let l:relitem = strpart(l:item, l:skiplen)
     let l:parts = split(l:relitem, '/')
     if len(l:parts) > 1
@@ -241,6 +276,25 @@ function! s:book_nodes(root) abort
   call writefile(l:outtxt, a:root . l:bookdir . "/" . l:contentpath . "nodes.js")
 endfunction
 
+function! s:linked_nodes(root, filepath) abort
+  let l:linkeddir = "/" . s:linkeddir
+  let l:contentpath = "js/out/"
+  let l:item = s:regular_filepath(a:filepath)
+  let l:targetfile = l:contentpath . sha256(l:item)[:15] . ".js"
+  if getftime(l:item) > getftime(a:root . l:linkeddir . "/" . l:targetfile)
+      if bufexists(l:item)
+          silent! exe "b " . bufnr(l:item)
+          let l:encoded_lines = split(iconv(s:function_template(), &encoding, 'utf-8'), s:newline_character)
+          call writefile(encoded_lines, a:root . l:linkeddir . "/" . l:targetfile)
+      else
+          silent! exe "edit ". l:item
+          let l:encoded_lines = split(iconv(s:function_template(), &encoding, 'utf-8'), s:newline_character)
+          call writefile(encoded_lines, a:root . l:linkeddir . "/" . l:targetfile)
+          silent! exe "bdelete"
+      endif
+  endif
+endfunction
+
 function! s:exists_openbrowser() abort
   try
     if get(g:, 'spacevim_plugin_manager', '') ==# 'dein'
@@ -268,9 +322,13 @@ endfunction
 function! previm#refresh() abort
   let l:previm_mode = get(b:, 'refresh_mode', 0)
   if (l:previm_mode == 0) && (s:bookroot != "")
-    if s:bookroot == s:rootpath()
+    let l:rootpath = s:rootpath()
+    if s:bookroot == l:rootpath
       let b:refresh_mode = 3
       let l:previm_mode = 3
+    elseif s:linkedroot == l:rootpath
+      let b:refresh_mode = 4
+      let l:previm_mode = 4
     endif
   endif
   if (l:previm_mode <= 2) && (l:previm_mode >= 1)
@@ -282,13 +340,7 @@ function! previm#refresh() abort
     let l:skiplen = strlen(s:bookroot) + 1
     let l:sep = "/"
     let l:item = expand("%:p")
-    if has('win32unix')
-      " convert cygwin path to windows path
-      let l:item = substitute(system('cygpath -wa ' . l:item), "\n$", '', '')
-      let l:item = substitute(l:item, '\', '/', 'g')
-    elseif has('win32')
-      let l:item = substitute(l:item, '\', '/', 'g')
-    endif
+    let l:item = s:regular_filepath(l:item)
     let l:relitem = strpart(l:item, l:skiplen)
     let l:targetfile = l:contentpath . sha256(l:relitem)[:15] . ".js"
     if filereadable(s:bookroot . l:bookdir . "/" . l:targetfile)
@@ -299,6 +351,8 @@ function! previm#refresh() abort
       " new markdown file, re-generate filelist
       call s:book_nodes(s:bookroot)
     endif
+  elseif l:previm_mode == 4
+    call s:linked_nodes(s:linkedroot, fnamemodify(expand('%:p'), ':p'))
   endif
 endfunction
 
@@ -395,6 +449,7 @@ endfunction
 " その場合「.txtだが内部的なファイルタイプがmarkdown」といった場合に動かなくなる。
 " そのためVim側できちんとファイルタイプを返すようにしている。
 function! s:function_template() abort
+  let s:local_mdfiles = []
   let current_file = expand('%:p')
   return join([
       \ 'function isShowHeader() {',
@@ -418,6 +473,14 @@ function! s:function_template() abort
       \ '}',
       \ 'function getOptions() {',
       \ printf('return %s;', previm#options()),
+      \ '}',
+      \], s:newline_character)
+endfunction
+
+function! s:linked_default_template(default_file) abort
+  return join([
+      \ 'function getDefaultJs() {',
+      \ printf('return "%s";', s:escape_backslash(a:default_file)),
       \ '}',
       \], s:newline_character)
 endfunction
@@ -460,6 +523,12 @@ function! s:expand_include(lines, fpath) abort
       if l:previm_mode == 3
         if strpart(l:relpath[0], 0, 1) == '/'
           let l:fullpath = s:bookroot . l:relpath
+        else
+          let l:fullpath = fnamemodify(fnamemodify(a:fpath, ':h') . '/' . l:relpath, ':p')
+        endif
+      elseif l:previm_mode == 4
+        if strpart(l:relpath[0], 0, 1) == '/'
+          let l:fullpath = s:linkedroot . l:relpath
         else
           let l:fullpath = fnamemodify(fnamemodify(a:fpath, ':h') . '/' . l:relpath, ':p')
         endif
@@ -516,14 +585,7 @@ function! s:do_external_parse(lines) abort
 endfunction
 
 function! previm#convert_to_content(lines) abort
-  let mkd_dir = s:escape_backslash(expand('%:p:h'))
-  if has('win32unix')
-    " convert cygwin path to windows path
-    let mkd_dir = substitute(system('cygpath -wa ' . mkd_dir), "\n$", '', '')
-    let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
-  elseif has('win32')
-    let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
-  endif
+  let mkd_dir = s:regular_filepath(expand('%:p:h'))
   let converted_lines = []
   for line in s:do_external_parse(a:lines)
     " TODO エスケープの理由と順番の依存度が複雑
@@ -596,14 +658,28 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir) abort
         let pre_slash = "/"
         let local_path = strpart(l:simple, strlen(l:root))
       endif
+    elseif l:previm_mode == 4
+      let l:root = s:linkedroot . "/"
+      if s:start_with(l:simple, l:root)
+        let path_prefix = ".."
+        let pre_slash = "/"
+        let local_path = strpart(l:simple, strlen(l:root))
+      endif
     endif
   endif
-  if empty(elem.title)
-    let prev_imgpath = printf('!\[%s\](%s)', elem.alt, elem.path)
-    let new_imgpath = printf('![%s](%s%s%s)', elem.alt, path_prefix, pre_slash, local_path)
+  if has_key(elem, "linked")
+    let prev_imgpath = printf('\[%s\](%s)', elem.alt, elem.path)
+    let new_imgpath = s:regular_filepath(fnamemodify(local_path, ':p'))
+    call add(s:local_mdfiles, new_imgpath)
+    let new_imgpath = '<a href="javascript:change_article(''' . sha256(new_imgpath)[:15] . '.js' . ''')">' . elem.alt . '</a>'
   else
-    let prev_imgpath = printf('!\[%s\](%s "%s")', elem.alt, elem.path, elem.title)
-    let new_imgpath = printf('![%s](%s%s%s "%s")', elem.alt, path_prefix, pre_slash, local_path, elem.title)
+    if empty(elem.title)
+      let prev_imgpath = printf('!\[%s\](%s)', elem.alt, elem.path)
+      let new_imgpath = printf('![%s](%s%s%s)', elem.alt, path_prefix, pre_slash, local_path)
+    else
+      let prev_imgpath = printf('!\[%s\](%s "%s")', elem.alt, elem.path, elem.title)
+      let new_imgpath = printf('![%s](%s%s%s "%s")', elem.alt, path_prefix, pre_slash, local_path, elem.title)
+    endif
   endif
 
   " unify quote
@@ -615,7 +691,15 @@ function! previm#fetch_imgpath_elements(text) abort
   let elem = {'alt': '', 'path': '', 'title': ''}
   let matched = matchlist(a:text, '!\[\([^\]]*\)\](\([^)]*\))')
   if empty(matched)
-    return elem
+    if s:linkedroot != ""
+      let matched = matchlist(a:text, '\[\([^\]]*\)\](\([^)]*\.\(markdown\|mdown\|mkd\|mkdn\|mdwn\|md\|rst\)\))')
+      if empty(matched)
+        return elem
+      endif
+      let elem.linked = 1
+    else
+      return elem
+    endif
   endif
   let elem.alt = matched[1]
   return extend(elem, s:fetch_path_and_title(matched[2]))
@@ -647,6 +731,17 @@ function! s:echo_err(msg) abort
   echohl None
 endfunction
 
+function! s:regular_filepath(filepath) abort
+  if has('win32unix')
+    " convert cygwin path to windows path
+    let l:item = substitute(system('cygpath -wa ' . a:filepath), "\n$", '', '')
+    let l:item = substitute(l:item, '\', '/', 'g')
+  elseif has('win32')
+    let l:item = substitute(a:filepath, '\', '/', 'g')
+  endif
+  return l:item
+endfunction
+
 function! previm#wipe_cache()
   for path in filter(split(globpath(s:base_dir, '*'), "\n"), 'isdirectory(v:val) && v:val !~ "_$"')
     call previm#cleanup_preview(path)
@@ -657,9 +752,13 @@ function! previm#wipe_cache()
   elseif l:previm_mode == 3
     let l:bookdir = "/" . s:bookdir
     call previm#cleanup_preview(s:bookroot . l:bookdir)
+  elseif l:previm_mode == 4
+    let l:linkeddir = "/" . s:linkeddir
+    call previm#cleanup_preview(s:linkedroot . l:linkeddir)
   endif
   let b:refresh_mode = 0
   let s:bookroot = ""
+  let s:linkedroot = ""
 endfunction
 
 function! previm#options()
@@ -680,14 +779,7 @@ func! s:rootpath(...)
     while 1
         for l:item in readdir(l:curpath)
             if index(l:rootpattern, l:item) >= 0
-                if has('win32unix')
-                  " convert cygwin path to windows path
-                  let l:curpath = substitute(system('cygpath -wa ' . l:curpath), "\n$", '', '')
-                  let l:curpath = substitute(l:curpath, '\', '/', 'g')
-                elseif has('win32')
-                  let l:curpath = substitute(l:curpath, '\', '/', 'g')
-                endif
-                return l:curpath
+                return s:regular_filepath(l:curpath)
             endif
         endfor
         let l:newpath = fnamemodify(l:curpath, ":h")
