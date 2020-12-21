@@ -139,6 +139,14 @@
     script.type = 'text/javascript';
     if (currentjs == "") {
       currentjs = getDefaultJs();
+      var query = _win.location.search.substr(1).split("&");
+      for (var i = 0; i < query.length; i++) {
+        var parts = query[i].split('=');
+        if (parts[0] == 'js') {
+          currentjs = parts[1];
+          break;
+        }
+      }
       _doc.getElementById('js-file-name').innerHTML = currentjs;
     }
     script.src = 'js/out/' + currentjs + '?t=' + new Date().getTime();
@@ -166,7 +174,8 @@
   }
 
   _win.change_article = function(jsfile) {
-    currentjs = jsfile;
+    // currentjs = jsfile;
+    _win.open(_win.location.href + "?js=" + jsfile, "_blank");
   }
 
   loadPreview();
