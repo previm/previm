@@ -50,6 +50,8 @@
 1. 解决Windows环境下不能转换reStructuredText文件的问题
 2. 没有开启浏览器预览时，不在后台实时生成网页表示所需的js文件（手动执行`:PrevimWipeCache`后关闭预览）
 3. 添加以下插件
+    - markdown-it-anchor
+    - markdown-it-toc-done-right
     - markdown-it-container
     - markdown-it-emoji
     - markdown-it-ins
@@ -72,16 +74,112 @@
             - 搜索文档时，忽略根目录中以`_`开头的子目录中的所有文件
             - 文档中涉及的本地图片文件，如果在根目录（含根目录的各级子目录）中，会转换成相对路径，否则还是采用绝对路径
         - **取消**了对AsciiDoc格式的支持
+    - Linked模式：用于存放个人知识库
+        - 命令：`:PrevimLinked`
+        - 与Book模式功能的差异
+            - 没有树形文档列表
+            - 支持文档跳转（格式：`[xxxx](../xxx.md)`，限制：一行只能有1个跳转）
 5. 追加自定义渲染功能
     - 命令：`:PrevimPatch`
     - 选择网页根目录和自定义配置文件之后会修改`index.html`和`js/previm.js`文件
         - 仅对Local模式和Book模式有效
-        - 自定义配置文件使用20个`=`和20个`-`分隔成3部分
-            1. 需要插入`index.html`文件中的内容，例如`<script src="xxx"></script>`
-            2. 需要插入`js/previm.js`文件中用于初始化markdown-it对象的代码片段，主要用于`markdown-it-container`的初始化部分
-            3. 需要插入`js/previm.js`文件中用于追加渲染的代码片段
 6. 添加include功能
     - 格式：`{% include "相对当前文件的路径" %}`
     - 功能：将指定文件的内容复制到这里，指定文件不存在时不处理
     - 对于Book模式，可以用`/`开头表示相对于根目录的路径
-7. 自动设置H1~H6的id，用于TOC的跳转
+7. 文件头加入`[toc]`可以自动生成目录
+
+## 自定义渲染
+### 基本用法
+用于对特定段落添加自定义样式。
+``` markdown
+使用`::: @css-classname param1 param2 ...`开头，`:::`结尾。
+::: @abc 23 12
++ eaueoa
++ aaaa
+:::
+
+手动指定样式
+<style>
+<!--
+.abc {
+  color: red;
+}
+-->
+</style>
+```
+
+渲染生成的HTML代码：
+```html
+<div id="preview"><p>使用<code>::: @css-classname param1 param2 ...</code>开头，<code>:::</code>结尾。</p>
+<div class="abc" id="3" data-count="2" data-arg1="23" data-arg2="12"><ul>
+<li>eaueoa</li>
+<li>aaaa</li>
+</ul>
+</div>
+<p>手动指定样式</p>
+<style>
+<!--
+.abc {
+  color: red;
+}
+-->
+</style></div>
+```
+其中`id`是一个不重复的数字，`data-count`表示参数个数，`data-argN`表示第N个参数。
+
+### 高级用法
+对于需要自定义渲染的部分，需要定义3块内容：
+- 添加依赖的javascript文件到index.html中
+- 自定义段落规则及markdown-it的渲染函数
+- 针对markdown-it渲染结果的进一步渲染
+
+高级方法需要使用`:PrevimPatch`命令导入配置文件。配置文件示例如下：
+```text
+<script src="../_custom/svg.min.js"></script>
+<script src="../_custom/liuyao.js"></script>
+====================
+.use(_win.markdownitContainer, 'liuyao', {
+  validate: function(params) {
+    return params.trim().match(/^liuyao\s+([0-9]{10,})\s*([0-2]{5}[GLW]{3})?\s*(.*)$/);
+  },
+  render: function (tokens, idx) {
+    var m = tokens[idx].info.trim().match(/^liuyao\s+([0-9]{8})([0-9]{2,})\s*([0-2]{5}[GLW]{3})?\s*(.*)$/);
+    if (tokens[idx].nesting === 1) {
+      // opening tag
+      return '<details open><summary>' + md.utils.escapeHtml(m[4] || m[2]) + '</summary>\n<div class="liuyao" id="liuyao' + idx + '" data-date="' + m[1] + '" data-value="' + m[2] + '" data-flag="' + m[3] + '"></div>';
+    } else {
+      // closing tag
+      return '</details>\n';
+    }
+  }
+})
+--------------------
+renderLiuyao(document.body);
+```
+
+## Javascript Library
+- https://github.com/KaTeX/KaTeX  0.11.1
+- https://github.com/asciidoctor/asciidoctor.js   1.5.9
+- https://github.com/highlightjs/highlight.js 9.15.6
+- https://github.com/markdown-it/markdown-it  8.4.2
+- https://github.com/markdown-it/markdown-it-abbr 1.0.4
+- https://github.com/valeriangalliat/markdown-it-anchor   6.0.0
+- https://github.com/mcecot/markdown-it-checkbox  1.1.0
+- https://github.com/markdown-it/markdown-it-cjk-breaks   1.1.3
+- https://github.com/markdown-it/markdown-it-container    3.0.0
+- https://github.com/markdown-it/markdown-it-deflist  2.0.3
+- https://github.com/markdown-it/markdown-it-emoji    1.4.0
+- https://github.com/markdown-it/markdown-it-footnote 3.0.1
+- https://github.com/markdown-it/markdown-it-ins  3.0.0
+- https://github.com/markdown-it/markdown-it-mark 3.0.0
+- https://github.com/classeur/markdown-it-mathjax 2.0.0
+- https://github.com/RedBug312/markdown-it-multimd-table  4.0.3
+- https://github.com/markdown-it/markdown-it-sub  1.0.0
+- https://github.com/markdown-it/markdown-it-sup  1.0.0
+- https://github.com/nagaozen/markdown-it-toc-done-right  4.1.0
+- https://github.com/vuejs/vue    2.6.11
+- https://github.com/vuetifyjs/vuetify    2.2.27
+- https://github.com/borgar/textile-js    2.0.4
+- https://github.com/mermaid-js/mermaid   8.2.3
+
