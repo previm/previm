@@ -159,20 +159,20 @@ renderLiuyao(document.body);
 ```
 
 ## Javascript Library
-- https://github.com/KaTeX/KaTeX  0.11.1
-- https://github.com/asciidoctor/asciidoctor.js   1.5.9
-- https://github.com/highlightjs/highlight.js 9.15.6
-- https://github.com/markdown-it/markdown-it  8.4.2
+- https://github.com/KaTeX/KaTeX  0.12.0
+- https://github.com/asciidoctor/asciidoctor.js   2.2.1
+- https://github.com/highlightjs/highlight.js 10.5.0
+- https://github.com/markdown-it/markdown-it  12.0.4
 - https://github.com/markdown-it/markdown-it-abbr 1.0.4
 - https://github.com/valeriangalliat/markdown-it-anchor   6.0.0
 - https://github.com/mcecot/markdown-it-checkbox  1.1.0
 - https://github.com/markdown-it/markdown-it-cjk-breaks   1.1.3
 - https://github.com/markdown-it/markdown-it-container    3.0.0
-- https://github.com/markdown-it/markdown-it-deflist  2.0.3
-- https://github.com/markdown-it/markdown-it-emoji    1.4.0
-- https://github.com/markdown-it/markdown-it-footnote 3.0.1
-- https://github.com/markdown-it/markdown-it-ins  3.0.0
-- https://github.com/markdown-it/markdown-it-mark 3.0.0
+- https://github.com/markdown-it/markdown-it-deflist  2.1.0
+- https://github.com/markdown-it/markdown-it-emoji    2.0.0
+- https://github.com/markdown-it/markdown-it-footnote 3.0.2
+- https://github.com/markdown-it/markdown-it-ins  3.0.1
+- https://github.com/markdown-it/markdown-it-mark 3.0.1
 - https://github.com/classeur/markdown-it-mathjax 2.0.0
 - https://github.com/RedBug312/markdown-it-multimd-table  4.0.3
 - https://github.com/markdown-it/markdown-it-sub  1.0.0
@@ -181,5 +181,5 @@ renderLiuyao(document.body);
 - https://github.com/vuejs/vue    2.6.11
 - https://github.com/vuetifyjs/vuetify    2.2.27
 - https://github.com/borgar/textile-js    2.0.4
-- https://github.com/mermaid-js/mermaid   8.2.3
+- https://github.com/mermaid-js/mermaid   8.8.4
 
