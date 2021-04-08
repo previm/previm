@@ -214,6 +214,10 @@ img {
   box-shadow: 0 5px 15px #000;		
 }
 
+input[type="checkbox"] + label {
+  margin-left: 0.5ex;
+}
+
 @media screen and (min-width: 914px) {
     body {
         width: 854px;
