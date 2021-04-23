@@ -119,9 +119,7 @@ table tr th, table tr td { padding: 3px 7px; } /** 余白も若干デカいの�
 }
 
 .task-list-item-checkbox {
-    float: left;
-    margin-left: -20px !important; /* リストスタイルへ位置をずらす */
-    margin-top: 6px;
+    margin: 0 .2em .25em -1.6em !important;
 }
 
 input[type="radio"], 
