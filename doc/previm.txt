@@ -1,6 +1,6 @@
 *previm.txt*	Preview Plugin
 
-Version: 1.6
+Version: 1.8.1
 Author: kanno <akapanna@gmail.com>
 Maintainer: previm developers
 
@@ -61,6 +61,14 @@ COMMANDS						*previm-command*
 							*:PrevimOpen*
 :PrevimOpen
 	Opens the current file on the browser.
+	
+							*:PrevimWipeCache*
+:PrevimWipeCache
+	Delete all previews in the cache.
+	
+							*:PrevimRefresh*
+:PrevimRefresh
+	Force a refresh of the preview.
 
 
 ==============================================================================
