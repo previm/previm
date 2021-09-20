@@ -95,6 +95,16 @@
 
       loadPlantUML();
 
+      document.querySelectorAll('pre code.language-katex').forEach(elem => {
+        const html = katex.renderToString(elem.innerText, {
+          output: 'html',
+          throwOnError: false,
+        })
+        const div = document.createElement('div')
+        div.innerHTML = html
+        elem.parentNode.replaceWith(div)
+      })
+
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
       autoScroll('body', beforePageYOffset);
       style_header();
