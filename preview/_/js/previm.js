@@ -105,6 +105,16 @@
         elem.parentNode.replaceWith(div)
       })
 
+      document.querySelectorAll('.inlkatex').forEach(elem => {
+        const html = katex.renderToString(elem.innerText, {
+          output: 'html',
+          throwOnError: false,
+        })
+        const span = document.createElement('span')
+        span.innerHTML = html
+        elem.replaceWith(span)
+      })
+
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
       autoScroll('body', beforePageYOffset);
       style_header();
