@@ -97,12 +97,13 @@
 
       document.querySelectorAll('pre code.language-katex').forEach(elem => {
         const html = katex.renderToString(elem.innerText, {
+          displayMode: true,
           output: 'html',
           throwOnError: false,
         })
-        const div = document.createElement('div')
-        div.innerHTML = html
-        elem.parentNode.replaceWith(div)
+        const span = document.createElement('span')
+        span.innerHTML = html
+        elem.parentNode.replaceWith(span)
       })
 
       document.querySelectorAll('.inlkatex').forEach(elem => {
