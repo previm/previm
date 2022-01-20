@@ -24,8 +24,12 @@
 
   function transform(filetype, content) {
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
-      if (typeof isHardLineBreak === 'function') {
-        md.set({ breaks: isHardLineBreak() });
+      if (typeof isHardLineBreak === 'function' && isHardLineBreak()) {
+        md.set({ breaks: true });
+        md.disable('cjk_breaks');
+      } else {
+        md.set({ breaks: false });
+        md.enable('cjk_breaks');
       }
       return md.render(content);
     } else if(hasTargetFileType(filetype, ['rst'])) {
