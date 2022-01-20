@@ -24,6 +24,9 @@
 
   function transform(filetype, content) {
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
+      if (typeof isHardLineBreak === 'function') {
+        md.set({ breaks: isHardLineBreak() });
+      }
       return md.render(content);
     } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
