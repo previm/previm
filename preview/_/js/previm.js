@@ -23,6 +23,11 @@
   };
 
   function transform(filetype, content) {
+    if(hasTargetFileType(filetype, ['mermaid', 'mmd'])) {
+      content = '```mermaid\n' + content + '\n```';
+      filetype = 'markdown';
+    }
+
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
       return md.render(content);
     } else if(hasTargetFileType(filetype, ['rst'])) {
