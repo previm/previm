@@ -93,6 +93,21 @@
 
       mermaid.init();
 
+      // FIXME:
+      // By default, Mermaid.js graph sometimes gets too long top and bottom margin.
+      // This is first-aid for it.
+      //
+      // It looks setting `height` property for `<svg>` node of rendered Mermaid.js graphs,
+      // so remove the setting.
+      //
+      // This is perhaps the Mermaid.js bug <https://github.com/mermaid-js/mermaid/issues/1758>,
+      // though, setting `{ flowchart : { useMaxWidth : false }}` anyhow makes the problem worse:
+      // it expands too widely.
+      Array.prototype.forEach.call(
+        _doc.querySelectorAll('.mermaid > svg')
+      , (mermaidImage) => mermaidImage.removeAttribute('height')
+      );
+
       loadPlantUML();
 
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
