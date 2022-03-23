@@ -92,9 +92,15 @@ function! previm#refresh_js() abort
 endfunction
 
 let s:base_dir = fnamemodify(expand('<sfile>:p:h') . '/../preview', ':p')
+if exists('g:previm_custom_preview_base_dir')
+  let s:preview_base_dir = expand(g:previm_custom_preview_base_dir)
+  call s:File.copy_dir(s:base_dir . '_', s:preview_base_dir)
+else
+  let s:preview_base_dir = s:base_dir
+endif
 
 function! s:preview_directory() abort
-  return s:base_dir . sha256(expand('%:p'))[:15] . '-' . getpid()
+  return s:preview_base_dir . sha256(expand('%:p'))[:15] . '-' . getpid()
 endfunction
 
 function! previm#make_preview_file_path(path) abort
@@ -325,7 +331,7 @@ function! s:echo_err(msg) abort
 endfunction
 
 function! previm#wipe_cache()
-  for path in filter(split(globpath(s:base_dir, '*'), "\n"), 'isdirectory(v:val) && v:val !~ "_$"')
+  for path in filter(split(globpath(s:preview_base_dir, '*'), "\n"), 'isdirectory(v:val) && v:val !~ "_$"')
     call previm#cleanup_preview(path)
   endfor
 endfunction
