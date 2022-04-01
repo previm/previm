@@ -25,6 +25,9 @@
   function transform(filetype, content) {
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
       return md.render(content);
+    } else if(hasTargetFileType(filetype, ['plantuml'])) {
+      content = "```plantuml\n" + content + "```";
+      return md.render(content);
     } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
       return content;
