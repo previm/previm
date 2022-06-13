@@ -172,18 +172,74 @@ function! s:escape_backslash(text) abort
   return escape(a:text, '\')
 endfunction
 
-function! s:system(cmd) abort
-  if get(g:, 'previm_disable_vimproc', 0)
-    return system(a:cmd)
+function! s:get_use_job()
+  if has('win32') && !has('gui_running')
+    return 0
   endif
+  return get(g:, 'previm_use_job', 1) && exists('*job_start')
+endfunction
 
-  try
-    " NOTE: WindowsでDOS窓を開かず実行してくれるらしいのでvimprocを使う
-    let result = vimproc#system(a:cmd)
-    return result
-  catch /E117.*/
-    return system(a:cmd)
-  endtry
+function! s:system(...) abort
+  if !s:get_use_job()
+    return call('system', a:000)
+  endif
+  let [out, err] = ['', '']
+  redraw
+  let arg = has("win32") || has("win64") ?
+  \  printf('%s %s %s', &shell, &shellcmdflag, a:1) :
+  \  [&shell, &shellcmdflag, a:1]
+  let job = job_start(arg, {
+  \  'out_cb': {id,x->[execute('let out .= x'), out]},
+  \  'err_cb': {id,x->[execute('let err .= x'), err]},
+  \})
+  let s:job_shell_error = 0
+  if a:0 > 1
+    let ch = job_getchannel(job)
+    call ch_sendraw(ch, a:2)
+    call ch_close_in(ch)
+    try
+      while ch_status(ch) != 'closed'
+        sleep 10m
+      endwhile
+      redraw
+    catch
+      let s:job_shell_error = -1
+      call job_stop(job)
+      call getchar()
+      redraw
+      call s:errormsg(v:exception)
+      return 'canceled'
+    endtry
+  else
+    try
+      while job_status(job) == 'run'
+        sleep 10m
+      endwhile
+      redraw
+    catch
+      let s:job_shell_error = -1
+      call job_stop(job)
+      call getchar()
+      redraw
+      call s:errormsg(v:exception)
+      return 'canceled'
+    endtry
+  endif
+  sleep 10m
+  call job_stop(job)
+  let s:job_shell_error = job_info(job).exitval
+  if s:job_shell_error
+    return iconv(err, 'char', &encoding)
+  endif
+  return out
+endfunction
+
+function! s:shell_error()
+  if s:get_use_job()
+    return s:job_shell_error
+  else
+    return v:shell_error
+  endif
 endfunction
 
 function! s:do_external_parse(lines) abort
