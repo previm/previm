@@ -218,7 +218,7 @@ function! previm#convert_to_content(lines) abort
     let mkd_dir = substitute(system('cygpath -wa ' . mkd_dir), "\n$", '', '')
     let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
   elseif get(g:, 'previm_wsl_mode', 0) ==# 1
-    let mkd_dir = substitute(system('wslpath -w ' . mkd_dir), "\n$", '', '')
+    let mkd_dir = trim(system('wslpath -w ' . mkd_dir))
     let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
   elseif has('win32')
     let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
