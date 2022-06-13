@@ -10,6 +10,7 @@ let s:File = vital#previm#import('System.File')
 let s:newline_character = "\n"
 
 function! previm#open(preview_html_file) abort
+  let b:previm_opened = 1
   call previm#refresh()
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
     if has('win32') && g:previm_open_cmd =~? 'firefox'
@@ -58,8 +59,10 @@ function! s:apply_openbrowser(path) abort
 endfunction
 
 function! previm#refresh() abort
-  call previm#refresh_css()
-  call previm#refresh_js()
+  if exists('b:previm_opened')
+    call previm#refresh_css()
+    call previm#refresh_js()
+  endif
 endfunction
 
 let s:default_origin_css_path = "@import url('../../_/css/origin.css');"
