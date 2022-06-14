@@ -1,6 +1,6 @@
 function encode64(a) {
-  r = "";
-  for (i = 0; i < a.length; i += 3) {
+  var r = "";
+  for (var i = 0; i < a.length; i += 3) {
     if (i + 2 == a.length) {
       r += append3bytes(a.charCodeAt(i), a.charCodeAt(i + 1), 0)
     } else {
@@ -15,11 +15,11 @@ function encode64(a) {
 }
 
 function append3bytes(c, b, a) {
-  c1 = c >> 2;
-  c2 = ((c & 3) << 4) | (b >> 4);
-  c3 = ((b & 15) << 2) | (a >> 6);
-  c4 = a & 63;
-  r = "";
+  var c1 = c >> 2;
+  var c2 = ((c & 3) << 4) | (b >> 4);
+  var c3 = ((b & 15) << 2) | (a >> 6);
+  var c4 = a & 63;
+  var r = "";
   r += encode6bit(c1 & 63);
   r += encode6bit(c2 & 63);
   r += encode6bit(c3 & 63);
@@ -50,7 +50,7 @@ function encode6bit(a) {
 }
 
 function compress(prefix, a) {
-  a = unescape(encodeURIComponent(a));
+  var a = unescape(encodeURIComponent(a));
   if (prefix) {
     return prefix + encode64(zip_deflate(a, 9));
   }
