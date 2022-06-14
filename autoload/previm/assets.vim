@@ -145,7 +145,7 @@ function! previm#assets#update() abort
     for l:file in l:i['files']
       echo '  ' . l:file['path']
       let l:url = l:file['url']
-      let l:file = previm#preview_base_dir . '/' . l:file['path']
+      let l:file = previm#preview_base_dir() . '/' . l:file['path']
       let l:cmd = printf('curl --create-dirs -s -o %s %s', l:file, l:url)
       call system(l:cmd)
     endfor
