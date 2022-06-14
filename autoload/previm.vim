@@ -116,7 +116,7 @@ function! previm#refresh_js() abort
   let lines = readfile(previm#make_preview_file_path('js/previm.js.tmpl'))
   let output = []
   for line in lines
-    if line =~# '^\s*{{previm_load_plugins}}'
+    if line =~# '^\s*{{previm_load_libraries}}'
       let indent = matchstr(line, '^\s*')
       for code in previm#assets#code()
         call add(output, indent . code)
