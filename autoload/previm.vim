@@ -139,24 +139,24 @@ endfunction
 let s:base_dir = fnamemodify(expand('<sfile>:p:h') . '/../preview', ':p')
 
 function! s:fix_preview_base_dir() abort
-  if exists('g:previm_custom_preview_base_dir')
-    let s:preview_base_dir = expand(g:previm_custom_preview_base_dir)
-    if !filereadable(s:preview_base_dir . '_/js/previm.js')
-      call s:File.copy_dir(s:base_dir . '_', s:preview_base_dir . '_')
-    endif
-  else
-    let s:preview_base_dir = s:base_dir
+  if !filereadable(s:preview_base_dir . '_/js/previm.js')
+    call s:File.copy_dir(s:base_dir . '_', s:preview_base_dir . '_')
   endif
 endfunction
 
 if exists('g:previm_custom_preview_base_dir')
-  if g:previm_custom_preview_base_dir !~# '$'
-    let g:previm_custom_preview_base_dir .= '/'
-  endif
   let s:preview_base_dir = expand(g:previm_custom_preview_base_dir)
 else
   let s:preview_base_dir = s:base_dir
 endif
+
+if s:s:preview_base_dir !~# '$'
+  let s:preview_base_dir .= '/'
+endif
+
+function! previm#preview_base_dir() abort
+  return s:s:preview_base_dir
+endfunction
 
 function! s:preview_directory() abort
   return s:preview_base_dir . sha256(expand('%:p'))[:15] . '-' . getpid()

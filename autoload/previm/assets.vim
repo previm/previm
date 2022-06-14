@@ -125,7 +125,7 @@ let s:source_map = [
 \      },
 \    ],
 \  },
-\] + get(g:, 'previm_extra_libraries', [])
+\]
 
 let s:base_dir = expand('<sfile>:h:h:h') . '/preview'
 
@@ -136,6 +136,16 @@ function! previm#assets#update() abort
       echo '  ' . l:file['path']
       let l:url = l:file['url']
       let l:file = s:base_dir . '/' . l:file['path']
+      let l:cmd = printf('curl --create-dirs -s -o %s %s', l:file, l:url)
+      call system(l:cmd)
+    endfor
+  endfor
+  for l:i in get(g:, 'previm_extra_libraries', [])
+    echo 'Updating ' . l:i['name'] . '...'
+    for l:file in l:i['files']
+      echo '  ' . l:file['path']
+      let l:url = l:file['url']
+      let l:file = previm#preview_base_dir . '/' . l:file['path']
       let l:cmd = printf('curl --create-dirs -s -o %s %s', l:file, l:url)
       call system(l:cmd)
     endfor
