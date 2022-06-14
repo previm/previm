@@ -150,12 +150,12 @@ else
   let s:preview_base_dir = s:base_dir
 endif
 
-if s:s:preview_base_dir !~# '$'
+if s:preview_base_dir !~# '$'
   let s:preview_base_dir .= '/'
 endif
 
 function! previm#preview_base_dir() abort
-  return s:s:preview_base_dir
+  return s:preview_base_dir
 endfunction
 
 function! s:preview_directory() abort
