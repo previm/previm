@@ -151,7 +151,7 @@ function! previm#assets#update() abort
       call system(l:cmd)
     endfor
   endfor
-  for l:i in get(g:, 'previm_extra_libraries', [])
+  for l:i in filter(copy(get(g:, 'previm_extra_libraries', [])), {k, v -> !has_key(v, 'enabled') || v['enabled']})
     echo 'Updating ' . l:i['name'] . '...'
     for l:file in l:i['files']
       if !has_key(l:file, 'path') || !has_key(l:file, 'url')
@@ -177,7 +177,7 @@ function! previm#assets#js() abort
       endif
     endfor
   endfor
-  for l:i in get(g:, 'previm_extra_libraries', [])
+  for l:i in filter(copy(get(g:, 'previm_extra_libraries', [])), {k, v -> !has_key(v, 'enabled') || v['enabled']})
     for l:file in l:i['files']
       if l:file['type'] ==# 'js' && has_key(l:file, 'path')
         call add(l:files, l:file['path'])
@@ -196,7 +196,7 @@ function! previm#assets#css() abort
       endif
     endfor
   endfor
-  for l:i in get(g:, 'previm_extra_libraries', [])
+  for l:i in filter(copy(get(g:, 'previm_extra_libraries', [])), {k, v -> !has_key(v, 'enabled') || v['enabled']})
     for l:file in l:i['files']
       if l:file['type'] ==# 'css' && has_key(l:file, 'path')
         call add(l:files, l:file['path'])
@@ -215,7 +215,7 @@ function! previm#assets#init() abort
       endif
     endfor
   endfor
-  for l:i in get(g:, 'previm_extra_libraries', [])
+  for l:i in filter(copy(get(g:, 'previm_extra_libraries', [])), {k, v -> !has_key(v, 'enabled') || v['enabled']})
     for l:file in l:i['files']
       if has_key(l:file, 'init')
         let l:init += l:file['init']
@@ -234,7 +234,7 @@ function! previm#assets#code() abort
       endif
     endfor
   endfor
-  for l:i in get(g:, 'previm_extra_libraries', [])
+  for l:i in filter(copy(get(g:, 'previm_extra_libraries', [])), {k, v -> !has_key(v, 'enabled') || v['enabled']})
     for l:file in l:i['files']
       if has_key(l:file, 'code')
         let l:code += l:file['code']
