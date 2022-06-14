@@ -60,9 +60,22 @@ endfunction
 
 function! previm#refresh() abort
   if exists('b:previm_opened')
+    call previm#refresh_html()
     call previm#refresh_css()
     call previm#refresh_js()
   endif
+endfunction
+
+function! previm#refresh_html() abort
+  let l:content = join(readfile(previm#make_preview_file_path('index.html.tmpl')), "\n")
+
+  let l:content = substitute(l:content, '{{previm_js_files}}',
+    \ join(map(previm#assets#js(), {i, v -> printf('            <script src="../../%s"></script>', v)}), "\n"), '')
+
+  let l:content = substitute(l:content, '{{previm_css_files}}',
+    \ join(map(previm#assets#css(), {i, v -> printf('            <link type="text/css" href="../../%s"/>', v)}), "\n"), '')
+
+  call writefile(split(l:content, "\n"), previm#make_preview_file_path('index.html'))
 endfunction
 
 let s:default_origin_css_path = "@import url('../../_/css/origin.css');"
