@@ -60,6 +60,7 @@ endfunction
 
 function! previm#refresh() abort
   if exists('b:previm_opened')
+    call s:fix_preview_base_dir()
     call previm#refresh_html()
     call previm#refresh_css()
     call previm#refresh_js()
@@ -137,8 +138,25 @@ endfunction
 
 let s:base_dir = fnamemodify(expand('<sfile>:p:h') . '/../preview', ':p')
 
+function! s:fix_preview_base_dir() abort
+  if exists('g:previm_custom_preview_base_dir')
+    let s:preview_base_dir = expand(g:previm_custom_preview_base_dir)
+    if !filereadable(s:preview_base_dir . '_/js/previm.js')
+      call s:File.copy_dir(s:base_dir . '_', s:preview_base_dir)
+    endif
+  else
+    let s:preview_base_dir = s:base_dir
+  endif
+endfunction
+
+if exists('g:previm_custom_preview_base_dir')
+  let s:preview_base_dir = expand(g:previm_custom_preview_base_dir)
+else
+  let s:preview_base_dir = s:base_dir
+endif
+
 function! s:preview_directory() abort
-  return s:base_dir . sha256(expand('%:p'))[:15] . '-' . getpid()
+  return s:preview_base_dir . sha256(expand('%:p'))[:15] . '-' . getpid()
 endfunction
 
 function! previm#make_preview_file_path(path) abort
@@ -375,7 +393,7 @@ function! s:echo_err(msg) abort
 endfunction
 
 function! previm#wipe_cache()
-  for path in filter(split(globpath(s:base_dir, '*'), "\n"), 'isdirectory(v:val) && v:val !~ "_$"')
+  for path in filter(split(globpath(s:preview_base_dir, '*'), "\n"), 'isdirectory(v:val) && v:val !~ "_$"')
     call previm#cleanup_preview(path)
   endfor
 endfunction
