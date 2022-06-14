@@ -188,13 +188,13 @@ You can add extra libraries for preview: >
     \    'files': [
     \      {
     \        'type': 'js',
-    \        'path': 'preview/_/js/extra/foobar.js',
+    \        'path': '_/js/extra/foobar.js',
     \        'url': 'https://cdn.jsdelivr.net/gh/foobar/cdn-release@latest/build/foobar.min.js',
     \        'code': ['foobar.init();'],
     \      },
     \      {
     \        'type': 'css',
-    \        'path': 'preview/_/css/extra/foobar.css',
+    \        'path': '_/css/extra/foobar.css',
     \        'url': 'https://cdn.jsdelivr.net/gh/foobar/cdn-release@latest/build/styles/default.min.css',
     \      },
     \    ],
