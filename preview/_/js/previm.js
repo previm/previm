@@ -23,8 +23,31 @@
   };
 
   function transform(filetype, content) {
+    if(hasTargetFileType(filetype, ['mermaid', 'mmd'])) {
+      content = '```mermaid\n'
+              + content.replace(/</g, '&lt;')
+                       .replace(/>/g, '&gt;')
+              + '\n```';
+      filetype = 'markdown';
+    }
+
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
       return md.render(content);
+    } else if(hasTargetFileType(filetype, ['plantuml'])) {
+      var lines = content.split("\n")
+      var chunks = [];
+      lines.forEach(function (line) {
+        if (/^@start/.test(line)) {
+          chunks.push(line);
+        } else if (chunks.length !== 0) {
+          chunks[chunks.length - 1] += "\n" + line;
+        }
+      });
+      var plantumls = [];
+      chunks.forEach(function (chunk) {
+        plantumls.push("```plantuml\n" + chunk + "```\n");
+      });
+      return md.render(plantumls.join("\n"));
     } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
       return content;
