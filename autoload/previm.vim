@@ -67,15 +67,25 @@ function! previm#refresh() abort
 endfunction
 
 function! previm#refresh_html() abort
-  let l:content = join(readfile(previm#make_preview_file_path('index.html.tmpl')), "\n")
+  let l:lines = readfile(previm#make_preview_file_path('index.html.tmpl'))
+  let l:output = []
+  for l:line in l:lines
+    if l:line =~# '^\s*{{previm_js_files}}'
+      let l:indent = matchstr(l:line, '^\s*')
+      for l:file in previm#assets#js()
+        call add(l:output, printf('%s<script src="../../%s"></script>', l:indent, l:file))
+      endfor
+    elseif l:line =~# '^\s*{{previm_css_files}}'
+      let l:indent = matchstr(l:line, '^\s*')
+      for l:file in previm#assets#css()
+        call add(l:output, printf('%s<link type="text/css" href="../../%s"/>', l:indent, l:file))
+      endfor
+    else
+      call add(l:output, l:line)
+    endif
+  endfor
 
-  let l:content = substitute(l:content, '{{previm_js_files}}',
-    \ join(map(previm#assets#js(), {i, v -> printf('            <script src="../../%s"></script>', v)}), "\n"), '')
-
-  let l:content = substitute(l:content, '{{previm_css_files}}',
-    \ join(map(previm#assets#css(), {i, v -> printf('        <link type="text/css" href="../../%s"/>', v)}), "\n"), '')
-
-  call writefile(split(l:content, "\n"), previm#make_preview_file_path('index.html'))
+  call writefile(l:output, previm#make_preview_file_path('index.html'))
 endfunction
 
 let s:default_origin_css_path = "@import url('../../_/css/origin.css');"
