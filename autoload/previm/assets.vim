@@ -166,14 +166,14 @@ function! previm#assets#js() abort
   let l:files = []
   for l:i in s:source_map
     for l:file in l:i['files']
-      if l:file['type'] ==# 'js'
+      if l:file['type'] ==# 'js' && has_key(l:file, 'path')
         call add(l:files, l:file['path'])
       endif
     endfor
   endfor
   for l:i in get(g:, 'previm_extra_libraries', [])
     for l:file in l:i['files']
-      if l:file['type'] ==# 'js'
+      if l:file['type'] ==# 'js' && has_key(l:file, 'path')
         call add(l:files, l:file['path'])
       endif
     endfor
@@ -185,14 +185,14 @@ function! previm#assets#css() abort
   let l:files = []
   for l:i in s:source_map
     for l:file in l:i['files']
-      if l:file['type'] ==# 'css'
+      if l:file['type'] ==# 'css' && has_key(l:file, 'path')
         call add(l:files, l:file['path'])
       endif
     endfor
   endfor
   for l:i in get(g:, 'previm_extra_libraries', [])
     for l:file in l:i['files']
-      if l:file['type'] ==# 'css'
+      if l:file['type'] ==# 'css' && has_key(l:file, 'path')
         call add(l:files, l:file['path'])
       endif
     endfor
