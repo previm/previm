@@ -200,6 +200,25 @@ function! previm#assets#css() abort
   return l:files
 endfunction
 
+function! previm#assets#init() abort
+  let l:init = []
+  for l:i in s:source_map
+    for l:file in l:i['files']
+      if has_key(l:file, 'init')
+        let l:init += l:file['init']
+      endif
+    endfor
+  endfor
+  for l:i in get(g:, 'previm_extra_libraries', [])
+    for l:file in l:i['files']
+      if has_key(l:file, 'init')
+        let l:init += l:file['init']
+      endif
+    endfor
+  endfor
+  return l:init
+endfunction
+
 function! previm#assets#code() abort
   let l:code = []
   for l:i in s:source_map
