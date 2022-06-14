@@ -127,7 +127,7 @@ let s:source_map = [
 \  },
 \] + get(g:, 'previm_extra_libraries', [])
 
-let s:base_dir = expand('<sfile>:h:h:h')
+let s:base_dir = expand('<sfile>:h:h:h') . '/preview'
 
 function! previm#assets#update() abort
   for l:i in s:source_map
