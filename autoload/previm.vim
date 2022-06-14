@@ -198,13 +198,6 @@ endfunction
 function! s:function_template() abort
   let current_file = expand('%:p')
   return join([
-      \ 'function isShowHeader() {',
-      \ printf('return %s;', get(g:, 'previm_show_header', 1)),
-      \ '}',
-      \ '',
-      \ 'function isHardLineBreak() {',
-      \ printf('return %s;', get(g:, 'previm_hard_line_break', v:false) ? 'true' : 'false'),
-      \ '}',
       \ 'function getFileName() {',
       \ printf('return "%s";', s:escape_backslash(current_file)),
       \ '}',
@@ -409,7 +402,10 @@ function! previm#options()
     return '{}'
   endif
   return json_encode({
-  \   'plantuml_imageprefix': get(g:, 'previm_plantuml_imageprefix', v:null)
+  \   'imagePrefix': get(g:, 'previm_plantuml_imageprefix', v:null),
+  \   'hardLineBreak': get(g:, 'previm_hard_line_break', v:false) ? 'true' : 'false',
+  \   'showheader': get(g:, 'previm_show_header', 1),
+  \   'autoClose': get(g:, 'previm_auto_close', 0),
   \ })
 endfunction
 

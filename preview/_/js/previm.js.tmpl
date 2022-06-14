@@ -32,7 +32,7 @@
     }
 
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
-      if (typeof isHardLineBreak === 'function' && isHardLineBreak()) {
+      if (typeof getOptions === 'function' && getOptions().hardLineBreak) {
         md.set({ breaks: true });
         md.disable('cjk_breaks');
       } else {
@@ -90,8 +90,8 @@
   }
 
   function style_header() {
-    if (typeof isShowHeader === 'function') {
-      var style = isShowHeader() ? '' : 'none';
+    if (typeof getOptions === 'function') {
+      var style = getOptions().showheader ? '' : 'none';
       _doc.getElementById('header').style.display = style;
     }
   }
@@ -139,6 +139,9 @@
 
     _addEventListener(script, 'error', function() {
       _win.clearInterval(interval);
+      if (typeof getOptions === 'function' && getOptions().autoClose) {
+        _win.open("about:blank","_self").close();
+      }
     });
     _addEventListener(script, 'load', function() {
       loadPreview();
