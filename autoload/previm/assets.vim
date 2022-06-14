@@ -125,7 +125,7 @@ let s:source_map = [
 \      },
 \    ],
 \  },
-\]
+\] + get(g:, 'previm_extra_libraries', [])
 
 let s:base_dir = expand('<sfile>:h:h:h')
 
