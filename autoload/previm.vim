@@ -75,12 +75,12 @@ function! previm#refresh_html() abort
     if line =~# '^\s*{{previm_js_files}}'
       let indent = matchstr(line, '^\s*')
       for file in previm#assets#js()
-        call add(output, printf('%s<script src="../../%s"></script>', indent, file))
+        call add(output, printf('%s<script src="../%s"></script>', indent, file))
       endfor
     elseif line =~# '^\s*{{previm_css_files}}'
       let indent = matchstr(line, '^\s*')
       for file in previm#assets#css()
-        call add(output, printf('%s<link type="text/css" href="../../%s"/>', indent, file))
+        call add(output, printf('%s<link type="text/css" href="../%s"/>', indent, file))
       endfor
    else
       call add(output, line)
@@ -90,8 +90,8 @@ function! previm#refresh_html() abort
   call writefile(output, previm#make_preview_file_path('index.html'))
 endfunction
 
-let s:default_origin_css_path = "@import url('../../_/css/origin.css');"
-let s:default_github_css_path = "@import url('../../_/css/lib/github.css');"
+let s:default_origin_css_path = "@import url('../_/css/origin.css');"
+let s:default_github_css_path = "@import url('../_/css/lib/github.css');"
 
 function! previm#refresh_css() abort
   let css = []
@@ -142,7 +142,7 @@ function! s:fix_preview_base_dir() abort
   if exists('g:previm_custom_preview_base_dir')
     let s:preview_base_dir = expand(g:previm_custom_preview_base_dir)
     if !filereadable(s:preview_base_dir . '_/js/previm.js')
-      call s:File.copy_dir(s:base_dir . '_', s:preview_base_dir)
+      call s:File.copy_dir(s:base_dir . '_', s:preview_base_dir . '_')
     endif
   else
     let s:preview_base_dir = s:base_dir
@@ -150,6 +150,9 @@ function! s:fix_preview_base_dir() abort
 endfunction
 
 if exists('g:previm_custom_preview_base_dir')
+  if g:previm_custom_preview_base_dir !~# '$'
+    let g:previm_custom_preview_base_dir .= '/'
+  endif
   let s:preview_base_dir = expand(g:previm_custom_preview_base_dir)
 else
   let s:preview_base_dir = s:base_dir

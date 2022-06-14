@@ -4,7 +4,7 @@ let s:source_map = [
 \    'files': [
 \      {
 \        'type': 'js',
-\        'path': 'preview/_/js/lib/asciidoctor.min.js',
+\        'path': '_/js/lib/asciidoctor.min.js',
 \        'url': 'https://cdn.jsdelivr.net/npm/@asciidoctor/core@latest/dist/browser/asciidoctor.min.js',
 \      },
 \    ],
@@ -14,12 +14,12 @@ let s:source_map = [
 \    'files': [
 \      {
 \        'type': 'js',
-\        'path': 'preview/_/js/lib/highlight.pack.js',
+\        'path': '_/js/lib/highlight.pack.js',
 \        'url': 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js',
 \      },
 \      {
 \        'type': 'css',
-\        'path': 'preview/_/css/lib/highlight.css',
+\        'path': '_/css/lib/highlight.css',
 \        'url': 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/default.min.css',
 \      },
 \    ],
@@ -29,7 +29,7 @@ let s:source_map = [
 \    'files': [
 \      {
 \        'type': 'js',
-\        'path': 'preview/_/js/lib/markdown-it-abbr.min.js',
+\        'path': '_/js/lib/markdown-it-abbr.min.js',
 \        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-abbr/master/dist/markdown-it-abbr.min.js',
 \      },
 \    ],
@@ -39,7 +39,7 @@ let s:source_map = [
 \    'files': [
 \      {
 \        'type': 'js',
-\        'path': 'preview/_/js/lib/markdown-it-checkbox.min.js',
+\        'path': '_/js/lib/markdown-it-checkbox.min.js',
 \        'url': 'https://raw.githubusercontent.com/mcecot/markdown-it-checkbox/master/dist/markdown-it-checkbox.min.js',
 \      },
 \    ],
@@ -49,7 +49,7 @@ let s:source_map = [
 \    'files': [
 \      {
 \        'type': 'js',
-\        'path': 'preview/_/js/lib/markdown-it-cjk-breaks.min.js',
+\        'path': '_/js/lib/markdown-it-cjk-breaks.min.js',
 \        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-cjk-breaks/master/dist/markdown-it-cjk-breaks.min.js',
 \      },
 \    ],
@@ -59,7 +59,7 @@ let s:source_map = [
 \    'files': [
 \      {
 \        'type': 'js',
-\        'path': 'preview/_/js/lib/markdown-it-deflist.min.js',
+\        'path': '_/js/lib/markdown-it-deflist.min.js',
 \        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-deflist/master/dist/markdown-it-deflist.min.js'
 \      },
 \    ],
@@ -69,7 +69,7 @@ let s:source_map = [
 \    'files': [
 \      {
 \        'type': 'js',
-\        'path': 'preview/_/js/lib/markdown-it-footnote.min.js',
+\        'path': '_/js/lib/markdown-it-footnote.min.js',
 \        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-footnote/master/dist/markdown-it-footnote.min.js',
 \      },
 \    ],
@@ -79,7 +79,7 @@ let s:source_map = [
 \    'files': [
 \      {
 \        'type': 'js',
-\        'path': 'preview/_/js/lib/markdown-it-sub.min.js',
+\        'path': '_/js/lib/markdown-it-sub.min.js',
 \        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-sub/master/dist/markdown-it-sub.min.js',
 \      },
 \    ],
@@ -89,7 +89,7 @@ let s:source_map = [
 \    'files': [
 \      {
 \        'type': 'js',
-\        'path': 'preview/_/js/lib/markdown-it-sup.min.js',
+\        'path': '_/js/lib/markdown-it-sup.min.js',
 \        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-sup/master/dist/markdown-it-sup.min.js',
 \      },
 \    ],
@@ -99,7 +99,7 @@ let s:source_map = [
 \    'files': [
 \      {
 \        'type': 'js',
-\        'path': 'preview/_/js/lib/markdown-it.min.js',
+\        'path': '_/js/lib/markdown-it.min.js',
 \        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it/master/dist/markdown-it.min.js',
 \      },
 \    ],
@@ -109,7 +109,7 @@ let s:source_map = [
 \    'files': [
 \      {
 \        'type': 'js',
-\        'path': 'preview/_/js/lib/textile.js',
+\        'path': '_/js/lib/textile.js',
 \        'url': 'https://raw.githubusercontent.com/borgar/textile-js/master/lib/textile.js',
 \      },
 \    ],
@@ -119,7 +119,7 @@ let s:source_map = [
 \    'files': [
 \      {
 \        'type': 'js',
-\        'path': 'preview/_/js/lib/mermaid.min.js',
+\        'path': '_/js/lib/mermaid.min.js',
 \        'url': 'https://cdn.jsdelivr.net/npm/mermaid@latest/dist/mermaid.min.js',
 \        'code': ['mermaid.init();']
 \      },
