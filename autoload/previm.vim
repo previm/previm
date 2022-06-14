@@ -100,7 +100,7 @@ let s:base_dir = fnamemodify(expand('<sfile>:p:h') . '/../preview', ':p')
 function! s:fix_preview_base_dir() abort
   if exists('g:previm_custom_preview_base_dir')
     let s:preview_base_dir = expand(g:previm_custom_preview_base_dir)
-    if !isdirectory(s:preview_base_dir . '_/js/previm.js')
+    if !filereadable(s:preview_base_dir . '_/js/previm.js')
       call s:File.copy_dir(s:base_dir . '_', s:preview_base_dir)
     endif
   else
