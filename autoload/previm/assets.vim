@@ -115,12 +115,13 @@ let s:source_map = [
 \    ],
 \  },
 \  {
-\    'name': 'mermain',
+\    'name': 'mermaid',
 \    'files': [
 \      {
 \        'type': 'js',
 \        'path': 'preview/_/js/lib/mermaid.min.js',
 \        'url': 'https://cdn.jsdelivr.net/npm/mermaid@latest/dist/mermaid.min.js',
+\        'code': ['mermaid.init();']
 \      },
 \    ],
 \  },
@@ -163,4 +164,16 @@ function! previm#assets#css() abort
     endfor
   endfor
   return l:files
+endfunction
+
+function! previm#assets#code() abort
+  let l:code = []
+  for l:i in s:source_map
+    for l:file in l:i['files']
+      if has_key(l:file, 'code')
+        let l:code += l:file['code']
+      endif
+    endfor
+  endfor
+  return l:code
 endfunction

@@ -63,6 +63,7 @@ function! previm#refresh() abort
     call previm#refresh_html()
     call previm#refresh_css()
     call previm#refresh_js()
+    call previm#refresh_js_function()
   endif
 endfunction
 
@@ -111,8 +112,25 @@ function! previm#refresh_css() abort
   call writefile(css, previm#make_preview_file_path('css/previm.css'))
 endfunction
 
-" TODO: test(refresh_cssと同じように)
 function! previm#refresh_js() abort
+  let l:lines = readfile(previm#make_preview_file_path('js/previm.js.tmpl'))
+  let l:output = []
+  for l:line in l:lines
+    if l:line =~# '^\s*{{previm_load_plugins}}'
+      let l:indent = matchstr(l:line, '^\s*')
+      for l:code in previm#assets#code()
+        call add(l:output, l:indent .. l:code)
+      endfor
+    else
+      call add(l:output, l:line)
+    endif
+  endfor
+
+  call writefile(l:output, previm#make_preview_file_path('js/previm.js'))
+endfunction
+
+" TODO: test(refresh_cssと同じように)
+function! previm#refresh_js_function() abort
   let encoded_lines = split(iconv(s:function_template(), &encoding, 'utf-8'), s:newline_character)
   call writefile(encoded_lines, previm#make_preview_file_path('js/previm-function.js'))
 endfunction
