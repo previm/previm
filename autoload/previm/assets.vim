@@ -139,6 +139,9 @@ function! previm#assets#update() abort
   let oldmore = &more
   set nomore
   for l:i in s:source_map
+    if !has_key(l:i, 'path') || !has_key(l:i, 'url')
+      continue
+    endif
     echo 'Updating ' . l:i['name'] . '...'
     for l:file in l:i['files']
       echo '  ' . l:file['path']
@@ -149,6 +152,9 @@ function! previm#assets#update() abort
     endfor
   endfor
   for l:i in get(g:, 'previm_extra_libraries', [])
+    if !has_key(l:i, 'path') || !has_key(l:i, 'url')
+      continue
+    endif
     echo 'Updating ' . l:i['name'] . '...'
     for l:file in l:i['files']
       echo '  ' . l:file['path']
