@@ -109,8 +109,8 @@ let s:source_map = [
 \    'files': [
 \      {
 \        'type': 'js',
-\        'path': '_/js/lib/textile.js',
-\        'url': 'https://raw.githubusercontent.com/borgar/textile-js/master/lib/textile.js',
+\        'path': '_/js/lib/textile.min.js',
+\        'url': 'https://cdn.jsdelivr.net/npm/textile-js@latest/lib/textile.min.js',
 \      },
 \    ],
 \  },
@@ -139,11 +139,11 @@ function! previm#assets#update() abort
   let oldmore = &more
   set nomore
   for l:i in s:source_map
-    if !has_key(l:i, 'path') || !has_key(l:i, 'url')
-      continue
-    endif
     echo 'Updating ' . l:i['name'] . '...'
     for l:file in l:i['files']
+      if !has_key(l:file, 'path') || !has_key(l:file, 'url')
+        continue
+      endif
       echo '  ' . l:file['path']
       let l:url = l:file['url']
       let l:file = s:base_dir . '/' . l:file['path']
@@ -152,11 +152,11 @@ function! previm#assets#update() abort
     endfor
   endfor
   for l:i in get(g:, 'previm_extra_libraries', [])
-    if !has_key(l:i, 'path') || !has_key(l:i, 'url')
-      continue
-    endif
     echo 'Updating ' . l:i['name'] . '...'
     for l:file in l:i['files']
+      if !has_key(l:file, 'path') || !has_key(l:file, 'url')
+        continue
+      endif
       echo '  ' . l:file['path']
       let l:url = l:file['url']
       let l:file = previm#preview_base_dir() . '/' . l:file['path']
