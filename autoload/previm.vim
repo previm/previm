@@ -19,8 +19,8 @@ function! previm#open(preview_html_file) abort
     elseif has('win32unix')
       call s:system(g:previm_open_cmd . ' '''  . system('cygpath -w ' . a:preview_html_file) . '''')
     elseif get(g:, 'previm_wsl_mode', 0) ==# 1
-      let l:wsl_file_path = system('wslpath -w ' . a:preview_html_file)
-      call s:system(g:previm_open_cmd . " 'file:///" . fnamemodify(l:wsl_file_path, ':gs?\\?\/?') . '''')
+      let wsl_file_path = system('wslpath -w ' . a:preview_html_file)
+      call s:system(g:previm_open_cmd . " 'file:///" . fnamemodify(wsl_file_path, ':gs?\\?\/?') . '''')
     else
       call s:system(g:previm_open_cmd . ' '''  . a:preview_html_file . '''')
     endif
@@ -68,25 +68,25 @@ function! previm#refresh() abort
 endfunction
 
 function! previm#refresh_html() abort
-  let l:lines = readfile(previm#make_preview_file_path('index.html.tmpl'))
-  let l:output = []
-  for l:line in l:lines
-    if l:line =~# '^\s*{{previm_js_files}}'
-      let l:indent = matchstr(l:line, '^\s*')
-      for l:file in previm#assets#js()
-        call add(l:output, printf('%s<script src="../../%s"></script>', l:indent, l:file))
+  let lines = readfile(previm#make_preview_file_path('index.html.tmpl'))
+  let output = []
+  for line in lines
+    if line =~# '^\s*{{previm_js_files}}'
+      let indent = matchstr(line, '^\s*')
+      for file in previm#assets#js()
+        call add(output, printf('%s<script src="../../%s"></script>', indent, file))
       endfor
-    elseif l:line =~# '^\s*{{previm_css_files}}'
-      let l:indent = matchstr(l:line, '^\s*')
-      for l:file in previm#assets#css()
-        call add(l:output, printf('%s<link type="text/css" href="../../%s"/>', l:indent, l:file))
+    elseif line =~# '^\s*{{previm_css_files}}'
+      let indent = matchstr(line, '^\s*')
+      for file in previm#assets#css()
+        call add(output, printf('%s<link type="text/css" href="../../%s"/>', indent, file))
       endfor
-    else
-      call add(l:output, l:line)
+   else
+      call add(output, line)
     endif
   endfor
 
-  call writefile(l:output, previm#make_preview_file_path('index.html'))
+  call writefile(output, previm#make_preview_file_path('index.html'))
 endfunction
 
 let s:default_origin_css_path = "@import url('../../_/css/origin.css');"
@@ -113,20 +113,20 @@ function! previm#refresh_css() abort
 endfunction
 
 function! previm#refresh_js() abort
-  let l:lines = readfile(previm#make_preview_file_path('js/previm.js.tmpl'))
-  let l:output = []
-  for l:line in l:lines
-    if l:line =~# '^\s*{{previm_load_plugins}}'
-      let l:indent = matchstr(l:line, '^\s*')
-      for l:code in previm#assets#code()
-        call add(l:output, l:indent . l:code)
+  let lines = readfile(previm#make_preview_file_path('js/previm.js.tmpl'))
+  let output = []
+  for line in lines
+    if line =~# '^\s*{{previm_load_plugins}}'
+      let indent = matchstr(line, '^\s*')
+      for code in previm#assets#code()
+        call add(output, indent . code)
       endfor
     else
-      call add(l:output, l:line)
+      call add(output, line)
     endif
   endfor
 
-  call writefile(l:output, previm#make_preview_file_path('js/previm.js'))
+  call writefile(output, previm#make_preview_file_path('js/previm.js'))
 endfunction
 
 " TODO: test(refresh_cssと同じように)
