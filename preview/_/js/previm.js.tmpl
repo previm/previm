@@ -118,10 +118,10 @@
       needReload = true;
     }
     if (needReload && (typeof getContent === 'function') && (typeof getFileType === 'function')) {
+      {{previm_load_libraries}}
+
       var beforePageYOffset = _win.pageYOffset;
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
-
-      {{previm_load_libraries}}
 
       loadPlantUML();
 
