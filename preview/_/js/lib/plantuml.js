@@ -50,7 +50,7 @@ function encode6bit(a) {
 }
 
 function compress(prefix, a) {
-  var a = unescape(encodeURIComponent(a));
+  a = unescape(encodeURIComponent(a));
   if (prefix) {
     return prefix + encode64(zip_deflate(a, 9));
   }
