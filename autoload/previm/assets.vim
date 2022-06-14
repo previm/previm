@@ -130,6 +130,8 @@ let s:source_map = [
 let s:base_dir = expand('<sfile>:h:h:h') . '/preview'
 
 function! previm#assets#update() abort
+  let oldmore = &more
+  set nomore
   for l:i in s:source_map
     echo 'Updating ' . l:i['name'] . '...'
     for l:file in l:i['files']
@@ -150,6 +152,8 @@ function! previm#assets#update() abort
       call system(l:cmd)
     endfor
   endfor
+  redraw
+  let &more = oldmore
 endfunction
 
 function! previm#assets#js() abort
