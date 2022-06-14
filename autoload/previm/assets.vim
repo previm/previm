@@ -25,12 +25,32 @@ let s:source_map = [
 \    ],
 \  },
 \  {
+\    'name': 'markdown-it-abbr',
+\    'files': [
+\      {
+\        'type': 'js',
+\        'path': 'preview/_/js/lib/markdown-it-abbr.min.js',
+\        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-abbr/master/dist/markdown-it-abbr.min.js'
+\      },
+\    ],
+\  },
+\  {
 \    'name': 'markdown-it-checkbox',
 \    'files': [
 \      {
 \        'type': 'js',
 \        'path': 'preview/_/js/lib/markdown-it-checkbox.min.js',
 \        'url': 'https://raw.githubusercontent.com/mcecot/markdown-it-checkbox/master/dist/markdown-it-checkbox.min.js'
+\      },
+\    ],
+\  },
+\  {
+\    'name': 'markdown-it-cjk-breaks',
+\    'files': [
+\      {
+\        'type': 'js',
+\        'path': 'preview/_/js/lib/markdown-it-cjk-breaks.min.js',
+\        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-cjk-breaks/master/dist/markdown-it-cjk-breaks.min.js'
 \      },
 \    ],
 \  },
@@ -51,6 +71,26 @@ let s:source_map = [
 \        'type': 'js',
 \        'path': 'preview/_/js/lib/markdown-it-footnote.min.js',
 \        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-footnote/master/dist/markdown-it-footnote.min.js'
+\      },
+\    ],
+\  },
+\  {
+\    'name': 'markdown-it-sub',
+\    'files': [
+\      {
+\        'type': 'js',
+\        'path': 'preview/_/js/lib/markdown-it-sub.min.js',
+\        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-sub/master/dist/markdown-it-sub.min.js'
+\      },
+\    ],
+\  },
+\  {
+\    'name': 'markdown-it-sup',
+\    'files': [
+\      {
+\        'type': 'js',
+\        'path': 'preview/_/js/lib/markdown-it-sup.min.js',
+\        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-sup/master/dist/markdown-it-sup.min.js'
 \      },
 \    ],
 \  },
