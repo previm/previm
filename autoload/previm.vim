@@ -58,6 +58,7 @@ function! s:apply_openbrowser(path) abort
 endfunction
 
 function! previm#refresh() abort
+  call s:fix_preview_base_dir()
   call previm#refresh_css()
   call previm#refresh_js()
 endfunction
@@ -92,9 +93,20 @@ function! previm#refresh_js() abort
 endfunction
 
 let s:base_dir = fnamemodify(expand('<sfile>:p:h') . '/../preview', ':p')
+
+function! s:fix_preview_base_dir() abort
+  if exists('g:previm_custom_preview_base_dir')
+    let s:preview_base_dir = expand(g:previm_custom_preview_base_dir)
+    if !isdirectory(s:preview_base_dir . '_/js/previm.js')
+      call s:File.copy_dir(s:base_dir . '_', s:preview_base_dir)
+    endif
+  else
+    let s:preview_base_dir = s:base_dir
+  endif
+endfunction
+
 if exists('g:previm_custom_preview_base_dir')
   let s:preview_base_dir = expand(g:previm_custom_preview_base_dir)
-  call s:File.copy_dir(s:base_dir . '_', s:preview_base_dir)
 else
   let s:preview_base_dir = s:base_dir
 endif
