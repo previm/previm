@@ -15,12 +15,12 @@ let s:source_map = [
 \      {
 \        'type': 'js',
 \        'path': 'preview/_/js/lib/highlight.pack.js',
-\        'url': 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js',
+\        'url': 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/highlight.min.js',
 \      },
 \      {
 \        'type': 'css',
 \        'path': 'preview/_/css/lib/highlight.css',
-\        'url': 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/styles/default.min.css',
+\        'url': 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@latest/build/styles/default.min.css',
 \      },
 \    ],
 \  },
