@@ -1,0 +1,35 @@
+<!-- vim: set ft=html et ts=4 sts=4 sw=4: -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <base target="_blank">
+        <title>Preview</title>
+        <link type="text/css" href="css/previm.css" rel="stylesheet" media="all" />
+        {{previm_css_files}}
+        <style>
+          /* Fix #43 */
+          .section,
+          .section0,
+          .section1,
+          .section2,
+          .section3 {
+            opacity: unset;
+          }
+        </style>
+    </head>
+    <body id="body">
+        <div id="header">
+            <span id="markdown-file-name">Loading...</span>
+            <small><span id="last-modified"></span></small>
+        </div>
+        <div id="preview"></div>
+        <div id="footer">
+            {{previm_js_files}}
+            <script src="../_/js/lib/zip_deflate.js"></script>
+            <script src="../_/js/lib/plantuml.js"></script>
+            <script src="js/previm.js"></script>
+            <div id="monitor"></div>
+        </div>
+    </body>
+</html>
