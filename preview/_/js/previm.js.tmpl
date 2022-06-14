@@ -131,18 +131,21 @@
     }
   }
 
-  _win.setInterval(function() {
+  var interval = _win.setInterval(function() {
     var script = _doc.createElement('script');
 
     script.type = 'text/javascript';
     script.src = 'js/previm-function.js?t=' + new Date().getTime();
 
-    _addEventListener(script, 'load', (function() {
+    _addEventListener(script, 'error', function() {
+      _win.clearInterval(interval);
+    });
+    _addEventListener(script, 'load', function() {
       loadPreview();
       _win.setTimeout(function() {
         script.parentNode.removeChild(script);
       }, 160);
-    })());
+    });
 
     _doc.getElementsByTagName('head')[0].appendChild(script);
 
