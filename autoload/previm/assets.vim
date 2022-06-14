@@ -131,11 +131,11 @@ let s:base_dir = expand('<sfile>:h:h:h')
 
 function! previm#assets#update() abort
   for l:i in s:source_map
-    echo 'Updating ' .. l:i['name'] .. '...'
+    echo 'Updating ' . l:i['name'] . '...'
     for l:file in l:i['files']
-      echo '  ' .. l:file['path']
+      echo '  ' . l:file['path']
       let l:url = l:file['url']
-      let l:file = s:base_dir .. '/' .. l:file['path']
+      let l:file = s:base_dir . '/' . l:file['path']
       let l:cmd = printf('curl --create-dirs -s -o %s %s', l:file, l:url)
       call system(l:cmd)
     endfor

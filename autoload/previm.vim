@@ -119,7 +119,7 @@ function! previm#refresh_js() abort
     if l:line =~# '^\s*{{previm_load_plugins}}'
       let l:indent = matchstr(l:line, '^\s*')
       for l:code in previm#assets#code()
-        call add(l:output, l:indent .. l:code)
+        call add(l:output, l:indent . l:code)
       endfor
     else
       call add(l:output, l:line)
