@@ -138,7 +138,7 @@ function! s:function_template() abort
       \ '}',
       \ '',
       \ 'function isHardLineBreak() {',
-      \ printf('return %s;', exists('b:previm_hard_line_break') ? (get(b:, 'previm_hard_line_break', v:false) ? 'true' : 'false') : (get(g:, 'previm_hard_line_break', v:false) ? 'true' : 'false')),
+      \ printf('return %s;', get(b:, 'previm_hard_line_break', v:false) ? 'true' : 'false'),
       \ '}',
       \ '',
       \ 'function getFileName() {',
