@@ -121,7 +121,13 @@ let s:source_map = [
 \        'type': 'js',
 \        'path': '_/js/lib/mermaid.min.js',
 \        'url': 'https://cdn.jsdelivr.net/npm/mermaid@latest/dist/mermaid.min.js',
-\        'code': ['mermaid.init();']
+\        'code': [
+\          'mermaid.init();',
+\          'Array.prototype.forEach.call(',
+\          '  _doc.querySelectorAll(''.mermaid > svg'')',
+\          ', (mermaidImage) => mermaidImage.removeAttribute(''height'')',
+\          ');',
+\        ]
 \      },
 \    ],
 \  },
