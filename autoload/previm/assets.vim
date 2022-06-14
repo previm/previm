@@ -100,3 +100,27 @@ function! previm#assets#update() abort
     endfor
   endfor
 endfunction
+
+function! previm#assets#js() abort
+  let l:files = []
+  for l:i in s:source_map
+    for l:file in l:i['files']
+      if l:file['type'] ==# 'js'
+        call add(l:files, l:file['path'])
+      endif
+    endfor
+  endfor
+  return l:files
+endfunction
+
+function! previm#assets#css() abort
+  let l:files = []
+  for l:i in s:source_map
+    for l:file in l:i['files']
+      if l:file['type'] ==# 'css'
+        call add(l:files, l:file['path'])
+      endif
+    endfor
+  endfor
+  return l:files
+endfunction
