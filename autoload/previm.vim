@@ -80,7 +80,7 @@ function! previm#refresh_html() abort
     elseif line =~# '^\s*{{previm_css_files}}'
       let indent = matchstr(line, '^\s*')
       for file in previm#assets#css()
-        call add(output, printf('%s<link type="text/css" href="../%s"/>', indent, file))
+        call add(output, printf('%s<link type="text/css" href="../%s" rel="stylesheet" media="all" />', indent, file))
       endfor
    else
       call add(output, line)
