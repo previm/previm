@@ -225,18 +225,37 @@ function! previm#assets#init() abort
   return l:init
 endfunction
 
+function! previm#assets#style() abort
+  let l:style = []
+  for l:i in s:source_map
+    for l:file in l:i['files']
+      if l:file['type'] ==# 'css' && has_key(l:file, 'style')
+        let l:style += l:file['style']
+      endif
+    endfor
+  endfor
+  for l:i in filter(copy(get(g:, 'previm_extra_libraries', [])), {k, v -> !has_key(v, 'enabled') || v['enabled']})
+    for l:file in l:i['files']
+      if l:file['type'] ==# 'css' && has_key(l:file, 'style')
+        let l:style += l:file['style']
+      endif
+    endfor
+  endfor
+  return l:style
+endfunction
+
 function! previm#assets#code() abort
   let l:code = []
   for l:i in s:source_map
     for l:file in l:i['files']
-      if has_key(l:file, 'code')
+      if l:file['type'] ==# 'js' && has_key(l:file, 'code')
         let l:code += l:file['code']
       endif
     endfor
   endfor
   for l:i in filter(copy(get(g:, 'previm_extra_libraries', [])), {k, v -> !has_key(v, 'enabled') || v['enabled']})
     for l:file in l:i['files']
-      if has_key(l:file, 'code')
+      if l:file['type'] ==# 'js' && has_key(l:file, 'code')
         let l:code += l:file['code']
       endif
     endfor

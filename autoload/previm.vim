@@ -110,6 +110,11 @@ function! previm#refresh_css() abort
       call s:echo_err('[Previm]failed load custom css. ' . css_path)
     endif
   endif
+
+  for style in previm#assets#style()
+    call add(css, style)
+  endfor
+
   call writefile(css, previm#make_preview_file_path('css/previm.css'))
 endfunction
 
