@@ -105,7 +105,7 @@ let s:Vital.exists = function('s:exists')
 function! s:search(pattern) abort dict
   let paths = s:_extract_files(a:pattern, self.vital_files())
   let modules = sort(map(paths, 's:_file2module(v:val)'))
-  return s:_uniq(modules)
+  return uniq(modules)
 endfunction
 let s:Vital.search = function('s:search')
 
@@ -149,7 +149,7 @@ function! s:_import(name) abort dict
     call module._vital_created(module)
   endif
   let export_module = filter(copy(module), 'v:key =~# "^\\a"')
-  " Cache module before calling module.vital_loaded() to avoid cyclic
+  " Cache module before calling module._vital_loaded() to avoid cyclic
   " dependences but remove the cache if module._vital_loaded() fails.
   " let s:loaded[a:name] = export_module
   let s:loaded[a:name] = export_module
@@ -158,19 +158,72 @@ function! s:_import(name) abort dict
       call module._vital_loaded(vital#{s:plugin_name}#new())
     catch
       unlet s:loaded[a:name]
-      throw 'vital: fail to call ._vital_loaded(): ' . v:exception
+      throw 'vital: fail to call ._vital_loaded(): ' . v:exception . " from:\n" . s:_format_throwpoint(v:throwpoint)
     endtry
   endif
   return copy(s:loaded[a:name])
 endfunction
 let s:Vital._import = function('s:_import')
 
+function! s:_format_throwpoint(throwpoint) abort
+  let funcs = []
+  let stack = matchstr(a:throwpoint, '^function \zs.*, .\{-} \d\+$')
+  for line in split(stack, '\.\.')
+    let m = matchlist(line, '^\(.\+\)\%(\[\(\d\+\)\]\|, .\{-} \(\d\+\)\)$')
+    if !empty(m)
+      let [name, lnum, lnum2] = m[1:3]
+      if empty(lnum)
+        let lnum = lnum2
+      endif
+      let info = s:_get_func_info(name)
+      if !empty(info)
+        let attrs = empty(info.attrs) ? '' : join([''] + info.attrs)
+        let flnum = info.lnum == 0 ? '' : printf(' Line:%d', info.lnum + lnum)
+        call add(funcs, printf('function %s(...)%s Line:%d (%s%s)',
+        \        info.funcname, attrs, lnum, info.filename, flnum))
+        continue
+      endif
+    endif
+    " fallback when function information cannot be detected
+    call add(funcs, line)
+  endfor
+  return join(funcs, "\n")
+endfunction
+
+" @vimlint(EVL102, 1, l:_)
+" @vimlint(EVL102, 1, l:__)
+function! s:_get_func_info(name) abort
+  let name = a:name
+  if a:name =~# '^\d\+$'  " is anonymous-function
+    let name = printf('{%s}', a:name)
+  elseif a:name =~# '^<lambda>\d\+$'  " is lambda-function
+    let name = printf("{'%s'}", a:name)
+  endif
+  if !exists('*' . name)
+    return {}
+  endif
+  let body = execute(printf('verbose function %s', name))
+  let lines = split(body, "\n")
+  let signature = matchstr(lines[0], '^\s*\zs.*')
+  let [_, file, lnum; __] = matchlist(lines[1],
+  \   '^\t\%(Last set from\|.\{-}:\)\s*\zs\(.\{-}\)\%( \S\+ \(\d\+\)\)\?$')
+  return {
+  \   'filename': substitute(file, '[/\\]\+', '/', 'g'),
+  \   'lnum': 0 + lnum,
+  \   'funcname': a:name,
+  \   'arguments': split(matchstr(signature, '(\zs.*\ze)'), '\s*,\s*'),
+  \   'attrs': filter(['dict', 'abort', 'range', 'closure'], 'signature =~# (").*" . v:val)'),
+  \ }
+endfunction
+" @vimlint(EVL102, 0, l:__)
+" @vimlint(EVL102, 0, l:_)
+
 " s:_get_module() returns module object wihch has all script local functions.
 function! s:_get_module(name) abort dict
   let funcname = s:_import_func_name(self.plugin_name(), a:name)
   try
     return call(funcname, [])
-  catch /^Vim\%((\a\+)\)\?:E117/
+  catch /^Vim\%((\a\+)\)\?:E117:/
     return s:_get_builtin_module(a:name)
   endtry
 endfunction
@@ -232,7 +285,7 @@ function! s:_sid(path, filter_pattern) abort
   if has_key(s:cache_sid, unified_path)
     return s:cache_sid[unified_path]
   endif
-  for line in filter(split(s:_execute(':scriptnames'), "\n"), 'v:val =~# a:filter_pattern')
+  for line in filter(split(execute(':scriptnames'), "\n"), 'v:val =~# a:filter_pattern')
     let [_, sid, path; __] = matchlist(line, '^\s*\(\d\+\):\s\+\(.\+\)\s*$')
     if s:_unify_path(path) is# unified_path
       let s:cache_sid[unified_path] = sid
@@ -240,21 +293,6 @@ function! s:_sid(path, filter_pattern) abort
     endif
   endfor
   return 0
-endfunction
-
-" We want to use a execute() builtin function instead of s:_execute(),
-" however there is a bug in execute().
-" execute() returns empty string when it is called in
-" completion function of user defined ex command.
-" https://github.com/vim-jp/issues/issues/1129
-function! s:_execute(cmd) abort
-  let [save_verbose, save_verbosefile] = [&verbose, &verbosefile]
-  set verbose=0 verbosefile=
-  redir => res
-    silent! execute a:cmd
-  redir END
-  let [&verbose, &verbosefile] = [save_verbose, save_verbosefile]
-  return res
 endfunction
 
 if filereadable(expand('<sfile>:r') . '.VIM') " is case-insensitive or not
@@ -281,7 +319,7 @@ endif
 " copied and modified from Vim.ScriptLocal
 let s:SNR = join(map(range(len("\<SNR>")), '"[\\x" . printf("%0x", char2nr("\<SNR>"[v:val])) . "]"'), '')
 function! s:sid2sfuncs(sid) abort
-  let fs = split(s:_execute(printf(':function /^%s%s_', s:SNR, a:sid)), "\n")
+  let fs = split(execute(printf(':function /^%s%s_', s:SNR, a:sid)), "\n")
   let r = {}
   let pattern = printf('\m^function\s<SNR>%d_\zs\w\{-}\ze(', a:sid)
   for fname in map(fs, 'matchstr(v:val, pattern)')
@@ -294,20 +332,3 @@ endfunction
 function! s:_sfuncname(sid, funcname) abort
   return printf('<SNR>%s_%s', a:sid, a:funcname)
 endfunction
-
-if exists('*uniq')
-  function! s:_uniq(list) abort
-    return uniq(a:list)
-  endfunction
-else
-  function! s:_uniq(list) abort
-    let i = len(a:list) - 1
-    while 0 < i
-      if a:list[i] ==# a:list[i - 1]
-        call remove(a:list, i)
-      endif
-      let i -= 1
-    endwhile
-    return a:list
-  endfunction
-endif
