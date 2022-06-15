@@ -413,7 +413,7 @@ function! previm#options()
   endif
   return json_encode({
   \   'imagePrefix': get(g:, 'previm_plantuml_imageprefix', v:null),
-  \   'hardLineBreak': get(g:, 'previm_hard_line_break', v:false),
+  \   'hardLineBreak': get(b:, 'previm_hard_line_break', get(g:, 'previm_hard_line_break', v:false)),
   \   'showheader': get(g:, 'previm_show_header', 1),
   \   'autoClose': get(g:, 'previm_auto_close', 0),
   \ })
