@@ -57,7 +57,10 @@
       return md.render(plantumls.join("\n"));
     } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
-      return content;
+      return content
+        .replace(/<!--\s*plantuml\n([\s\S]*?)-->/g, function(all, c) {
+          return '<code class="language-plantuml">\n' + c.replace("- ->", "--&#62;").replace('<- -', '&#60;--') + '\n</code>';
+        });
     } else if(hasTargetFileType(filetype, ['textile'])) {
       return textile(content);
     } else if(hasTargetFileType(filetype, ['asciidoc'])) {

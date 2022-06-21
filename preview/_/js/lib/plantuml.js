@@ -63,6 +63,8 @@ function loadPlantUML() {
   Array.prototype.slice.call(umls).forEach(function(el) {
     var text = el.textContent
     var url = compress(prefix, text);
-    el.parentNode.outerHTML = '<div><img src="' + url + '" /></div>'
+    var div = document.createElement('div');
+    div.innerHTML = '<div><img src="' + url + '" /></div>'
+    el.replaceWith(div);
   });
 }
