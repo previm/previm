@@ -5,8 +5,6 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:File = vital#previm#import('System.File')
-
 let s:newline_character = "\n"
 
 function! previm#open(preview_html_file) abort
@@ -216,12 +214,7 @@ function! previm#make_preview_file_path(path) abort
 endfunction
 
 function! previm#cleanup_preview(dir) abort
-  if isdirectory(a:dir)
-    try
-      call s:File.rmdir(a:dir, 'r')
-    catch
-    endtry
-  endif
+  call delete(a:dir, 'rf')
 endfunction
 
 " NOTE: getFileType()の必要性について。
