@@ -65,6 +65,6 @@ function loadPlantUML() {
     var url = compress(prefix, text);
     var div = document.createElement('div');
     div.innerHTML = '<div><img src="' + url + '" /></div>'
-    el.replaceWith(div);
+    el.parentNode.replaceWith(div);
   });
 }

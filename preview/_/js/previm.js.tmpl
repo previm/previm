@@ -61,7 +61,7 @@
       // It has already been converted by rst2html.py
       return content
         .replace(/<!--\s*plantuml\n([\s\S]*?)-->/g, function(all, c) {
-          return '<code class="language-plantuml">\n' + c.replace("- ->", "--&#62;").replace('<- -', '&#60;--') + '\n</code>';
+          return '<div><code class="language-plantuml">\n' + c.replace("- ->", "--&#62;").replace('<- -', '&#60;--') + '\n</code></div>';
         });
     } else if(hasTargetFileType(filetype, ['textile'])) {
       return textile(content);
