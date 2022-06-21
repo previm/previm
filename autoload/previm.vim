@@ -93,6 +93,29 @@ endfunction
 let s:default_origin_css_path = "@import url('../_/css/origin.css');"
 let s:default_github_css_path = "@import url('../_/css/lib/github.css');"
 
+function! s:copy_dir(src, dest) abort
+  if isdirectory(a:src)
+    for src in readdir(a:src)
+      if !s:copy_dir(a:src .. '/' .. src, a:dest .. '/' ..  src)
+        return 0
+      endif
+    endfor
+    return 1
+  elseif filereadable(a:src)
+    return s:copy_file(a:src, a:dest)
+  endif
+endfunction
+
+function! s:copy_file(src, dst) abort
+  try
+    let content = readfile(a:src, 'b')
+    call writefile(content, a:dst, 'b')
+    return 1
+  catch
+    return 0
+  endtry
+endfunction
+
 function! previm#refresh_css() abort
   let css = []
   if get(g:, 'previm_disable_default_css', 0) !=# 1
@@ -104,7 +127,7 @@ function! previm#refresh_css() abort
   if exists('g:previm_custom_css_path')
     let css_path = expand(g:previm_custom_css_path)
     if filereadable(css_path)
-      call s:File.copy(css_path, previm#make_preview_file_path('css/user_custom.css'))
+      call s:copy_file(css_path, previm#make_preview_file_path('css/user_custom.css'))
       call add(css, "@import url('user_custom.css');")
     else
       call s:echo_err('[Previm]failed load custom css. ' . css_path)
@@ -149,8 +172,8 @@ endfunction
 let s:base_dir = fnamemodify(expand('<sfile>:p:h') . '/../preview', ':p')
 
 function! s:fix_preview_base_dir() abort
-  if !filereadable(s:preview_base_dir . '_/js/previm.js.tmpl')
-    call s:File.copy_dir(s:base_dir . '_', s:preview_base_dir . '_')
+  if !filereadable(s:preview_base_dir . '_/js/previm.js.tmpl') && s:preview_base_dir != s:base_dir
+    call s:copy_dir(s:base_dir . '_', s:preview_base_dir . '_')
   endif
 endfunction
 
@@ -160,7 +183,7 @@ else
   let s:preview_base_dir = s:base_dir
 endif
 
-if s:preview_base_dir !~# '$'
+if s:preview_base_dir !~# '/$'
   let s:preview_base_dir .= '/'
 endif
 
@@ -186,7 +209,7 @@ function! previm#make_preview_file_path(path) abort
       exe printf("au VimLeave * call previm#cleanup_preview('%s')", dir)
     augroup END
     if filereadable(src)
-      call s:File.copy(src, dst)
+      call s:copy_file(src, dst)
     endif
   endif
   return dst
