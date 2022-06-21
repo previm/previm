@@ -105,10 +105,9 @@ function! s:copy_dir(src, dest) abort
   endif
 endfunction
 
-function! s:copy_file(src, dst) abort
+function! s:copy_file(src, dest) abort
   try
-    let content = readfile(a:src, 'b')
-    call writefile(content, a:dst, 'b')
+    call writefile(readfile(a:src, 'b'), a:dest, 'b')
     return 1
   catch
     return 0
