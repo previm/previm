@@ -93,9 +93,27 @@ endfunction
 let s:default_origin_css_path = "@import url('../_/css/origin.css');"
 let s:default_github_css_path = "@import url('../_/css/lib/github.css');"
 
+function! s:copy_dir(src, dest) abort
+  if isdirectory(a:src)
+    for src in readdir(a:src)
+      if !s:copy_dir(a:src .. '/' .. src, a:dest .. '/' ..  src)
+        return 0
+      endif
+    endfor
+    return 1
+  elseif filereadable(a:src)
+    return s:copy_file(a:src, a:dest)
+  endif
+endfunction
+
 function! s:copy_file(src, dst) abort
-  let content = readfile(a:src, 'b')
-  call writefile(content, a:dst, 'b')
+  try
+    let content = readfile(a:src, 'b')
+    call writefile(content, a:dst, 'b')
+    return 1
+  catch
+    return 0
+  endtry
 endfunction
 
 function! previm#refresh_css() abort
@@ -154,8 +172,8 @@ endfunction
 let s:base_dir = fnamemodify(expand('<sfile>:p:h') . '/../preview', ':p')
 
 function! s:fix_preview_base_dir() abort
-  if !filereadable(s:preview_base_dir . '_/js/previm.js.tmpl')
-    call s:File.copy_dir(s:base_dir . '_', s:preview_base_dir . '_')
+  if !filereadable(s:preview_base_dir . '_/js/previm.js.tmpl') && s:preview_base_dir != s:base_dir
+    call s:copy_dir(s:base_dir . '_', s:preview_base_dir . '_')
   endif
 endfunction
 
@@ -165,7 +183,7 @@ else
   let s:preview_base_dir = s:base_dir
 endif
 
-if s:preview_base_dir !~# '$'
+if s:preview_base_dir !~# '/$'
   let s:preview_base_dir .= '/'
 endif
 
