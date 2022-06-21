@@ -93,6 +93,7 @@ let s:default_github_css_path = "@import url('../_/css/lib/github.css');"
 
 function! s:copy_dir(src, dest) abort
   if isdirectory(a:src)
+    call mkdir(a:dest, 'p', 0755)
     for src in readdir(a:src)
       if !s:copy_dir(a:src .. '/' .. src, a:dest .. '/' ..  src)
         return 0
