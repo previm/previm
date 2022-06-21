@@ -12,7 +12,7 @@ set cpo&vim
 
 augroup Previm
   autocmd!
-  autocmd FileType *{mkd,markdown,mmd,mermaid,rst,textile,asciidoc,plantuml}* call previm#install()
+  autocmd FileType *{mkd,markdown,mmd,mermaid,rst,textile,asciidoc,plantuml,html}* call previm#install()
 augroup END
 
 let &cpo = s:save_cpo

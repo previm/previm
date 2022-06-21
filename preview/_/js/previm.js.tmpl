@@ -55,6 +55,8 @@
         plantumls.push("```plantuml\n" + chunk + "```\n");
       });
       return md.render(plantumls.join("\n"));
+    } else if(hasTargetFileType(filetype, ['html'])) {
+      return content;
     } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
       return content
