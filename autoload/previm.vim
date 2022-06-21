@@ -35,6 +35,11 @@ function! previm#open(preview_html_file) abort
   else
     call s:echo_err('Command for the open can not be found. show detail :h previm#open')
   endif
+
+  augroup PrevimCleanup
+    au!
+    au VimLeave * call previm#wipe_cache_for_self()
+  augroup END
 endfunction
 
 function! s:exists_openbrowser() abort
@@ -202,10 +207,6 @@ function! previm#make_preview_file_path(path) abort
       call mkdir(dir, 'p')
     endif
 
-    augroup PrevimCleanup
-      au!
-      exe printf("au VimLeave * call previm#cleanup_preview('%s')", dir)
-    augroup END
     if filereadable(src)
       call s:copy_file(src, dst)
     endif
@@ -420,6 +421,14 @@ endfunction
 function! previm#wipe_cache()
   for path in filter(split(globpath(s:preview_base_dir, '*'), "\n"), 'isdirectory(v:val) && v:val !~ "_$"')
     call previm#cleanup_preview(path)
+  endfor
+endfunction
+
+function! previm#wipe_cache_for_self()
+  for path in filter(split(globpath(s:preview_base_dir, '*'), "\n"), 'isdirectory(v:val) && v:val !~ "_$"')
+    if path =~# '-' .. getpid() .. '$'
+      call previm#cleanup_preview(path)
+    endif
   endfor
 endfunction
 
