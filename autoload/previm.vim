@@ -93,6 +93,11 @@ endfunction
 let s:default_origin_css_path = "@import url('../_/css/origin.css');"
 let s:default_github_css_path = "@import url('../_/css/lib/github.css');"
 
+function! s:copy_file(src, dst) abort
+  let content = readfile(a:src, 'b')
+  call writefile(content, a:dst, 'b')
+endfunction
+
 function! previm#refresh_css() abort
   let css = []
   if get(g:, 'previm_disable_default_css', 0) !=# 1
@@ -104,7 +109,7 @@ function! previm#refresh_css() abort
   if exists('g:previm_custom_css_path')
     let css_path = expand(g:previm_custom_css_path)
     if filereadable(css_path)
-      call s:File.copy(css_path, previm#make_preview_file_path('css/user_custom.css'))
+      call s:copy_file(css_path, previm#make_preview_file_path('css/user_custom.css'))
       call add(css, "@import url('user_custom.css');")
     else
       call s:echo_err('[Previm]failed load custom css. ' . css_path)
@@ -186,7 +191,7 @@ function! previm#make_preview_file_path(path) abort
       exe printf("au VimLeave * call previm#cleanup_preview('%s')", dir)
     augroup END
     if filereadable(src)
-      call s:File.copy(src, dst)
+      call s:copy_file(src, dst)
     endif
   endif
   return dst
