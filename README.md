@@ -1,4 +1,4 @@
-[README in English](https://github.com/previm/previm/blob/master/README-en.mkd)
+[README in English](https://github.com/previm/previm/blob/master/README-en.md)
 
 ## Previm
 
