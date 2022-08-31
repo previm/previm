@@ -234,7 +234,7 @@ CHANGELOG						*previm-changelog*
         - support hidden header
 
 1.7	2015-08-15
-        - support mermaid(https://github.com/knsv/mermaid)
+        - support mermaid(https://mermaid-js.github.io/mermaid)
 
 1.6	2014-09-15
         - support realtime refresh

@@ -222,7 +222,7 @@ open-browser.vimの使用					*previm-openbrowser*
         - support hidden header
 
 1.7	2015-08-15
-        - support mermaid(https://github.com/knsv/mermaid)
+        - support mermaid(https://github.com/mermaid-js/mermaid)
 
 1.6	2014-09-15
         - support realtime refresh
