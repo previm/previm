@@ -18,7 +18,7 @@
   * [Pandoc style subscript](https://github.com/markdown-it/markdown-it-sub)
   * [Pandoc style superscript](https://github.com/markdown-it/markdown-it-sup)
   * [East Asian Line Breaks](https://github.com/markdown-it/markdown-it-cjk-breaks)
-  * [mermaid](http://knsv.github.io/mermaid/index.html)
+  * [mermaid](https://mermaid-js.github.io/mermaid)
   * [PlantUML](https://github.com/plantuml/plantuml).
 * reStructuredText
 * textile
@@ -62,7 +62,7 @@ previmを動作させるために以下の設定をしてください
 
 ### mermaid
 
-[mermaid](http://knsv.github.io/mermaid/)に対応しています。
+[mermaid](https://mermaid-js.github.io/mermaid)に対応しています。
 
 <pre>
 ```mermaid

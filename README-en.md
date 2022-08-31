@@ -18,7 +18,7 @@ Vim plugin for preview.
     * [Pandoc style subscript](https://github.com/markdown-it/markdown-it-sub)
     * [Pandoc style superscript](https://github.com/markdown-it/markdown-it-sup)
     * [East Asian Line Breaks](https://github.com/markdown-it/markdown-it-cjk-breaks)
-    * [mermaid](http://knsv.github.io/mermaid/index.html)
+    * [mermaid](https://mermaid-js.github.io/mermaid)
     * [PlantUML](https://github.com/plantuml/plantuml).
 * reStructuredText(required rst2html.py)
 * textile
@@ -65,7 +65,7 @@ You need to set up below to make previm work on Safari.
 
 ### mermaid
 
-Support [mermaid](http://knsv.github.io/mermaid/)
+Support [mermaid](https://mermaid-js.github.io/mermaid)
 
 <pre>
 ```mermaid
