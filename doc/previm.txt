@@ -19,7 +19,7 @@ Changelog						|previm-changelog|
 
 
 ==============================================================================
-INDRODUCTION						*previm-introduction*
+INTRODUCTION						*previm-introduction*
 
 This plugin provides the functionality of displaying file previews on
 browsers. It achieves something similar to real-time previewing.
