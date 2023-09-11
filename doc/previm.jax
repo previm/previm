@@ -13,6 +13,7 @@ Maintainer: previm developers
 コマンド						|previm-command|
 関数							|previm-functions|
 設定							|previm-settings|
+追加ライブラリの利用					|previm-extralibraries|
 open-browser.vimの使用					|previm-openbrowser|
 更新履歴						|previm-changelog|
 
@@ -165,6 +166,33 @@ g:previm_plantuml_imageprefix			*g:previm_plantuml_imageprefix*
 
 
 ==============================================================================
+追加ライブラリの利用					*previm-extralibraries*
+
+プレビューに追加ライブラリを加えることができます: >
+
+    let g:previm_extra_libraries = [
+    \  {
+    \    'name': 'foobar',
+    \    'files': [
+    \      {
+    \        'type': 'js',
+    \        'path': '_/js/extra/foobar.js',
+    \        'url': 'https://cdn.jsdelivr.net/gh/foobar/cdn-release@latest/build/foobar.min.js',
+    \        'code': ['foobar.init();'],
+    \      },
+    \      {
+    \        'type': 'css',
+    \        'path': '_/css/extra/foobar.css',
+    \        'url': 'https://cdn.jsdelivr.net/gh/foobar/cdn-release@latest/build/styles/default.min.css',
+    \      },
+    \    ],
+    \  },
+    \]
+<
+これを vimrc に追加し markdown ファイルを開いた後で |:PrevimUpdateAssets| を実
+行して下さい。
+
+==============================================================================
 open-browser.vimの使用					*previm-openbrowser*
 
 プレビューブラウザを開くときは次のような処理になります。
@@ -181,6 +209,9 @@ open-browser.vimの使用					*previm-openbrowser*
 ==============================================================================
 更新履歴						*previm-changelog*
 
+1.9  	2022-06-14
+        - support adding extra libraries
+
 1.8.1	2018-07-21
         - fixes minor bugs
 
@@ -191,7 +222,7 @@ open-browser.vimの使用					*previm-openbrowser*
         - support hidden header
 
 1.7	2015-08-15
-        - support mermaid(https://github.com/knsv/mermaid)
+        - support mermaid(https://github.com/mermaid-js/mermaid)
 
 1.6	2014-09-15
         - support realtime refresh

@@ -25,11 +25,46 @@
   };
 
   function transform(filetype, content) {
+    if(hasTargetFileType(filetype, ['mermaid', 'mmd'])) {
+      content = '```mermaid\n'
+              + content.replace(/</g, '&lt;')
+                       .replace(/>/g, '&gt;')
+              + '\n```';
+      filetype = 'markdown';
+    }
+
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
+      if (typeof getOptions === 'function' && getOptions().hardLineBreak) {
+        md.set({ breaks: true });
+        md.disable('cjk_breaks');
+      } else {
+        md.set({ breaks: false });
+        md.enable('cjk_breaks');
+      }
       return md.render(content);
+    } else if(hasTargetFileType(filetype, ['plantuml'])) {
+      var lines = content.split("\n")
+      var chunks = [];
+      lines.forEach(function (line) {
+        if (/^@start/.test(line)) {
+          chunks.push(line);
+        } else if (chunks.length !== 0) {
+          chunks[chunks.length - 1] += "\n" + line;
+        }
+      });
+      var plantumls = [];
+      chunks.forEach(function (chunk) {
+        plantumls.push("```plantuml\n" + chunk + "```\n");
+      });
+      return md.render(plantumls.join("\n"));
+    } else if(hasTargetFileType(filetype, ['html'])) {
+      return content;
     } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
-      return content;
+      return content
+        .replace(/<!--\s*plantuml\n([\s\S]*?)-->/g, function(all, c) {
+          return '<div><code class="language-plantuml">\n' + c.replace("- ->", "--&#62;").replace('<- -', '&#60;--') + '\n</code></div>';
+        });
     } else if(hasTargetFileType(filetype, ['textile'])) {
       return textile(content);
     } else if(hasTargetFileType(filetype, ['asciidoc'])) {
@@ -62,8 +97,8 @@
   }
 
   function style_header() {
-    if (typeof isShowHeader === 'function') {
-      var style = isShowHeader() ? '' : 'none';
+    if (typeof getOptions === 'function') {
+      var style = getOptions().showheader ? '' : 'none';
       _doc.getElementById('header').style.display = style;
     }
   }
@@ -94,10 +129,12 @@
       needReload = true;
     }
     if (needReload && (typeof getContent === 'function') && (typeof getFileType === 'function')) {
+      {{previm_init_libraries}}
+
       var beforePageYOffset = _win.pageYOffset;
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
 
-      mermaid.init();
+      {{previm_load_libraries}}
 
       loadPlantUML();
 
@@ -125,18 +162,24 @@
     }
   }
 
-  _win.setInterval(function() {
+  var interval = _win.setInterval(function() {
     var script = _doc.createElement('script');
 
     script.type = 'text/javascript';
     script.src = 'js/previm-function.js?t=' + new Date().getTime();
 
-    _addEventListener(script, 'load', (function() {
+    _addEventListener(script, 'error', function() {
+      _win.clearInterval(interval);
+      if (typeof getOptions === 'function' && getOptions().autoClose) {
+        _win.open("about:blank","_self").close();
+      }
+    });
+    _addEventListener(script, 'load', function() {
       loadPreview();
       _win.setTimeout(function() {
         script.parentNode.removeChild(script);
       }, 160);
-    })());
+    });
 
     _doc.getElementsByTagName('head')[0].appendChild(script);
 

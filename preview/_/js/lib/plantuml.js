@@ -1,6 +1,6 @@
 function encode64(a) {
-  r = "";
-  for (i = 0; i < a.length; i += 3) {
+  var r = "";
+  for (var i = 0; i < a.length; i += 3) {
     if (i + 2 == a.length) {
       r += append3bytes(a.charCodeAt(i), a.charCodeAt(i + 1), 0)
     } else {
@@ -15,11 +15,11 @@ function encode64(a) {
 }
 
 function append3bytes(c, b, a) {
-  c1 = c >> 2;
-  c2 = ((c & 3) << 4) | (b >> 4);
-  c3 = ((b & 15) << 2) | (a >> 6);
-  c4 = a & 63;
-  r = "";
+  var c1 = c >> 2;
+  var c2 = ((c & 3) << 4) | (b >> 4);
+  var c3 = ((b & 15) << 2) | (a >> 6);
+  var c4 = a & 63;
+  var r = "";
   r += encode6bit(c1 & 63);
   r += encode6bit(c2 & 63);
   r += encode6bit(c3 & 63);
@@ -59,10 +59,12 @@ function compress(prefix, a) {
 
 function loadPlantUML() {
   var umls = document.querySelectorAll('code.language-plantuml');
-  var prefix = getOptions().plantuml_imageprefix;
+  var prefix = getOptions().imagePrefix;
   Array.prototype.slice.call(umls).forEach(function(el) {
     var text = el.textContent
     var url = compress(prefix, text);
-    el.parentNode.outerHTML = '<div><img src="' + url + '" /></div>'
+    var div = document.createElement('div');
+    div.innerHTML = '<div><img src="' + url + '" /></div>'
+    el.parentNode.replaceWith(div);
   });
 }

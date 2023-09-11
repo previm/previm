@@ -1,9 +1,8 @@
-[README in English](https://github.com/previm/previm/blob/master/README-en.mkd)
+[README in English](https://github.com/previm/previm/blob/master/README-en.md)
 
 ## Previm
 
 [![TravisCI](https://travis-ci.org/previm/previm.svg?branch=master)](https://travis-ci.org/previm/previm) [![AppVeyor](https://ci.appveyor.com/api/projects/status/r12pom6aaiom3kqy?svg=true)](https://ci.appveyor.com/project/mattn/previm)
-
 
 プレビュー用のVimプラグインです。  
 
@@ -12,17 +11,17 @@
 ## 対応フォーマット
 
 * Markdown
-    * [CommonMark](http://commonmark.org/)
-    * [PHP markdown extra style abbreviation](https://github.com/markdown-it/markdown-it-abbr)
-    * [Pandoc style definition list](https://github.com/markdown-it/markdown-it-deflist)
-    * [Pandoc style footnote](https://github.com/markdown-it/markdown-it-footnote)
-    * [Pandoc style subscript](https://github.com/markdown-it/markdown-it-sub)
-    * [Pandoc style superscript](https://github.com/markdown-it/markdown-it-sup)
-    * [East Asian Line Breaks](https://github.com/markdown-it/markdown-it-cjk-breaks)
-    * [mermaid](http://knsv.github.io/mermaid/index.html)
-    * [PlantUML](https://github.com/plantuml/plantuml).
-    * [Emoji syntax plugin for markdown-it markdown parser](https://github.com/markdown-it/markdown-it-emoji)
-    * [A markdown-it plugin to create GitHub-style task lists](https://github.com/revin/markdown-it-task-lists)
+  * [CommonMark](http://commonmark.org/)
+  * [PHP markdown extra style abbreviation](https://github.com/markdown-it/markdown-it-abbr)
+  * [Pandoc style definition list](https://github.com/markdown-it/markdown-it-deflist)
+  * [Pandoc style footnote](https://github.com/markdown-it/markdown-it-footnote)
+  * [Pandoc style subscript](https://github.com/markdown-it/markdown-it-sub)
+  * [Pandoc style superscript](https://github.com/markdown-it/markdown-it-sup)
+  * [East Asian Line Breaks](https://github.com/markdown-it/markdown-it-cjk-breaks)
+  * [mermaid](https://mermaid-js.github.io/mermaid)
+  * [PlantUML](https://github.com/plantuml/plantuml).
+  * [Emoji syntax plugin for markdown-it markdown parser](https://github.com/markdown-it/markdown-it-emoji)
+  * [A markdown-it plugin to create GitHub-style task lists](https://github.com/revin/markdown-it-task-lists)
 * reStructuredText
 * textile
 * AsciiDoc
@@ -43,7 +42,6 @@ reStructuredTextの場合は`rst2html.py`が必要です。
 
 必須なものはありません。  
 [open-browser.vim](https://github.com/tyru/open-browser.vim)は任意で使用できます。
-
 
 ## 使い方(Markdownの場合)
 
@@ -66,7 +64,7 @@ previmを動作させるために以下の設定をしてください
 
 ### mermaid
 
-[mermaid](http://knsv.github.io/mermaid/)に対応しています。
+[mermaid](https://mermaid-js.github.io/mermaid)に対応しています。
 
 <pre>
 ```mermaid

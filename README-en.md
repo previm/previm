@@ -18,7 +18,7 @@ Vim plugin for preview.
     * [Pandoc style subscript](https://github.com/markdown-it/markdown-it-sub)
     * [Pandoc style superscript](https://github.com/markdown-it/markdown-it-sup)
     * [East Asian Line Breaks](https://github.com/markdown-it/markdown-it-cjk-breaks)
-    * [mermaid](http://knsv.github.io/mermaid/index.html)
+    * [mermaid](https://mermaid-js.github.io/mermaid)
     * [PlantUML](https://github.com/plantuml/plantuml).
 * reStructuredText(required rst2html.py)
 * textile
@@ -54,6 +54,8 @@ It can, however, be integrated with [open-browser.vim](https://github.com/tyru/o
 4. Back to Vim to edit your file
 5. Update the file, and the content for previewing will be updated automatically
 
+To force a refresh run `:PrevimRefresh`. To clear the preview cache (in dir PLUGIN_INSTALL/preview) run `:PrevimWipeCache`.
+
 There is an issue using Safari 13.0.3, which page transition stops after "Loading...".
 
 You need to set up below to make previm work on Safari.
@@ -63,7 +65,7 @@ You need to set up below to make previm work on Safari.
 
 ### mermaid
 
-Support [mermaid](http://knsv.github.io/mermaid/)
+Support [mermaid](https://mermaid-js.github.io/mermaid)
 
 <pre>
 ```mermaid

@@ -5,11 +5,10 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:File = vital#previm#import('System.File')
-
 let s:newline_character = "\n"
 
 function! previm#open(preview_html_file) abort
+  let b:previm_opened = 1
   call previm#refresh()
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
     if has('win32') && g:previm_open_cmd =~? 'firefox'
@@ -18,8 +17,8 @@ function! previm#open(preview_html_file) abort
     elseif has('win32unix')
       call s:system(g:previm_open_cmd . ' '''  . system('cygpath -w ' . a:preview_html_file) . '''')
     elseif get(g:, 'previm_wsl_mode', 0) ==# 1
-      let l:wsl_file_path = system('wslpath -w ' . a:preview_html_file)
-      call s:system(g:previm_open_cmd . " 'file:///" . fnamemodify(l:wsl_file_path, ':gs?\\?\/?') . '''')
+      let wsl_file_path = system('wslpath -w ' . a:preview_html_file)
+      call s:system(g:previm_open_cmd . " 'file:///" . fnamemodify(wsl_file_path, ':gs?\\?\/?') . '''')
     else
       call s:system(g:previm_open_cmd . ' '''  . a:preview_html_file . '''')
     endif
@@ -36,6 +35,11 @@ function! previm#open(preview_html_file) abort
   else
     call s:echo_err('Command for the open can not be found. show detail :h previm#open')
   endif
+
+  augroup PrevimCleanup
+    au!
+    au VimLeave * call previm#wipe_cache_for_self()
+  augroup END
 endfunction
 
 function! s:exists_openbrowser() abort
@@ -58,12 +62,62 @@ function! s:apply_openbrowser(path) abort
 endfunction
 
 function! previm#refresh() abort
-  call previm#refresh_css()
-  call previm#refresh_js()
+  if exists('b:previm_opened')
+    call s:fix_preview_base_dir()
+    call previm#refresh_html()
+    call previm#refresh_css()
+    call previm#refresh_js()
+    call previm#refresh_js_function()
+  endif
+endfunction
+
+function! previm#refresh_html() abort
+  let lines = readfile(previm#make_preview_file_path('index.html.tmpl'))
+  let output = []
+  for line in lines
+    if line =~# '^\s*{{previm_js_files}}'
+      let indent = matchstr(line, '^\s*')
+      for file in previm#assets#js()
+        call add(output, printf('%s<script src="../%s"></script>', indent, file))
+      endfor
+    elseif line =~# '^\s*{{previm_css_files}}'
+      let indent = matchstr(line, '^\s*')
+      for file in previm#assets#css()
+        call add(output, printf('%s<link type="text/css" href="../%s" rel="stylesheet" media="all" />', indent, file))
+      endfor
+   else
+      call add(output, line)
+    endif
+  endfor
+
+  call writefile(output, previm#make_preview_file_path('index.html'))
 endfunction
 
 let s:default_origin_css_path = "@import url('../../_/css/origin.css');"
 let s:default_github_css_path = "@import url('../../_/css/lib/github.css');"
+
+function! s:copy_dir(src, dest) abort
+  if isdirectory(a:src)
+    call mkdir(a:dest, 'p', 0755)
+    for src in readdir(a:src)
+      if !s:copy_dir(a:src .. '/' .. src, a:dest .. '/' ..  src)
+        return 0
+      endif
+    endfor
+    return 1
+  elseif filereadable(a:src)
+    return s:copy_file(a:src, a:dest)
+  endif
+endfunction
+
+function! s:copy_file(src, dest) abort
+  try
+    call writefile(readfile(a:src, 'b'), a:dest, 'b')
+    return 1
+  catch
+    return 0
+  endtry
+endfunction
 
 function! previm#refresh_css() abort
   let css = []
@@ -76,25 +130,72 @@ function! previm#refresh_css() abort
   if exists('g:previm_custom_css_path')
     let css_path = expand(g:previm_custom_css_path)
     if filereadable(css_path)
-      call s:File.copy(css_path, previm#make_preview_file_path('css/user_custom.css'))
+      call s:copy_file(css_path, previm#make_preview_file_path('css/user_custom.css'))
       call add(css, "@import url('user_custom.css');")
     else
       call s:echo_err('[Previm]failed load custom css. ' . css_path)
     endif
   endif
+
+  for style in previm#assets#style()
+    call add(css, style)
+  endfor
+
   call writefile(css, previm#make_preview_file_path('css/previm.css'))
 endfunction
 
-" TODO: test(refresh_cssと同じように)
 function! previm#refresh_js() abort
+  let lines = readfile(previm#make_preview_file_path('js/previm.js.tmpl'))
+  let output = []
+  for line in lines
+    if line =~# '^\s*{{previm_init_libraries}}'
+      let indent = matchstr(line, '^\s*')
+      for init in previm#assets#init()
+        call add(output, indent . init)
+      endfor
+    elseif line =~# '^\s*{{previm_load_libraries}}'
+      let indent = matchstr(line, '^\s*')
+      for code in previm#assets#code()
+        call add(output, indent . code)
+      endfor
+    else
+      call add(output, line)
+    endif
+  endfor
+
+  call writefile(output, previm#make_preview_file_path('js/previm.js'))
+endfunction
+
+" TODO: test(refresh_cssと同じように)
+function! previm#refresh_js_function() abort
   let encoded_lines = split(iconv(s:function_template(), &encoding, 'utf-8'), s:newline_character)
   call writefile(encoded_lines, previm#make_preview_file_path('js/previm-function.js'))
 endfunction
 
 let s:base_dir = fnamemodify(expand('<sfile>:p:h') . '/../preview', ':p')
 
+function! s:fix_preview_base_dir() abort
+  if !filereadable(s:preview_base_dir . '_/js/previm.js.tmpl') && s:preview_base_dir != s:base_dir
+    call s:copy_dir(s:base_dir . '_', s:preview_base_dir . '_')
+  endif
+endfunction
+
+if exists('g:previm_custom_preview_base_dir')
+  let s:preview_base_dir = expand(g:previm_custom_preview_base_dir)
+else
+  let s:preview_base_dir = s:base_dir
+endif
+
+if s:preview_base_dir !~# '/$'
+  let s:preview_base_dir .= '/'
+endif
+
+function! previm#preview_base_dir() abort
+  return s:preview_base_dir
+endfunction
+
 function! s:preview_directory() abort
-  return s:base_dir . sha256(expand('%:p'))[:15] . '-' . getpid()
+  return s:preview_base_dir . sha256(expand('%:p'))[:15] . '-' . getpid()
 endfunction
 
 function! previm#make_preview_file_path(path) abort
@@ -106,24 +207,15 @@ function! previm#make_preview_file_path(path) abort
       call mkdir(dir, 'p')
     endif
 
-    augroup PrevimCleanup
-      au!
-      exe printf("au VimLeave * call previm#cleanup_preview('%s')", dir)
-    augroup END
     if filereadable(src)
-      call s:File.copy(src, dst)
+      call s:copy_file(src, dst)
     endif
   endif
   return dst
 endfunction
 
 function! previm#cleanup_preview(dir) abort
-  if isdirectory(a:dir)
-    try
-      call s:File.rmdir(a:dir, 'r')
-    catch
-    endtry
-  endif
+  call delete(a:dir, 'rf')
 endfunction
 
 " NOTE: getFileType()の必要性について。
@@ -133,10 +225,6 @@ endfunction
 function! s:function_template() abort
   let current_file = expand('%:p')
   return join([
-      \ 'function isShowHeader() {',
-      \ printf('return %s;', get(g:, 'previm_show_header', 1)),
-      \ '}',
-      \ '',
       \ 'function getFileName() {',
       \ printf('return "%s";', s:escape_backslash(current_file)),
       \ '}',
@@ -217,6 +305,9 @@ function! previm#convert_to_content(lines) abort
     " convert cygwin path to windows path
     let mkd_dir = substitute(system('cygpath -wa ' . mkd_dir), "\n$", '', '')
     let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
+  elseif get(g:, 'previm_wsl_mode', 0) ==# 1
+    let mkd_dir = trim(system('wslpath -w ' . mkd_dir))
+    let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
   elseif has('win32')
     let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
   endif
@@ -271,6 +362,9 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir) abort
   let prev_imgpath = ''
   let new_imgpath = ''
   let path_prefix = '//localhost'
+  if get(g:, 'previm_wsl_mode', 0) ==# 1
+    let path_prefix = ''
+  endif
   if s:start_with(local_path, 'file://')
     let path_prefix = ''
     let local_path = local_path[7:]
@@ -325,8 +419,16 @@ function! s:echo_err(msg) abort
 endfunction
 
 function! previm#wipe_cache()
-  for path in filter(split(globpath(s:base_dir, '*'), "\n"), 'isdirectory(v:val) && v:val !~ "_$"')
+  for path in filter(split(globpath(s:preview_base_dir, '*'), "\n"), 'isdirectory(v:val) && v:val !~ "_$"')
     call previm#cleanup_preview(path)
+  endfor
+endfunction
+
+function! previm#wipe_cache_for_self()
+  for path in filter(split(globpath(s:preview_base_dir, '*'), "\n"), 'isdirectory(v:val) && v:val !~ "_$"')
+    if path =~# '-' .. getpid() .. '$'
+      call previm#cleanup_preview(path)
+    endif
   endfor
 endfunction
 
@@ -335,8 +437,28 @@ function! previm#options()
     return '{}'
   endif
   return json_encode({
-  \   'plantuml_imageprefix': get(g:, 'previm_plantuml_imageprefix', v:null)
+  \   'imagePrefix': get(g:, 'previm_plantuml_imageprefix', v:null),
+  \   'hardLineBreak': get(b:, 'previm_hard_line_break', get(g:, 'previm_hard_line_break', v:false)),
+  \   'showheader': get(g:, 'previm_show_header', 1),
+  \   'autoClose': get(g:, 'previm_auto_close', 0),
   \ })
+endfunction
+
+function! previm#install() abort
+  augroup Previm
+    autocmd! * <buffer>
+    if get(g:, 'previm_enable_realtime', 0) ==# 1
+      " NOTE: It is too frequently in TextChanged/TextChangedI
+      autocmd CursorHold,CursorHoldI,InsertLeave,BufWritePost <buffer> call previm#refresh()
+    else
+      autocmd BufWritePost <buffer> call previm#refresh()
+    endif
+  augroup END
+
+  command! -buffer -nargs=0 PrevimOpen call previm#open(previm#make_preview_file_path('index.html'))
+  command! -buffer -nargs=0 PrevimWipeCache call previm#wipe_cache()
+  command! -buffer -nargs=0 PrevimRefresh call previm#refresh()
+  command! -buffer -nargs=0 PrevimUpdateAssets call previm#assets#update()
 endfunction
 
 let &cpo = s:save_cpo

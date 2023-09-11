@@ -1,6 +1,6 @@
 *previm.txt*	Preview Plugin
 
-Version: 1.6
+Version: 1.8.1
 Author: kanno <akapanna@gmail.com>
 Maintainer: previm developers
 
@@ -13,12 +13,13 @@ Usage							|previm-usage|
 Commands						|previm-command|
 Functions						|previm-functions|
 Settings						|previm-settings|
+Using extra libraries					|previm-extralibraries|
 Using with open-browser.vim				|previm-openbrowser|
 Changelog						|previm-changelog|
 
 
 ==============================================================================
-INDRODUCTION						*previm-introduction*
+INTRODUCTION						*previm-introduction*
 
 This plugin provides the functionality of displaying file previews on
 browsers. It achieves something similar to real-time previewing.
@@ -61,6 +62,14 @@ COMMANDS						*previm-command*
 							*:PrevimOpen*
 :PrevimOpen
 	Opens the current file on the browser.
+	
+							*:PrevimWipeCache*
+:PrevimWipeCache
+	Delete all previews in the cache.
+	
+							*:PrevimRefresh*
+:PrevimRefresh
+	Force a refresh of the preview.
 
 
 ==============================================================================
@@ -169,6 +178,32 @@ g:previm_plantuml_imageprefix			*g:previm_plantuml_imageprefix*
 
 
 ==============================================================================
+USING EXTRA LIBRARIES					*previm-extralibraries*
+
+You can add extra libraries for preview: >
+
+    let g:previm_extra_libraries = [
+    \  {
+    \    'name': 'foobar',
+    \    'files': [
+    \      {
+    \        'type': 'js',
+    \        'path': '_/js/extra/foobar.js',
+    \        'url': 'https://cdn.jsdelivr.net/gh/foobar/cdn-release@latest/build/foobar.min.js',
+    \        'code': ['foobar.init();'],
+    \      },
+    \      {
+    \        'type': 'css',
+    \        'path': '_/css/extra/foobar.css',
+    \        'url': 'https://cdn.jsdelivr.net/gh/foobar/cdn-release@latest/build/styles/default.min.css',
+    \      },
+    \    ],
+    \  },
+    \]
+<
+Adding this into your vimrc, and |:PrevimUpdateAssets| after opening markdown file.
+
+==============================================================================
 USING WITH OPEN-BROWSER.VIM				*previm-openbrowser*
 
 The following steps are taken for choosing which browser to display the
@@ -186,6 +221,9 @@ Thus, |g:previm_open_cmd| need not be configured when using open-browser.vim.
 ==============================================================================
 CHANGELOG						*previm-changelog*
 
+1.9  	2022-06-14
+        - support adding extra libraries
+
 1.8.1	2018-07-21
         - fixes minor bugs
 
@@ -196,7 +234,7 @@ CHANGELOG						*previm-changelog*
         - support hidden header
 
 1.7	2015-08-15
-        - support mermaid(https://github.com/knsv/mermaid)
+        - support mermaid(https://mermaid-js.github.io/mermaid)
 
 1.6	2014-09-15
         - support realtime refresh

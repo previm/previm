@@ -1,6 +1,8 @@
 preview/**
 !preview/_
 doc/tags*
+preview/_/css/extra
+preview/_/js/extra
 
 # Created by https://www.gitignore.io/api/vim,osx
 
