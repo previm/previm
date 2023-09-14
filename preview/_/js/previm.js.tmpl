@@ -23,7 +23,7 @@
       if (!/^#/.test(tokens[idx].attrs[0][1])) {
         tokens[idx].attrPush(["target", "_blank"]);
 
-        var relIndex  = tokens[idx].attrIndex("rel");
+        var relIndex = tokens[idx].attrIndex("rel");
         if (relIndex < 0) {
           tokens[idx].attrPush(["rel", "noopener"]);
         } else {
