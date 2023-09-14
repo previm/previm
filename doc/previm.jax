@@ -164,6 +164,20 @@ g:previm_plantuml_imageprefix			*g:previm_plantuml_imageprefix*
 	" .vimrc
 	let g:previm_plantuml_imageprefix = 'http://localhost:8888/plantuml/img'
 
+g:previm_hard_line_break			*g:previm_hard_line_break*
+	型:数値
+
+	改行文字を入れた際に強制的にプレビュー時にも改行するか設定します。
+	これにより、標準的なmarkdownのように改行を削除するのではなく、
+	すべての改行を改行として解釈するようになります。
+
+	値が1ならば、強制的に改行をします。
+	値が0ならば、強制的に改行はしません。
+	デフォルトでは0に設定されています。
+
+>
+	" .vimrc
+	let g:previm_hard_line_break = 1
 
 ==============================================================================
 追加ライブラリの利用					*previm-extralibraries*
