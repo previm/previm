@@ -18,7 +18,7 @@
     };
 
   md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
-    var targetIndex   = tokens[idx].attrIndex("target");
+    var targetIndex = tokens[idx].attrIndex("target");
     if (targetIndex < 0) {
       if (!/^#/.test(tokens[idx].attrs[0][1])) {
         tokens[idx].attrPush(["target", "_blank"]);
