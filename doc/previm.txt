@@ -176,6 +176,21 @@ g:previm_plantuml_imageprefix			*g:previm_plantuml_imageprefix*
 	" .vimrc
 	let g:previm_plantuml_imageprefix = 'http://localhost:8888/plantuml/img'
 
+g:previm_hard_line_break			*g:previm_hard_line_break*
+	Type:Num
+
+	Sets whether a line break is forced in preview when a line break
+	character is inserted.
+	This makes it interpret all newlines as line breaks, rather than
+	removing them like standard markdown.
+
+	If the value is 1, a hard line break is forced.
+	If the value is 0, no line breaks are forced.
+	It is set to 0 by default.
+
+>
+	" .vimrc
+	let g:previm_hard_line_break = 1
 
 ==============================================================================
 USING EXTRA LIBRARIES					*previm-extralibraries*
