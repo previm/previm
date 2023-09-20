@@ -43,6 +43,18 @@
     if (langName === 'mermaid') {
       return '<div class="mermaid">' + token.content + '</div>';
     }
+    // Settings code-lang 
+    var sep = new RegExp(getOptions().codeLanguageSeparator);
+    var tokenSplit = token.info.trim().split(sep);
+    var langName = tokenSplit[0];
+    var fileName = '';
+    if (tokenSplit.length > 1) {
+        fileName = tokenSplit.slice(1).join(' ');
+    } else {
+        fileName = langName;
+    }
+    tokens[idx].attrPush(['code-lang', fileName]);
+
     return original_fence(tokens, idx, options, env, slf);
   };
 
@@ -156,6 +168,18 @@
 
       loadPlantUML();
 
+      // Settings code-lang
+      if (getOptions().showCodeLanguage === 1) {
+          Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), function (item, index) {
+            var fileName = item.getAttribute('code-lang');
+            if (fileName !== '') {
+              var codeLang = _doc.createElement('div');
+              codeLang.setAttribute('class','code-lang');
+              codeLang.innerHTML = '<span class="bold">' + fileName + '</span>';
+              item.parentNode.insertBefore(codeLang, item);
+            }
+          });
+      }
       Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
       autoScroll('body', beforePageYOffset);
       style_header();

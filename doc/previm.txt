@@ -1,6 +1,6 @@
 *previm.txt*	Preview Plugin
 
-Version: 1.8.1
+Version: 2.0
 Author: kanno <akapanna@gmail.com>
 Maintainer: previm developers
 
@@ -192,6 +192,52 @@ g:previm_hard_line_break			*g:previm_hard_line_break*
 	" .vimrc
 	let g:previm_hard_line_break = 1
 
+g:previm_code_language_show			*g:previm_code_language_show*
+	Type:Num
+
+	Sets the ability to display the language (or file name) of the code
+	block during preview.
+
+	If the value is 1, use the language display function of the code block.
+	If the value is 0, the language display feature of the code block 
+	is not used.
+	It is set to 0 by default.
+
+	To specify only the highlighted language
+>
+	```language
+	Hello world
+	```
+<
+	Separate highlight language specification and display file name
+	(separated by a space)
+>
+	```language filename.ext
+	Hello world
+	```
+<
+	Separate highlight language specification and display file name
+	(separated by a colon)
+>
+	```language:filename.ext
+	Hello world
+	```
+
+	" .vimrc
+	let g:previm_code_language_show = 1
+
+g:previm_code_language_separator		*g:previm_code_language_separator*
+	Type:String
+
+	Sets the language and filename separator when using
+	g:previm_code_language_show. (JavaScript RegExp specification)
+
+	By default, it is set to '[\s|:]+'.
+>
+	" .vimrc
+	let g:previm_code_language_separator = '[\s|:]+'
+
+
 ==============================================================================
 USING EXTRA LIBRARIES					*previm-extralibraries*
 
@@ -235,6 +281,9 @@ Thus, |g:previm_open_cmd| need not be configured when using open-browser.vim.
 
 ==============================================================================
 CHANGELOG						*previm-changelog*
+
+2.0  	2023-09-20
+        - support for language display of code blocks
 
 1.9  	2022-06-14
         - support adding extra libraries
