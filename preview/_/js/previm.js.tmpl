@@ -172,7 +172,7 @@
       if (getOptions().showCodeLanguage === 1) {
           Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), function (item, index) {
             var fileName = item.getAttribute('code-lang');
-            if (fileName !== '') {
+            if (fileName) {
               var codeLang = _doc.createElement('div');
               codeLang.setAttribute('class','code-lang');
               codeLang.innerHTML = '<span class="bold">' + fileName + '</span>';
