@@ -170,17 +170,17 @@
 
       // Settings code-lang
       if (getOptions().showCodeLanguage === 1) {
-          Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), function (item, index) {
-            var fileName = item.getAttribute('code-lang');
-            if (fileName) {
-              var codeLang = _doc.createElement('div');
-              codeLang.setAttribute('class','code-lang');
-              codeLang.innerHTML = '<span class="bold">' + fileName + '</span>';
-              item.parentNode.insertBefore(codeLang, item);
-            }
-          });
+        Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), function (item, index) {
+          var fileName = item.getAttribute('code-lang');
+          if (fileName) {
+            var codeLang = _doc.createElement('div');
+            codeLang.setAttribute('class','code-lang');
+            codeLang.innerHTML = '<span class="bold">' + fileName + '</span>';
+            item.parentNode.insertBefore(codeLang, item.parentNode.firstElementChild);
+          }
+        });
       }
-      Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightElement);
+      Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
       autoScroll('body', beforePageYOffset);
       style_header();
     }
