@@ -180,7 +180,7 @@
           }
         });
       }
-      Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightBlock);
+      Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), hljs.highlightElement);
       autoScroll('body', beforePageYOffset);
       style_header();
     }
