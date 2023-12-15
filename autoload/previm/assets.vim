@@ -30,7 +30,7 @@ let s:source_map = [
 \      {
 \        'type': 'js',
 \        'path': '_/js/lib/markdown-it-abbr.min.js',
-\        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-abbr/master/dist/markdown-it-abbr.min.js',
+\        'url': 'https://cdn.jsdelivr.net/npm/markdown-it-abbr@latest/dist/markdown-it-abbr.min.js',
 \      },
 \    ],
 \  },
@@ -40,7 +40,7 @@ let s:source_map = [
 \      {
 \        'type': 'js',
 \        'path': '_/js/lib/markdown-it-checkbox.min.js',
-\        'url': 'https://raw.githubusercontent.com/mcecot/markdown-it-checkbox/master/dist/markdown-it-checkbox.min.js',
+\        'url': 'https://cdn.jsdelivr.net/npm/markdown-it-checkbox@latest/dist/markdown-it-checkbox.min.js',
 \      },
 \    ],
 \  },
@@ -50,7 +50,7 @@ let s:source_map = [
 \      {
 \        'type': 'js',
 \        'path': '_/js/lib/markdown-it-cjk-breaks.min.js',
-\        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-cjk-breaks/master/dist/markdown-it-cjk-breaks.min.js',
+\        'url': 'https://cdn.jsdelivr.net/npm/markdown-it-cjk-breaks@latest/dist/markdown-it-cjk-breaks.min.js',
 \      },
 \    ],
 \  },
@@ -60,7 +60,7 @@ let s:source_map = [
 \      {
 \        'type': 'js',
 \        'path': '_/js/lib/markdown-it-deflist.min.js',
-\        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-deflist/master/dist/markdown-it-deflist.min.js'
+\        'url': 'https://cdn.jsdelivr.net/npm/markdown-it-deflist@latest/dist/markdown-it-deflist.min.js'
 \      },
 \    ],
 \  },
@@ -70,7 +70,7 @@ let s:source_map = [
 \      {
 \        'type': 'js',
 \        'path': '_/js/lib/markdown-it-footnote.min.js',
-\        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-footnote/master/dist/markdown-it-footnote.min.js',
+\        'url': 'https://cdn.jsdelivr.net/npm/markdown-it-footnote@latest/dist/markdown-it-footnote.min.js',
 \      },
 \    ],
 \  },
@@ -80,7 +80,7 @@ let s:source_map = [
 \      {
 \        'type': 'js',
 \        'path': '_/js/lib/markdown-it-sub.min.js',
-\        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-sub/master/dist/markdown-it-sub.min.js',
+\        'url': 'https://cdn.jsdelivr.net/npm/markdown-it-sub@latest/dist/markdown-it-sub.min.js',
 \      },
 \    ],
 \  },
@@ -90,7 +90,7 @@ let s:source_map = [
 \      {
 \        'type': 'js',
 \        'path': '_/js/lib/markdown-it-sup.min.js',
-\        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it-sup/master/dist/markdown-it-sup.min.js',
+\        'url': 'https://cdn.jsdelivr.net/npm/markdown-it-sup@latest/dist/markdown-it-sup.min.js',
 \      },
 \    ],
 \  },
@@ -100,7 +100,7 @@ let s:source_map = [
 \      {
 \        'type': 'js',
 \        'path': '_/js/lib/markdown-it.min.js',
-\        'url': 'https://raw.githubusercontent.com/markdown-it/markdown-it/master/dist/markdown-it.min.js',
+\        'url': 'https://cdn.jsdelivr.net/npm/markdown-it@latest/dist/markdown-it.min.js',
 \      },
 \    ],
 \  },
