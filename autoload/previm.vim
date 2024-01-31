@@ -315,7 +315,7 @@ function! previm#convert_to_content(lines) abort
   for line in s:do_external_parse(a:lines)
     " TODO エスケープの理由と順番の依存度が複雑
     let escaped = substitute(line, '\', '\\\\', 'g')
-    let escaped = previm#convert_relative_to_absolute_imgpath(escaped, mkd_dir)
+    let escaped = previm#convert_relative_to_absolute_filepath(escaped, mkd_dir)
     let escaped = substitute(escaped, '"', '\\"', 'g')
     let escaped = substitute(escaped, '\r', '\\r', 'g')
     call add(converted_lines, escaped)
@@ -323,8 +323,8 @@ function! previm#convert_to_content(lines) abort
   return join(converted_lines, "\\n")
 endfunction
 
-function! previm#convert_relative_to_absolute_imgpath(text, mkd_dir) abort
-  return substitute(a:text, '!\[[^\]]*\]([^)]*)', '\=previm#relative_to_absolute_imgpath(submatch(0), a:mkd_dir)', 'g')
+function! previm#convert_relative_to_absolute_filepath(text, mkd_dir) abort
+  return substitute(a:text, '\v!?\[%([^\[\]\(\)]+|\[[^\[\]]*\]|\([^()]*\))*\]\([^()]*\)|^\[([^\[\]]*)\]:\s*(.*)', '\=previm#relative_to_absolute_filepath(submatch(0), a:mkd_dir)', 'g')
 endfunction
 
 " convert example
@@ -332,8 +332,8 @@ endfunction
 "   ![alt](file://localhost/Users/kanno/Pictures/img.png "title")
 " if win:
 "   ![alt](file://localhost/C:\Documents%20and%20Settings\folder/pictures\img.png "title")
-function! previm#relative_to_absolute_imgpath(text, mkd_dir) abort
-  let elem = previm#fetch_imgpath_elements(a:text)
+function! previm#relative_to_absolute_filepath(text, mkd_dir) abort
+  let elem = previm#fetch_filepath_elements(a:text)
   if empty(elem.path)
     return a:text
   endif
@@ -359,8 +359,8 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir) abort
     let local_path = substitute(dir.'/'.elem.path, ' ', '%20', 'g')
   endif
 
-  let prev_imgpath = ''
-  let new_imgpath = ''
+  let prev_filepath = ''
+  let new_filepath = ''
   let path_prefix = '//localhost'
   if get(g:, 'previm_wsl_mode', 0) ==# 1
     let path_prefix = ''
@@ -369,27 +369,49 @@ function! previm#relative_to_absolute_imgpath(text, mkd_dir) abort
     let path_prefix = ''
     let local_path = local_path[7:]
   endif
-  if empty(elem.title)
-    let prev_imgpath = printf('!\[%s\](%s)', elem.alt, elem.path)
-    let new_imgpath = printf('![%s](%s%s%s)', elem.alt, path_prefix, pre_slash, local_path)
+  if elem.type == 'label'
+    if empty(elem.title)
+      let prev_filepath = printf(                                  '\[%s\]:\s*%s'         , elem.alt , elem.path)
+      let new_filepath  = printf(                                  '[%s]: %s%s%s'         , elem.alt , path_prefix , pre_slash , local_path)
+    else
+      let prev_filepath = printf(                                  '\[%s\]:\s*%s\s\+"%s"' , elem.alt , elem.path   , elem.title)
+      let new_filepath  = printf(                                  '[%s]: %s%s%s "%s"'    , elem.alt , path_prefix , pre_slash , local_path , elem.title)
+    endif
   else
-    let prev_imgpath = printf('!\[%s\](%s "%s")', elem.alt, elem.path, elem.title)
-    let new_imgpath = printf('![%s](%s%s%s "%s")', elem.alt, path_prefix, pre_slash, local_path, elem.title)
+    let new_alt = previm#convert_relative_to_absolute_filepath(elem.alt, a:mkd_dir)
+
+    if empty(elem.title)
+      let prev_filepath = printf((elem.type == 'img' ? '!' : '') . '\V[%s](%s)'          , elem.alt , elem.path)
+      let new_filepath  = printf((elem.type == 'img' ? '!' : '') . '[%s](%s%s%s)'        , new_alt  , path_prefix , pre_slash , local_path)
+    else
+      let prev_filepath = printf((elem.type == 'img' ? '!' : '') . '\V[%s\](%s\s\+"%s")' , elem.alt , elem.path   , elem.title)
+      let new_filepath  = printf((elem.type == 'img' ? '!' : '') . '[%s](%s%s%s "%s")'   , new_alt  , path_prefix , pre_slash , local_path , elem.title)
+    endif
   endif
 
   " unify quote
   let text = substitute(a:text, "'", '"', 'g')
-  return substitute(text, prev_imgpath, new_imgpath, '')
+  return substitute(text, prev_filepath, new_filepath, '')
 endfunction
 
-function! previm#fetch_imgpath_elements(text) abort
-  let elem = {'alt': '', 'path': '', 'title': ''}
-  let matched = matchlist(a:text, '!\[\([^\]]*\)\](\([^)]*\))')
-  if empty(matched)
-    return elem
+function! previm#fetch_filepath_elements(text) abort
+  let elem = {'type': '', 'alt': '', 'path': '', 'title': ''}
+
+  let matched = matchlist(a:text, '\v(!?)\[(%([^\[\]\(\)]+|\[[^\[\]]*\]|\([^()]*\))*)\]\(([^)]*)\)')
+  if !empty(matched)
+    let elem.type = matched[1] ==# '!' ? 'img' : 'link'
+    let elem.alt = matched[2]
+    return extend(elem, s:fetch_path_and_title(matched[3]))
   endif
-  let elem.alt = matched[1]
-  return extend(elem, s:fetch_path_and_title(matched[2]))
+
+  let matched = matchlist(a:text, '^\[\([^\]]*\)\]:\s*\(.*\)')
+  if !empty(matched)
+    let elem.type = 'label'
+    let elem.alt = matched[1]
+    return extend(elem, s:fetch_path_and_title(matched[2]))
+  endif
+
+  return elem
 endfunction
 
 function! s:fetch_path_and_title(path) abort
