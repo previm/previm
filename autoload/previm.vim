@@ -324,7 +324,7 @@ function! previm#convert_to_content(lines) abort
 endfunction
 
 function! previm#convert_relative_to_absolute_filepath(text, mkd_dir) abort
-  return substitute(a:text, '!\?\[[^\]]*\]([^)]*)\|^\[\([^\]]*\)\]:\s*\(.*\)', '\=previm#relative_to_absolute_filepath(submatch(0), a:mkd_dir)', 'g')
+  return substitute(a:text, '\v!?\[%([^\[\]\(\)]+|\[[^\[\]]*\]|\([^()]*\))*\]\([^()]*\)|^\[([^\[\]]*)\]:\s*(.*)', '\=previm#relative_to_absolute_filepath(submatch(0), a:mkd_dir)', 'g')
 endfunction
 
 " convert example
@@ -378,12 +378,14 @@ function! previm#relative_to_absolute_filepath(text, mkd_dir) abort
       let new_filepath  = printf(                                  '[%s]: %s%s%s "%s"' , elem.alt , path_prefix , pre_slash , local_path , elem.title)
     endif
   else
+    let new_alt = previm#convert_relative_to_absolute_filepath(elem.alt, a:mkd_dir)
+
     if empty(elem.title)
-      let prev_filepath = printf((elem.type == 'img' ? '!' : '') . '\[%s\](%s)'        , elem.alt , elem.path)
-      let new_filepath  = printf((elem.type == 'img' ? '!' : '') . '[%s](%s%s%s)'      , elem.alt , path_prefix , pre_slash , local_path)
+      let prev_filepath = printf((elem.type == 'img' ? '!' : '') . '\V[%s](%s)'        , elem.alt , elem.path)
+      let new_filepath  = printf((elem.type == 'img' ? '!' : '') . '[%s](%s%s%s)'      , new_alt  , path_prefix , pre_slash , local_path)
     else
-      let prev_filepath = printf((elem.type == 'img' ? '!' : '') . '\[%s\](%s "%s")'   , elem.alt , elem.path   , elem.title)
-      let new_filepath  = printf((elem.type == 'img' ? '!' : '') . '[%s](%s%s%s "%s")' , elem.alt , path_prefix , pre_slash , local_path , elem.title)
+      let prev_filepath = printf((elem.type == 'img' ? '!' : '') . '\V[%s\](%s "%s")'  , elem.alt , elem.path   , elem.title)
+      let new_filepath  = printf((elem.type == 'img' ? '!' : '') . '[%s](%s%s%s "%s")' , new_alt  , path_prefix , pre_slash , local_path , elem.title)
     endif
   endif
 
@@ -395,7 +397,7 @@ endfunction
 function! previm#fetch_filepath_elements(text) abort
   let elem = {'type': '', 'alt': '', 'path': '', 'title': ''}
 
-  let matched = matchlist(a:text, '\(!\?\)\[\([^\]]*\)\](\([^)]*\))')
+  let matched = matchlist(a:text, '\v(!?)\[(%([^\[\]\(\)]+|\[[^\[\]]*\]|\([^()]*\))*)\]\(([^)]*)\)')
   if !empty(matched)
     let elem.type = matched[1] ==# '!' ? 'img' : 'link'
     let elem.alt = matched[2]
