@@ -371,21 +371,21 @@ function! previm#relative_to_absolute_filepath(text, mkd_dir) abort
   endif
   if elem.type == 'label'
     if empty(elem.title)
-      let prev_filepath = printf(                                  '\[%s\]:\s*%s'      , elem.alt , elem.path)
-      let new_filepath  = printf(                                  '[%s]: %s%s%s'      , elem.alt , path_prefix , pre_slash , local_path)
+      let prev_filepath = printf(                                  '\[%s\]:\s*%s'         , elem.alt , elem.path)
+      let new_filepath  = printf(                                  '[%s]: %s%s%s'         , elem.alt , path_prefix , pre_slash , local_path)
     else
-      let prev_filepath = printf(                                  '\[%s\]:\s*%s "%s"' , elem.alt , elem.path   , elem.title)
-      let new_filepath  = printf(                                  '[%s]: %s%s%s "%s"' , elem.alt , path_prefix , pre_slash , local_path , elem.title)
+      let prev_filepath = printf(                                  '\[%s\]:\s*%s\s\+"%s"' , elem.alt , elem.path   , elem.title)
+      let new_filepath  = printf(                                  '[%s]: %s%s%s "%s"'    , elem.alt , path_prefix , pre_slash , local_path , elem.title)
     endif
   else
     let new_alt = previm#convert_relative_to_absolute_filepath(elem.alt, a:mkd_dir)
 
     if empty(elem.title)
-      let prev_filepath = printf((elem.type == 'img' ? '!' : '') . '\V[%s](%s)'        , elem.alt , elem.path)
-      let new_filepath  = printf((elem.type == 'img' ? '!' : '') . '[%s](%s%s%s)'      , new_alt  , path_prefix , pre_slash , local_path)
+      let prev_filepath = printf((elem.type == 'img' ? '!' : '') . '\V[%s](%s)'          , elem.alt , elem.path)
+      let new_filepath  = printf((elem.type == 'img' ? '!' : '') . '[%s](%s%s%s)'        , new_alt  , path_prefix , pre_slash , local_path)
     else
-      let prev_filepath = printf((elem.type == 'img' ? '!' : '') . '\V[%s\](%s "%s")'  , elem.alt , elem.path   , elem.title)
-      let new_filepath  = printf((elem.type == 'img' ? '!' : '') . '[%s](%s%s%s "%s")' , new_alt  , path_prefix , pre_slash , local_path , elem.title)
+      let prev_filepath = printf((elem.type == 'img' ? '!' : '') . '\V[%s\](%s\s\+"%s")' , elem.alt , elem.path   , elem.title)
+      let new_filepath  = printf((elem.type == 'img' ? '!' : '') . '[%s](%s%s%s "%s")'   , new_alt  , path_prefix , pre_slash , local_path , elem.title)
     endif
   endif
 
