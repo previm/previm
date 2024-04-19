@@ -232,10 +232,10 @@ g:previm_code_language_separator		*g:previm_code_language_separator*
 	Sets the language and filename separator when using
 	g:previm_code_language_show. (JavaScript RegExp specification)
 
-	By default, it is set to '[\s|:]+'.
+	By default, it is set to '[\s:]+'.
 >
 	" .vimrc
-	let g:previm_code_language_separator = '[\s|:]+'
+	let g:previm_code_language_separator = '[\s:]+'
 
 
 ==============================================================================

@@ -215,10 +215,10 @@ g:previm_code_language_separator		*g:previm_code_language_separator*
 	g:previm_code_language_show を使用した際の言語とファイル名の区切り文字
 	を設定します。(JavaScriptの正規表現仕様)
 
-	デフォルトでは'[\s|:]+'に設定されています。
+	デフォルトでは'[\s:]+'に設定されています。
 >
 	" .vimrc
-	let g:previm_code_language_separator = '[\s|:]+'
+	let g:previm_code_language_separator = '[\s:]+'
 
 ==============================================================================
 追加ライブラリの利用					*previm-extralibraries*
