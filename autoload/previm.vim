@@ -463,6 +463,8 @@ function! previm#options()
   \   'hardLineBreak': get(b:, 'previm_hard_line_break', get(g:, 'previm_hard_line_break', v:false)),
   \   'showheader': get(g:, 'previm_show_header', 1),
   \   'autoClose': get(g:, 'previm_auto_close', 0),
+  \   'showCodeLanguage': get(g:, 'previm_code_language_show', 0),
+  \   'codeLanguageSeparator': get(g:, 'previm_code_language_separator', '[\s:]+'),
   \ })
 endfunction
 

@@ -1,6 +1,6 @@
 *previm.txt*	プレビュー用プラグイン
 
-Version: 1.6
+Version: 2.0
 Author: kanno <akapanna@gmail.com>
 Maintainer: previm developers
 
@@ -179,6 +179,47 @@ g:previm_hard_line_break			*g:previm_hard_line_break*
 	" .vimrc
 	let g:previm_hard_line_break = 1
 
+g:previm_code_language_show			*g:previm_code_language_show*
+	型:数値
+
+	プレビュー時のコードブロックの言語(もしくは、ファイル名)表示機能を設定します。
+
+	値が1ならば、コードブロックの言語表示機能を使用します。
+	値が0ならば、コードブロックの言語表示機能を使用しません。
+	デフォルトでは0に設定されています。
+
+	ハイライト言語のみ指定する場合
+>
+	```language
+	Hello world
+	```
+<
+	ハイライト言語指定と表示ファイル名を分けて表示する場合(スペース区切り)
+>
+	```language filename.ext
+	Hello world
+	```
+<
+	ハイライト言語指定と表示ファイル名を分けて表示する場合(コロン区切り)
+>
+	```language:filename.ext
+	Hello world
+	```
+
+	" .vimrc
+	let g:previm_code_language_show = 1
+
+g:previm_code_language_separator		*g:previm_code_language_separator*
+	型:文字列
+
+	g:previm_code_language_show を使用した際の言語とファイル名の区切り文字
+	を設定します。(JavaScriptの正規表現仕様)
+
+	デフォルトでは'[\s:]+'に設定されています。
+>
+	" .vimrc
+	let g:previm_code_language_separator = '[\s:]+'
+
 ==============================================================================
 追加ライブラリの利用					*previm-extralibraries*
 
@@ -222,6 +263,9 @@ open-browser.vimの使用					*previm-openbrowser*
 
 ==============================================================================
 更新履歴						*previm-changelog*
+
+2.0  	2023-09-20
+        - support for language display of code blocks
 
 1.9  	2022-06-14
         - support adding extra libraries

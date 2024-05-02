@@ -109,6 +109,7 @@ pre code
   background: transparent;
   margin: 0;
   padding: 0;
+  display: block;
 }
 
 a, a code {
@@ -228,4 +229,14 @@ input[type="checkbox"] + label {
   table, pre {
     page-break-inside: avoid;
   }
+}
+
+.code-lang {
+  color: #eee;
+  display: inline-block;
+  background-color: #777;
+  padding: 2px 4px;
+  transform: translateY(-1em);
+  word-break: break-all;
+  margin-top: 6px;
 }
