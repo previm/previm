@@ -40,31 +40,31 @@ let s:t = themis#suite('relative_to_absolute') "{{{
 function! s:t.nothing_when_empty()
   let arg_line = ''
   let expected = ''
-  call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, ''), expected)
+  call s:assert.equals(previm#relative_to_absolute_filepath(arg_line, ''), expected)
 endfunction
 
 function! s:t.nothing_when_not_href()
   let arg_line = 'previm.dummy.com/some/path/img.png'
   let expected = 'previm.dummy.com/some/path/img.png'
-  call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, ''), expected)
+  call s:assert.equals(previm#relative_to_absolute_filepath(arg_line, ''), expected)
 endfunction
 
 function! s:t.nothing_when_absolute_by_http()
   let arg_line = 'http://previm.dummy.com/some/path/img.png'
   let expected = 'http://previm.dummy.com/some/path/img.png'
-  call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, ''), expected)
+  call s:assert.equals(previm#relative_to_absolute_filepath(arg_line, ''), expected)
 endfunction
 
 function! s:t.nothing_when_absolute_by_https()
   let arg_line = 'https://previm.dummy.com/some/path/img.png'
   let expected = 'https://previm.dummy.com/some/path/img.png'
-  call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, ''), expected)
+  call s:assert.equals(previm#relative_to_absolute_filepath(arg_line, ''), expected)
 endfunction
 
 function! s:t.nothing_when_absolute_by_file()
   let arg_line = 'file://previm/some/path/img.png'
   let expected = 'file://previm/some/path/img.png'
-  call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, ''), expected)
+  call s:assert.equals(previm#relative_to_absolute_filepath(arg_line, ''), expected)
 endfunction
 
 function! s:t.replace_path_when_relative()
@@ -72,7 +72,7 @@ function! s:t.replace_path_when_relative()
   let arg_line = printf('![img](%s)', rel_path)
   let arg_dir = '/Users/foo/tmp'
   let expected = printf('![img](//localhost%s/%s)', arg_dir, rel_path)
-  call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
+  call s:assert.equals(previm#relative_to_absolute_filepath(arg_line, arg_dir), expected)
 endfunction
 
 function! s:t.urlencoded_path()
@@ -80,7 +80,7 @@ function! s:t.urlencoded_path()
   let arg_line = printf('![img](%s)', rel_path)
   let arg_dir = 'C:\Documents and Settings\folder'
   let expected = '![img](//localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png)'
-  call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
+  call s:assert.equals(previm#relative_to_absolute_filepath(arg_line, arg_dir), expected)
 endfunction
 
 function! s:t.with_title_from_double_quote()
@@ -88,7 +88,7 @@ function! s:t.with_title_from_double_quote()
   let arg_line = printf('![img](%s "title")', rel_path)
   let arg_dir = 'C:\Documents and Settings\folder'
   let expected = '![img](//localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png "title")'
-  call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
+  call s:assert.equals(previm#relative_to_absolute_filepath(arg_line, arg_dir), expected)
 endfunction
 
 function! s:t.with_title_from_single_quote()
@@ -96,7 +96,7 @@ function! s:t.with_title_from_single_quote()
   let arg_line = printf("![img](%s 'title')", rel_path)
   let arg_dir = 'C:\Documents and Settings\folder'
   let expected = '![img](//localhost/C:\Documents%20and%20Settings\folder/previm\some\path\img.png "title")'
-  call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
+  call s:assert.equals(previm#relative_to_absolute_filepath(arg_line, arg_dir), expected)
 endfunction
 
 function! s:t.not_only_img()
@@ -104,49 +104,53 @@ function! s:t.not_only_img()
   let arg_line = printf('| a | ![img](%s) |', rel_path)
   let arg_dir  = '/Users/foo/tmp'
   let expected = printf('| a | ![img](//localhost%s/%s) |', arg_dir, rel_path)
-  call s:assert.equals(previm#relative_to_absolute_imgpath(arg_line, arg_dir), expected)
+  call s:assert.equals(previm#relative_to_absolute_filepath(arg_line, arg_dir), expected)
 endfunction
 "}}}
-let s:t = themis#suite('fetch_imgpath_elements') "{{{
+let s:t = themis#suite('fetch_filepath_elements') "{{{
 
 function! s:t.nothing_when_empty()
   let arg = ''
   let expected = s:empty_img_elements()
-  call s:assert.equals(previm#fetch_imgpath_elements(arg), expected)
+  call s:assert.equals(previm#fetch_filepath_elements(arg), expected)
 endfunction
 
 function! s:t.nothing_when_not_img_statement()
   let arg = '## hogeほげ'
   let expected = s:empty_img_elements()
-  call s:assert.equals(previm#fetch_imgpath_elements(arg), expected)
+  call s:assert.equals(previm#fetch_filepath_elements(arg), expected)
 endfunction
 
 function! s:t.get_alt_and_path()
   let arg = '![IMG](path/img.png)'
-  let expected = {'alt': 'IMG', 'path': 'path/img.png', 'title': ''}
-  call s:assert.equals(previm#fetch_imgpath_elements(arg), expected)
+  let expected = {'type': 'img', 'alt': 'IMG', 'path': 'path/img.png', 'title': ''}
+  call s:assert.equals(previm#fetch_filepath_elements(arg), expected)
 endfunction
 
 function! s:t.get_alt_and_path_from_image_in_link()
   let arg = '[![IMG](path/img.png)](path/some/file)'
-  let expected = {'alt': 'IMG', 'path': 'path/img.png', 'title': ''}
-  call s:assert.equals(previm#fetch_imgpath_elements(arg), expected)
+  let expected1 = {'type': 'link', 'alt': '![IMG](path/img.png)', 'path': 'path/some/file', 'title': ''}
+  let expected2 = {'type': 'img', 'alt': 'IMG', 'path': 'path/img.png', 'title': ''}
+  let ret1 = previm#fetch_filepath_elements(arg)
+  let ret2 = previm#fetch_filepath_elements(ret1.alt)
+  call s:assert.equals(ret1, expected1)
+  call s:assert.equals(ret2, expected2)
 endfunction
 
 function! s:t.get_title_from_double_quote()
   let arg = '![IMG](path/img.png  "image")'
-  let expected = {'alt': 'IMG', 'path': 'path/img.png', 'title': 'image'}
-  call s:assert.equals(expected, previm#fetch_imgpath_elements(arg))
+  let expected = {'type': 'img', 'alt': 'IMG', 'path': 'path/img.png', 'title': 'image'}
+  call s:assert.equals(expected, previm#fetch_filepath_elements(arg))
 endfunction
 
 function! s:t.get_title_from_single_quote()
   let arg = "![IMG](path/img.png  'image')"
-  let expected = {'alt': 'IMG', 'path': 'path/img.png', 'title': 'image'}
-  call s:assert.equals(expected, previm#fetch_imgpath_elements(arg))
+  let expected = {'type': 'img', 'alt': 'IMG', 'path': 'path/img.png', 'title': 'image'}
+  call s:assert.equals(expected, previm#fetch_filepath_elements(arg))
 endfunction
 
 function! s:empty_img_elements()
-  return {'alt': '', 'path': '', 'title': ''}
+  return {'type': '', 'alt': '', 'path': '', 'title': ''}
 endfunction
 "}}}
 let s:t = themis#suite('refresh_css') "{{{
