@@ -1,12 +1,6 @@
 [README in English](https://github.com/previm/previm/blob/master/README-en.md)
 
-```go
-func main() {
-xxx
-}
-```
-
-## Previm1
+## Previm
 
 [![TravisCI](https://travis-ci.org/previm/previm.svg?branch=master)](https://travis-ci.org/previm/previm) [![AppVeyor](https://ci.appveyor.com/api/projects/status/r12pom6aaiom3kqy?svg=true)](https://ci.appveyor.com/project/mattn/previm)
 
