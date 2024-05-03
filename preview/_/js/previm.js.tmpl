@@ -46,12 +46,12 @@
     // Settings code-lang 
     const sep = new RegExp(getOptions().codeLanguageSeparator);
     const tokenSplit = token.info.trim().split(sep);
-    const langName = tokenSplit[0];
+    const codeLangName = tokenSplit[0];
     const fileName = '';
     if (tokenSplit.length > 1) {
         fileName = tokenSplit.slice(1).join(' ');
     } else {
-        fileName = langName;
+        fileName = codeLangName;
     }
     tokens[idx].attrPush(['code-lang', fileName]);
 
@@ -138,7 +138,7 @@
   }
 
   function loadPreview() {
-    const needReload = false;
+    let needReload = false;
     // These functions are defined as the file generated dynamically.
     //   generator-file: preview/autoload/previm.vim
     //   generated-file: preview/js/previm-function.js
