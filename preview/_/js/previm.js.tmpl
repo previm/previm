@@ -47,7 +47,7 @@
     const sep = new RegExp(getOptions().codeLanguageSeparator);
     const tokenSplit = token.info.trim().split(sep);
     const codeLangName = tokenSplit[0];
-    const fileName = '';
+    let fileName = '';
     if (tokenSplit.length > 1) {
         fileName = tokenSplit.slice(1).join(' ');
     } else {
