@@ -1,8 +1,8 @@
 'use strict';
 
 (function(_doc, _win) {
-  var REFRESH_INTERVAL = 1000;
-  var md = new _win.markdownit({html: true, linkify: true})
+  const REFRESH_INTERVAL = 1000;
+  const md = new _win.markdownit({html: true, linkify: true})
                    .use(_win.markdownitAbbr)
                    .use(_win.markdownitDeflist)
                    .use(_win.markdownitFootnote)
@@ -11,19 +11,19 @@
                    .use(_win.markdownitCheckbox)
                    .use(_win.markdownitCjkBreaks);
 
-  var defaultRenderer =
+  const defaultRenderer =
     md.renderer.rules.link_open ||
-    function (tokens, idx, options, env, self) {
+    function (tokens, idx, options, _env, self) {
       return self.renderToken(tokens, idx, options);
     };
 
   md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
-    var targetIndex = tokens[idx].attrIndex("target");
+    const targetIndex = tokens[idx].attrIndex("target");
     if (targetIndex < 0) {
       if (!/^#/.test(tokens[idx].attrs[0][1])) {
         tokens[idx].attrPush(["target", "_blank"]);
 
-        var relIndex = tokens[idx].attrIndex("rel");
+        const relIndex = tokens[idx].attrIndex("rel");
         if (relIndex < 0) {
           tokens[idx].attrPush(["rel", "noopener"]);
         } else {
@@ -36,18 +36,18 @@
   }
 
   // Override default 'fence' ruler for 'mermaid' support
-  var original_fence = md.renderer.rules.fence;
+  const original_fence = md.renderer.rules.fence;
   md.renderer.rules.fence = function fence(tokens, idx, options, env, slf) {
-    var token = tokens[idx];
-    var langName = token.info.trim().split(/\s+/g)[0];
+    const token = tokens[idx];
+    const langName = token.info.trim().split(/\s+/g)[0];
     if (langName === 'mermaid') {
       return '<div class="mermaid">' + token.content + '</div>';
     }
     // Settings code-lang 
-    var sep = new RegExp(getOptions().codeLanguageSeparator);
-    var tokenSplit = token.info.trim().split(sep);
-    var langName = tokenSplit[0];
-    var fileName = '';
+    const sep = new RegExp(getOptions().codeLanguageSeparator);
+    const tokenSplit = token.info.trim().split(sep);
+    const langName = tokenSplit[0];
+    const fileName = '';
     if (tokenSplit.length > 1) {
         fileName = tokenSplit.slice(1).join(' ');
     } else {
@@ -77,8 +77,8 @@
       }
       return md.render(content);
     } else if(hasTargetFileType(filetype, ['plantuml'])) {
-      var lines = content.split("\n")
-      var chunks = [];
+      const lines = content.split("\n")
+      const chunks = [];
       lines.forEach(function (line) {
         if (/^@start/.test(line)) {
           chunks.push(line);
@@ -86,7 +86,7 @@
           chunks[chunks.length - 1] += "\n" + line;
         }
       });
-      var plantumls = [];
+      const plantumls = [];
       chunks.forEach(function (chunk) {
         plantumls.push("```plantuml\n" + chunk + "```\n");
       });
@@ -96,7 +96,7 @@
     } else if(hasTargetFileType(filetype, ['rst'])) {
       // It has already been converted by rst2html.py
       return content
-        .replace(/<!--\s*plantuml\n([\s\S]*?)-->/g, function(all, c) {
+        .replace(/<!--\s*plantuml\n([\s\S]*?)-->/g, function(_all, c) {
           return '<div><code class="language-plantuml">\n' + c.replace("- ->", "--&#62;").replace('<- -', '&#60;--') + '\n</code></div>';
         });
     } else if(hasTargetFileType(filetype, ['textile'])) {
@@ -108,8 +108,8 @@
   }
 
   function hasTargetFileType(filetype, targetList) {
-    var ftlist = filetype.split('.');
-    for(var i=0;i<ftlist.length; i++) {
+    const ftlist = filetype.split('.');
+    for(let i=0;i<ftlist.length; i++) {
       if(targetList.indexOf(ftlist[i]) > -1){
         return true;
       }
@@ -121,8 +121,8 @@
   //   ここで動的にpageYOffsetを取得すると画像表示前の高さになってしまう
   //   そのため明示的にpageYOffsetを受け取るようにしている
   function autoScroll(id, pageYOffset) {
-    var relaxed = 0.95;
-    var obj = document.getElementById(id);
+    const relaxed = 0.95;
+    const obj = document.getElementById(id);
     if((_doc.documentElement.clientHeight + pageYOffset) / _doc.body.clientHeight > relaxed) {
       obj.scrollTop = obj.scrollHeight;
     } else {
@@ -132,13 +132,13 @@
 
   function style_header() {
     if (typeof getOptions === 'function') {
-      var style = getOptions().showheader ? '' : 'none';
+      const style = getOptions().showheader ? '' : 'none';
       _doc.getElementById('header').style.display = style;
     }
   }
 
   function loadPreview() {
-    var needReload = false;
+    const needReload = false;
     // These functions are defined as the file generated dynamically.
     //   generator-file: preview/autoload/previm.vim
     //   generated-file: preview/js/previm-function.js
@@ -161,7 +161,7 @@
     if (needReload && (typeof getContent === 'function') && (typeof getFileType === 'function')) {
       {{previm_init_libraries}}
 
-      var beforePageYOffset = _win.pageYOffset;
+      const beforePageYOffset = _win.pageYOffset;
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
 
       {{previm_load_libraries}}
@@ -171,9 +171,9 @@
       // Settings code-lang
       if (getOptions().showCodeLanguage === 1) {
         Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), function (item, index) {
-          var fileName = item.getAttribute('code-lang');
+          const fileName = item.getAttribute('code-lang');
           if (fileName) {
-            var codeLang = _doc.createElement('div');
+            const codeLang = _doc.createElement('div');
             codeLang.setAttribute('class','code-lang');
             codeLang.innerHTML = '<span class="bold">' + fileName + '</span>';
             item.parentNode.insertBefore(codeLang, item.parentNode.firstElementChild);
@@ -186,8 +186,8 @@
     }
   }
 
-  var interval = _win.setInterval(function() {
-    var script = _doc.createElement('script');
+  const interval = _win.setInterval(function() {
+    const script = _doc.createElement('script');
 
     script.type = 'text/javascript';
     script.src = 'js/previm-function.js?t=' + new Date().getTime();
