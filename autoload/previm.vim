@@ -334,7 +334,7 @@ endfunction
 "   ![alt](file://localhost/C:\Documents%20and%20Settings\folder/pictures\img.png "title")
 function! previm#relative_to_absolute_filepath(text, mkd_dir) abort
   let elem = previm#fetch_filepath_elements(a:text)
-  if empty(elem.path)
+  if empty(elem.path) || match(elem.path, '^#') != -1
     return a:text
   endif
   for protocol in ['//', 'http://', 'https://']
