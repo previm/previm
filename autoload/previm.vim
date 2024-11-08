@@ -324,7 +324,17 @@ function! previm#convert_to_content(lines) abort
 endfunction
 
 function! previm#convert_relative_to_absolute_filepath(text, mkd_dir) abort
-  return substitute(a:text, '\v!?\[%([^\[\]\(\)]+|\[[^\[\]]*\]|\([^()]*\))*\]\([^()]*\)|^\[([^\[\]]*)\]:\s*(.*)', '\=previm#relative_to_absolute_filepath(submatch(0), a:mkd_dir)', 'g')
+  return substitute(
+        \ s:escape_pattern(a:text),
+        \ '\v!?\[%([^\[\]\(\)]+|\[[^\[\]]*\]|\([^()]*\))*\]\([^()]*\)|^\[([^\[\]]*)\]:\s*(.*)',
+        \ '\=previm#relative_to_absolute_filepath(submatch(0), a:mkd_dir)',
+        \ 'g',
+        \)
+endfunction
+
+function! s:escape_pattern(str) abort
+  " escape characters for no-magic
+  return escape(a:str, '^$~.*[]\')
 endfunction
 
 " convert example
