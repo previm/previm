@@ -314,7 +314,7 @@ function! previm#convert_to_content(lines) abort
   let converted_lines = []
   for line in s:do_external_parse(a:lines)
     " TODO エスケープの理由と順番の依存度が複雑
-    let escaped = substitute(line, '\', '\\\\', 'g')
+    let escaped = substitute(line, '\', '\\', 'g')
     let escaped = previm#convert_relative_to_absolute_filepath(escaped, mkd_dir)
     let escaped = substitute(escaped, '"', '\\"', 'g')
     let escaped = substitute(escaped, '\r', '\\r', 'g')
