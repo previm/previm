@@ -169,7 +169,7 @@ g:previm_plantuml_imageprefix			*g:previm_plantuml_imageprefix*
 
 	Specify endpoint of plantuml server if you want to use it in local.
 
-	If the value is not specified, http://plantuml.com/plantuml/img/ is
+	If the value is not specified, https://plantuml.com/plantuml/img/ is
 	used.
 
 >

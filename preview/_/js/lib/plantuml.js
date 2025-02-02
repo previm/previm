@@ -54,7 +54,7 @@ function compress(prefix, a) {
   if (prefix) {
     return prefix + encode64(zip_deflate(a, 9));
   }
-  return "http://plantuml.com/plantuml/img/" + encode64(zip_deflate(a, 9));
+  return "https://plantuml.com/plantuml/img/" + encode64(zip_deflate(a, 9));
 }
 
 function loadPlantUML() {
