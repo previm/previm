@@ -75,6 +75,31 @@
         md.set({ breaks: false });
         md.enable('cjk_breaks');
       }
+      // Replace `$$` / `$` TeX math expression
+      content = content.split(/\n/);
+      for (let l = 0; l < content.length; l++) {
+        if (/^((?:>\s*)*)\$\$\s*$/.test(content[l])) {
+          const quoteLevel = RegExp.$1.replaceAll(/[^>]/g, '').length;
+          let m = l + 1;
+          for (; m < content.length; m++) {
+            if (/^((?:>\s*)*)/.test(content[m]) && RegExp.$1.replaceAll(/[^>]/g, '').length < quoteLevel) {
+              // Get out of the current quote.
+              break;
+            }
+            if (/^((?:>\s*)*)\$\$\s*$/.test(content[m])) {
+              content[l] = content[l].replace(/\$\$/, '<pre><code class="language-katex">');
+              content[m] = content[m].replace(/\$\$/, '</code></pre>');
+              break;
+            }
+          }
+          l = m;
+        } else {
+          content[l] = content[l].replaceAll(/((?:^|[^\\])(?:\\\\)*)\\\$/g, '$1&#x24;');
+          content[l] = content[l].replaceAll(/\$\$\s*([^$]*?)\s*\$\$/g, '<pre><code class="language-katex">$1</code></pre>');
+          content[l] = content[l].replaceAll(/(?<!\$)\$\s*([^$]*?)\s*\$(?!\$)/g, '<span class="inlkatex">$1</span>');
+        }
+      }
+      content = content.join('\n');
       return md.render(content);
     } else if(hasTargetFileType(filetype, ['plantuml'])) {
       const lines = content.split("\n")
