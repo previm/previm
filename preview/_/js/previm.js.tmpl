@@ -47,13 +47,22 @@
     const sep = new RegExp(getOptions().codeLanguageSeparator);
     const tokenSplit = token.info.trim().split(sep);
     const codeLangName = tokenSplit[0];
-    let fileName = '';
-    if (tokenSplit.length > 1) {
-        fileName = tokenSplit.slice(1).join(' ');
-    } else {
-        fileName = codeLangName;
+    let fileName = tokenSplit.slice(1).join(' ');
+    switch (getOptions().showCodeLanguage) {
+    case 0:
+      break;
+
+    case 2:
+      if (fileName != "") {
+        tokens[idx].attrPush(['code-lang', fileName]);
+      }
+      break;
+
+    case 1:
+    default:
+      tokens[idx].attrPush(['code-lang', fileName == "" ? codeLangName : fileName]);
+      break;
     }
-    tokens[idx].attrPush(['code-lang', fileName]);
 
     return original_fence(tokens, idx, options, env, slf);
   };
@@ -169,7 +178,7 @@
       loadPlantUML();
 
       // Settings code-lang
-      if (getOptions().showCodeLanguage === 1) {
+      if (getOptions().showCodeLanguage > 0) {
         Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), function (item, index) {
           const fileName = item.getAttribute('code-lang');
           if (fileName) {
