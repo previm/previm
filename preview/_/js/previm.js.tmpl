@@ -49,7 +49,7 @@
     const codeLangName = tokenSplit[0];
     let fileName = '';
     if (tokenSplit.length > 1) {
-        fileName = `${tokenSplit[0]}:${tokenSplit.slice(1).join(' ')}`;
+        fileName = tokenSplit.slice(1).join(' ');
     } else {
         fileName = codeLangName;
     }
@@ -171,11 +171,11 @@
       // Settings code-lang
       if (getOptions().showCodeLanguage === 1) {
         Array.prototype.forEach.call(_doc.querySelectorAll('pre code'), function (item, index) {
-          const fileName = item.getAttribute('code-lang')?.split(/:/);
+          const fileName = item.getAttribute('code-lang');
           if (fileName) {
             const codeLang = _doc.createElement('div');
-            codeLang.setAttribute('class','code-lang' + (fileName.length <= 1 ? '' : ' code-lang-title'));
-            codeLang.innerHTML = '<span class="bold">' + fileName[fileName.length <= 1 ? 0 : 1] + '</span>';
+            codeLang.setAttribute('class','code-lang');
+            codeLang.innerHTML = '<span class="bold">' + fileName + '</span>';
             item.parentNode.insertBefore(codeLang, item.parentNode.firstElementChild);
           }
         });
