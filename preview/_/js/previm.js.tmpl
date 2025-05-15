@@ -95,12 +95,21 @@
           l = m;
         } else {
           content[l] = content[l].replaceAll(/((?:^|[^\\])(?:\\\\)*)\\\$/g, '$1&#x24;');
-          content[l] = content[l].replaceAll(/\$\$\s*([^$]*?)\s*\$\$/g, '<pre><code class="language-katex">$1</code></pre>');
-          content[l] = content[l].replaceAll(/(?<!\$)\$\s*([^$]*?)\s*\$(?!\$)/g, '<span class="inlkatex">$1</span>');
+          content[l] = content[l].replaceAll(/\$\$([^$]*?)\$\$/g, '<pre><code class="language-katex">$1</code></pre>');
+          content[l] = content[l].replaceAll(/(?<!\$)\$([^$]*?)\$(?!\$)/g, '<span class="inlkatex">$1</span>');
         }
       }
       content = content.join('\n');
-      return md.render(content);
+      let dom = document.createElement('div');
+      dom.innerHTML = md.render(content);
+      // Rollback the replacements in code syntax.
+      dom.querySelectorAll('pre, code:not(.language-katex)').forEach(elem => {
+        elem.innerHTML = elem.innerHTML
+                          .replaceAll(/&amp;#x24;/g, '\\$$')
+                          .replaceAll(/&lt;pre&gt;&lt;code class="language-katex"&gt;((?:.|\n)*?)&lt;\/code&gt;&lt;\/pre&gt;/g, '$$$$$1$$$$')
+                          .replaceAll(/&lt;span class="inlkatex"&gt;(.*?)&lt;\/span&gt;/g, '$$$1$$');
+      });
+      return dom.innerHTML;
     } else if(hasTargetFileType(filetype, ['plantuml'])) {
       const lines = content.split("\n")
       const chunks = [];
