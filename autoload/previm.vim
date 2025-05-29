@@ -312,6 +312,7 @@ function! previm#convert_to_content(lines) abort
     let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
   endif
   let converted_lines = []
+  " コードブロック内ではパスの展開は行わない
   let in_codeblock = 0
   for line in s:do_external_parse(a:lines)
     if line =~ '^```'
