@@ -19,6 +19,8 @@ function! previm#open(preview_html_file) abort
     elseif get(g:, 'previm_wsl_mode', 0) ==# 1
       let wsl_file_path = system('wslpath -w ' . a:preview_html_file)
       call s:system(g:previm_open_cmd . " 'file:///" . fnamemodify(wsl_file_path, ':gs?\\?\/?') . '''')
+    elseif has('win32')
+      call s:system(g:previm_open_cmd . ' "'  . a:preview_html_file . '"')
     else
       call s:system(g:previm_open_cmd . ' '''  . a:preview_html_file . '''')
     endif
