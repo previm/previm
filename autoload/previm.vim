@@ -95,8 +95,8 @@ function! previm#refresh_html() abort
   call writefile(output, previm#make_preview_file_path('index.html'))
 endfunction
 
-let s:default_origin_css_path = "@import url('../../_/css/origin.css');"
-let s:default_github_css_path = "@import url('../../_/css/lib/github.css');"
+let s:default_origin_css_path = "@import url('../../_/css/origin.css') layer;"
+let s:default_github_css_path = "@import url('../../_/css/lib/github.css') layer;"
 
 function! s:copy_dir(src, dest) abort
   if isdirectory(a:src)
