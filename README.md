@@ -90,15 +90,33 @@ Alice <-- Bob: another authentication Response
 ```
 </pre>
 
-直接`.pu`を開いてプレビューすることもできるようにしました。
-<pre>
-@startuml
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
+![PlantUML preview](https://user-images.githubusercontent.com/546312/72982432-6acf4480-3e22-11ea-856e-4d0042452539.png)
 
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
-@enduml
+### PlantUML (.pu) ファイルの直接プレビュー
+
+PlantUMLファイル（.pu）を直接プレビューすることができます。この機能を使用するには以下の設定が必要です：
+
+1. PlantUMLサーバーの起動:
+<pre>
+```bash
+docker run -d -p 8888:8080 plantuml/plantuml-server:jetty
+```
 </pre>
 
-![PlantUML preview](https://user-images.githubusercontent.com/546312/72982432-6acf4480-3e22-11ea-856e-4d0042452539.png)
+2. Neovim/Vimの設定:
+<pre>
+```lua
+-- init.lua (Neovim)
+vim.g.previm_plantuml_imageprefix = 'http://localhost:8888/png/'
+```
+</pre>
+<pre>
+```vim
+" .vimrc (Vim)
+let g:previm_plantuml_imageprefix = 'http://localhost:8888/png/'
+```
+</pre>
+
+使い方:
+1. .puファイルを開く
+2. `:PrevimOpen` を実行してプレビューを開始

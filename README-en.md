@@ -94,3 +94,32 @@ Alice <-- Bob: another authentication Response
 </pre>
 
 ![PlantUML preview](https://user-images.githubusercontent.com/546312/72982432-6acf4480-3e22-11ea-856e-4d0042452539.png)
+
+### Direct Preview of PlantUML (.pu) Files
+
+You can directly preview PlantUML files (.pu). To use this feature, you need the following setup:
+
+1. Start the PlantUML server:
+<pre>
+```bash
+docker run -d -p 8888:8080 plantuml/plantuml-server:jetty
+```
+</pre>
+
+2. Configure Neovim/Vim:
+<pre>
+```lua
+-- init.lua (Neovim)
+vim.g.previm_plantuml_imageprefix = 'http://localhost:8888/png/'
+```
+</pre>
+<pre>
+```vim
+" .vimrc (Vim)
+let g:previm_plantuml_imageprefix = 'http://localhost:8888/png/'
+```
+</pre>
+
+Usage:
+1. Open a .pu file
+2. Run `:PrevimOpen` to start previewing
