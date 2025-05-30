@@ -10,6 +10,14 @@ let g:loaded_previm = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
+" ファイルタイプ検出の設定
+if !exists('g:previm_disable_default_ft_detect')
+  augroup PrevimFileType
+    autocmd!
+    autocmd BufRead,BufNewFile *.pu,*.uml,*.plantuml,*.puml setfiletype plantuml
+  augroup END
+endif
+
 augroup Previm
   autocmd!
   autocmd FileType *{mkd,markdown,mmd,mermaid,rst,textile,asciidoc,plantuml,html,pu}* call previm#install()

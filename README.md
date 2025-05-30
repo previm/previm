@@ -90,5 +90,15 @@ Alice <-- Bob: another authentication Response
 ```
 </pre>
 
-![PlantUML preview](https://user-images.githubusercontent.com/546312/72982432-6acf4480-3e22-11ea-856e-4d0042452539.png)
+直接`.pu`を開いてプレビューすることもできるようにしました。
+<pre>
+@startuml
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
 
+Alice -> Bob: Another authentication Request
+Alice <-- Bob: another authentication Response
+@enduml
+</pre>
+
+![PlantUML preview](https://user-images.githubusercontent.com/546312/72982432-6acf4480-3e22-11ea-856e-4d0042452539.png)
