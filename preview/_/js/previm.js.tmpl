@@ -101,6 +101,7 @@
               p1
                 .replaceAll(/(?<=^|[^\\](?:\\\\)*)\*/g, '&#x2a;')
                 .replaceAll(/(?<=^|[^\\](?:\\\\)*)_/g, '&#x5f;')
+                .replaceAll(/(?<=^|[^\\](?:\\\\)*)\\/g, '&#x5c;')
             }</code>`
           );
         }
@@ -118,6 +119,7 @@
                               p1
                                 .replaceAll(/&amp;#x2a;/g, '*')
                                 .replaceAll(/&amp;#x5f;/g, '_')
+                                .replaceAll(/&amp;#x5c;/g, '\\')
                             }$$`
                           );
       });
