@@ -117,12 +117,12 @@
                             .replaceAll(/&amp;#x24;/g, '\\$$')
                             .replaceAll(/&lt;pre&gt;&lt;code class="language-katex"&gt;((?:.|\n)*?)&lt;\/code&gt;&lt;\/pre&gt;/g, '$$$$$1$$$$')
                             .replaceAll(/&lt;code class="inlkatex"&gt;(.*?)&lt;\/code&gt;/g, (match, p1) =>
-                              `$$${
+                              `$${
                                 p1
                                   .replaceAll(/&amp;#x2a;/g, '*')
                                   .replaceAll(/&amp;#x5f;/g, '_')
                                   .replaceAll(/&amp;#x5c;/g, '\\')
-                              }$$`
+                              }$`
                             );
         });
         return dom.innerHTML;
