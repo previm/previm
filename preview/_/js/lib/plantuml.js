@@ -1,70 +1,62 @@
-function encode64(a) {
-  var r = "";
-  for (var i = 0; i < a.length; i += 3) {
-    if (i + 2 == a.length) {
-      r += append3bytes(a.charCodeAt(i), a.charCodeAt(i + 1), 0)
+function encode6bit(b) {
+  if (b < 10) return String.fromCharCode(48 + b);
+  b -= 10;
+  if (b < 26) return String.fromCharCode(65 + b);
+  b -= 26;
+  if (b < 26) return String.fromCharCode(97 + b);
+  b -= 26;
+  if (b === 0) return "-";
+  if (b === 1) return "_";
+  return "?";
+}
+
+function append3bytes(b1, b2, b3) {
+  const c1 = b1 >> 2;
+  const c2 = ((b1 & 0x3) << 4) | (b2 >> 4);
+  const c3 = ((b2 & 0xF) << 2) | (b3 >> 6);
+  const c4 = b3 & 0x3F;
+  return encode6bit(c1 & 0x3F) + encode6bit(c2 & 0x3F) + encode6bit(c3 & 0x3F) + encode6bit(c4 & 0x3F);
+}
+
+function encode64(data) {
+  let r = "";
+  for (let i = 0; i < data.length; i += 3) {
+    if (i + 2 === data.length) {
+      r += append3bytes(data.charCodeAt(i), data.charCodeAt(i + 1), 0);
+    } else if (i + 1 === data.length) {
+      r += append3bytes(data.charCodeAt(i), 0, 0);
     } else {
-      if (i + 1 == a.length) {
-        r += append3bytes(a.charCodeAt(i), 0, 0)
-      } else {
-        r += append3bytes(a.charCodeAt(i), a.charCodeAt(i + 1), a.charCodeAt(i + 2))
-      }
+      r += append3bytes(
+        data.charCodeAt(i),
+        data.charCodeAt(i + 1),
+        data.charCodeAt(i + 2)
+      );
     }
   }
-  return r
+  return r;
 }
 
-function append3bytes(c, b, a) {
-  var c1 = c >> 2;
-  var c2 = ((c & 3) << 4) | (b >> 4);
-  var c3 = ((b & 15) << 2) | (a >> 6);
-  var c4 = a & 63;
-  var r = "";
-  r += encode6bit(c1 & 63);
-  r += encode6bit(c2 & 63);
-  r += encode6bit(c3 & 63);
-  r += encode6bit(c4 & 63);
-  return r
-}
+function compress(prefix, txt) {
+  txt = unescape(encodeURIComponent(txt));
 
-function encode6bit(a) {
-  if (a < 10) {
-    return String.fromCharCode(48 + a)
-  }
-  a -= 10;
-  if (a < 26) {
-    return String.fromCharCode(65 + a)
-  }
-  a -= 26;
-  if (a < 26) {
-    return String.fromCharCode(97 + a)
-  }
-  a -= 26;
-  if (a == 0) {
-    return "-"
-  }
-  if (a == 1) {
-    return "_"
-  }
-  return "?"
-}
+  const zipped = zip_deflate(txt, 9);
+  const encoded = encode64(zipped);
 
-function compress(prefix, a) {
-  a = unescape(encodeURIComponent(a));
-  if (prefix) {
-    return prefix + encode64(zip_deflate(a, 9));
-  }
-  return "http://plantuml.com/plantuml/img/" + encode64(zip_deflate(a, 9));
+  if (prefix) return prefix + encoded;
+  return "http://plantuml.com/plantuml/img/" + encoded;
 }
 
 function loadPlantUML() {
-  var umls = document.querySelectorAll('code.language-plantuml');
-  var prefix = getOptions().imagePrefix;
+  const umls = document.querySelectorAll("code.language-plantuml");
+  const prefix = getOptions().imagePrefix;
+
   Array.prototype.slice.call(umls).forEach(function(el) {
-    var text = el.textContent
-    var url = compress(prefix, text);
-    var div = document.createElement('div');
-    div.innerHTML = '<div><img src="' + url + '" /></div>'
+    const text = el.textContent.replace(/^'\s*---/gm, "'—"); // avoid md-hr detection
+
+    const url = compress(prefix, text);
+    const div = document.createElement("div");
+    div.innerHTML = '<div><img src="' + url + '" /></div>';
     el.parentNode.replaceWith(div);
   });
 }
+
