@@ -37,9 +37,7 @@ function encode64(data) {
 }
 
 function compress(prefix, txt) {
-  txt = unescape(encodeURIComponent(txt));
-
-  const zipped = zip_deflate(txt, 9);
+  const zipped = zip_deflate(unescape(encodeURIComponent(txt)), 9);
   const encoded = encode64(zipped);
 
   if (prefix) return prefix + encoded;
@@ -52,10 +50,8 @@ function loadPlantUML() {
 
   Array.prototype.slice.call(umls).forEach(function(el) {
     const text = el.textContent.replace(/^'\s*---/gm, "'—"); // avoid md-hr detection
-
-    const url = compress(prefix, text);
     const div = document.createElement("div");
-    div.innerHTML = '<div><img src="' + url + '" /></div>';
+    div.innerHTML = `<div><img src="${compress(prefix, text)}" /></div>`;
     el.parentNode.replaceWith(div);
   });
 }
