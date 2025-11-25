@@ -77,7 +77,9 @@
     }
 
     if(hasTargetFileType(filetype, ['markdown', 'mkd'])) {
-      content = content.replace(/^---\s*\n((?:[^\n]+\n)*)---\s*\n/, '```yaml\n$1```\n')
+      content = content
+        .replace(/^---\s*\n((?:[^\n]+\n)*)---\s*\n/, '```yaml\n$1```\n')
+        .replace(/^\+\+\+\s*\n((?:[^\n]+\n)*)\-\-\-\s*\n/, '```toml\n$1```\n');
       if (typeof getOptions === 'function' && getOptions().hardLineBreak) {
         md.set({ breaks: true });
         md.disable('cjk_breaks');
