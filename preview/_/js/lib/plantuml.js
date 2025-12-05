@@ -1,3 +1,14 @@
+async function rawDeflate(text) {
+  if ("CompressionStream" in window) {
+    const cs = new CompressionStream("deflate-raw");
+    const writer = cs.writable.getWriter();
+    writer.write(new TextEncoder().encode(text));
+    writer.close();
+    return new Uint8Array(await new Response(cs.readable).arrayBuffer());
+  }
+  throw new Error("raw-deflate unavailable");
+}
+
 function encode6bit(b) {
   if (b < 10) return String.fromCharCode(48 + b);
   b -= 10;
@@ -15,43 +26,36 @@ function append3bytes(b1, b2, b3) {
   const c2 = ((b1 & 0x3) << 4) | (b2 >> 4);
   const c3 = ((b2 & 0xF) << 2) | (b3 >> 6);
   const c4 = b3 & 0x3F;
-  return encode6bit(c1 & 0x3F) + encode6bit(c2 & 0x3F) + encode6bit(c3 & 0x3F) + encode6bit(c4 & 0x3F);
+  return encode6bit(c1) + encode6bit(c2) + encode6bit(c3) + encode6bit(c4);
 }
 
 function encode64(data) {
   let r = "";
   for (let i = 0; i < data.length; i += 3) {
-    if (i + 2 === data.length) {
-      r += append3bytes(data.charCodeAt(i), data.charCodeAt(i + 1), 0);
-    } else if (i + 1 === data.length) {
-      r += append3bytes(data.charCodeAt(i), 0, 0);
-    } else {
-      r += append3bytes(
-        data.charCodeAt(i),
-        data.charCodeAt(i + 1),
-        data.charCodeAt(i + 2)
-      );
-    }
+    r += append3bytes(
+      data[i],
+      data[i + 1] || 0,
+      data[i + 2] || 0
+    );
   }
   return r;
 }
 
-function compress(prefix, txt) {
-  const zipped = zip_deflate(unescape(encodeURIComponent(txt)), 9);
-  const encoded = encode64(zipped);
-
-  if (prefix) return prefix + encoded;
-  return "http://plantuml.com/plantuml/img/" + encoded;
+async function compress(prefix, txt) {
+  const bin = await rawDeflate(txt);
+  const encoded = encode64(bin);
+  return (prefix || "https://www.plantuml.com/plantuml/img/") + encoded;
 }
 
 function loadPlantUML() {
   const umls = document.querySelectorAll("code.language-plantuml");
   const prefix = getOptions().imagePrefix;
 
-  Array.prototype.slice.call(umls).forEach(function(el) {
-    const text = el.textContent.replace(/^'\s*---/gm, "'—"); // avoid md-hr detection
+  umls.forEach(async (el) => {
+    const text = el.textContent;
     const div = document.createElement("div");
-    div.innerHTML = `<div><img src="${compress(prefix, text)}" /></div>`;
+    const value = await compress(prefix, text);
+    div.innerHTML = `<div><img src="${value}"></div>`;
     el.parentNode.replaceWith(div);
   });
 }
