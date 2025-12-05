@@ -240,6 +240,22 @@ g:previm_code_language_separator		*g:previm_code_language_separator*
 	" .vimrc
 	let g:previm_code_language_separator = '[\s:]+'
 
+g:previm_katex_inline_expr			*g:previm_katex_inline_expr*
+	Type:Num
+
+	Process the forms of the text '$ ... $' and '$$ ... $$' as KaTeX math
+	expression.
+	Along with this setting, load KaTeX library by
+	g:previm_extra_libraries.
+
+	If the value is 1, manage the KaTeX math expression format.
+	If the value is 0, do not manage the KaTeX math expression format.
+	It is set to 0 by default.
+
+>
+	" .vimrc
+	let g:previm_katex_inline_expr = 1
+
 
 ==============================================================================
 USING EXTRA LIBRARIES					*previm-extralibraries*

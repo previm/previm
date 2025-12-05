@@ -223,6 +223,22 @@ g:previm_code_language_separator		*g:previm_code_language_separator*
 	" .vimrc
 	let g:previm_code_language_separator = '[\s:]+'
 
+g:previm_katex_inline_expr			g:previm_katex_inline_expr
+	型:数値
+
+	'$ ... $' または '$$ ... $$' の形式のテキストを
+	KaTeXの数式として処理します。
+	この設定と併せて、g:previm_extra_librariesでのKaTeXライブラリの設定
+	が必要です。
+
+	値が1ならば、KaTeX数式の取り扱いを行います。
+	値が0ならば、KaTeX数式の取り扱いを行いません。
+	デフォルトでは0に設定されています。
+
+>
+	" .vimrc
+	let g:previm_katex_inline_expr = 1
+
 ==============================================================================
 追加ライブラリの利用					*previm-extralibraries*
 

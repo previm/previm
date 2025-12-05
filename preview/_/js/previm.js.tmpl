@@ -87,7 +87,60 @@
         md.set({ breaks: false });
         md.enable('cjk_breaks');
       }
-      return md.render(content);
+
+      if (getOptions().katexInlineExp) {
+        // Replace `$$` / `$` TeX math expression
+        content = content.split(/\n/);
+        for (let l = 0; l < content.length; l++) {
+          if (/^((?:>\s*)*)\$\$\s*$/.test(content[l])) {
+            const quoteLevel = RegExp.$1.replaceAll(/[^>]/g, '').length;
+            let m = l + 1;
+            for (; m < content.length; m++) {
+              if (/^((?:>\s*)*)/.test(content[m]) && RegExp.$1.replaceAll(/[^>]/g, '').length < quoteLevel) {
+                // Get out of the current quote.
+                break;
+              }
+              if (/^((?:>\s*)*)\$\$\s*$/.test(content[m])) {
+                content[l] = content[l].replace(/\$\$/, '<pre><code class="language-katex">');
+                content[m] = content[m].replace(/\$\$/, '</code></pre>');
+                break;
+              }
+            }
+            l = m;
+          } else {
+            content[l] = content[l].replaceAll(/((?:^|[^\\])(?:\\\\)*)\\\$/g, '$1&#x24;');
+            content[l] = content[l].replaceAll(/\$\$([^$]*?)\$\$/g, '<pre><code class="language-katex">$1</code></pre>');
+            content[l] = content[l].replaceAll(/(?<!\$)\$([^$]*?)\$(?!\$)/g, (match, p1) =>
+              `<code class="inlkatex">${
+                p1
+                  .replaceAll(/(?<=^|[^\\](?:\\\\)*)\*/g, '&#x2a;')
+                  .replaceAll(/(?<=^|[^\\](?:\\\\)*)_/g, '&#x5f;')
+                  .replaceAll(/(?<=^|[^\\](?:\\\\)*)\\/g, '&#x5c;')
+              }</code>`
+            );
+          }
+        }
+        content = content.join('\n');
+        let dom = document.createElement('div');
+        dom.innerHTML = md.render(content);
+        // Rollback the replacements in code syntax.
+        dom.querySelectorAll('pre, code:not(.language-katex)').forEach(elem => {
+          elem.innerHTML = elem.innerHTML
+                            .replaceAll(/&amp;#x24;/g, '\\$$')
+                            .replaceAll(/&lt;pre&gt;&lt;code class="language-katex"&gt;((?:.|\n)*?)&lt;\/code&gt;&lt;\/pre&gt;/g, '$$$$$1$$$$')
+                            .replaceAll(/&lt;code class="inlkatex"&gt;(.*?)&lt;\/code&gt;/g, (match, p1) =>
+                              `$${
+                                p1
+                                  .replaceAll(/&amp;#x2a;/g, '*')
+                                  .replaceAll(/&amp;#x5f;/g, '_')
+                                  .replaceAll(/&amp;#x5c;/g, '\\')
+                              }$`
+                            );
+        });
+        return dom.innerHTML;
+      } else {
+        return md.render(content);
+      }
     } else if(hasTargetFileType(filetype, ['plantuml'])) {
       const lines = content.split("\n")
       const chunks = [];
