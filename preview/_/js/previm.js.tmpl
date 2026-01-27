@@ -202,7 +202,8 @@
     const script = _doc.createElement('script');
 
     script.type = 'text/javascript';
-    script.src = 'js/previm-function.js?t=' + new Date().getTime();
+    const previewBase = _win.previmPreviewBase || '';
+    script.src = previewBase + 'js/previm-function.js?t=' + new Date().getTime();
 
     _addEventListener(script, 'error', function() {
       _win.clearInterval(interval);

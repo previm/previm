@@ -74,25 +74,42 @@ function! previm#refresh() abort
 endfunction
 
 function! previm#refresh_html() abort
+  let preview_html = previm#make_preview_file_path('index.html')
+  let preview_dir = fnamemodify(preview_html, ':p:h')
+  let preview_base_url = previm#path_to_base_url(preview_dir)
+  let base_url = previm#base_url()
+
   let lines = readfile(previm#make_preview_file_path('index.html.tmpl'))
   let output = []
   for line in lines
-    if line =~# '^\s*{{previm_js_files}}'
+    if line =~# '^\s*{{previm_base_tag}}'
+      let indent = matchstr(line, '^\s*')
+      call add(output, printf('%s<base href="%s">', indent, base_url))
+    elseif line =~# '^\s*{{previm_preview_base}}'
+      let indent = matchstr(line, '^\s*')
+      call add(output, printf('%s<script>window.previmPreviewBase = "%s";</script>', indent, preview_base_url))
+    elseif line =~# '^\s*{{previm_js_files}}'
       let indent = matchstr(line, '^\s*')
       for file in previm#assets#js()
-        call add(output, printf('%s<script src="../%s"></script>', indent, file))
+        call add(output, printf('%s<script src="%s../%s"></script>', indent, preview_base_url, file))
       endfor
     elseif line =~# '^\s*{{previm_css_files}}'
       let indent = matchstr(line, '^\s*')
       for file in previm#assets#css()
-        call add(output, printf('%s<link type="text/css" href="../%s" rel="stylesheet" media="all" />', indent, file))
+        call add(output, printf('%s<link type="text/css" href="%s../%s" rel="stylesheet" media="all" />', indent, preview_base_url, file))
       endfor
-   else
+    elseif line =~# 'href="css/previm.css"'
+      call add(output, substitute(line, 'href="css/previm.css"', 'href="' . preview_base_url . 'css/previm.css"', ''))
+    elseif line =~# 'src="js/previm.js"'
+      call add(output, substitute(line, 'src="js/previm.js"', 'src="' . preview_base_url . 'js/previm.js"', ''))
+    elseif line =~# 'src="../_/js/lib/plantuml.js"'
+      call add(output, substitute(line, 'src="../_/js/lib/plantuml.js"', 'src="' . preview_base_url . '../_/js/lib/plantuml.js"', ''))
+    else
       call add(output, line)
     endif
   endfor
 
-  call writefile(output, previm#make_preview_file_path('index.html'))
+  call writefile(output, preview_html)
 endfunction
 
 let s:default_origin_css_path = "@import url('../../_/css/origin.css') layer;"
@@ -331,6 +348,34 @@ function! previm#convert_to_content(lines) abort
     call add(converted_lines, escaped)
   endfor
   return join(converted_lines, "\\n")
+endfunction
+
+function! previm#path_to_base_url(path) abort
+  let mkd_dir = fnamemodify(a:path, ':p')
+  if has('win32unix')
+    " convert cygwin path to windows path
+    let mkd_dir = substitute(system('cygpath -wa ' . mkd_dir), "\n$", '', '')
+    let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
+  elseif get(g:, 'previm_wsl_mode', 0) ==# 1
+    let mkd_dir = trim(system('wslpath -w ' . mkd_dir))
+    let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
+  elseif has('win32')
+    let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
+  endif
+  let path_prefix = '//localhost'
+  if get(g:, 'previm_wsl_mode', 0) ==# 1
+    let path_prefix = ''
+  endif
+  let pre_slash = s:start_with(mkd_dir, '/') ? '' : '/'
+  let base_url = path_prefix . pre_slash . mkd_dir
+  if base_url !~# '/$'
+    let base_url .= '/'
+  endif
+  return base_url
+endfunction
+
+function! previm#base_url() abort
+  return previm#path_to_base_url(expand('%:p:h'))
 endfunction
 
 function! previm#convert_relative_to_absolute_filepath(text, mkd_dir) abort
