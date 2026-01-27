@@ -333,6 +333,30 @@ function! previm#convert_to_content(lines) abort
   return join(converted_lines, "\\n")
 endfunction
 
+function! previm#base_url() abort
+  let mkd_dir = expand('%:p:h')
+  if has('win32unix')
+    " convert cygwin path to windows path
+    let mkd_dir = substitute(system('cygpath -wa ' . mkd_dir), "\n$", '', '')
+    let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
+  elseif get(g:, 'previm_wsl_mode', 0) ==# 1
+    let mkd_dir = trim(system('wslpath -w ' . mkd_dir))
+    let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
+  elseif has('win32')
+    let mkd_dir = substitute(mkd_dir, '\', '/', 'g')
+  endif
+  let path_prefix = '//localhost'
+  if get(g:, 'previm_wsl_mode', 0) ==# 1
+    let path_prefix = ''
+  endif
+  let pre_slash = s:start_with(mkd_dir, '/') ? '' : '/'
+  let base_url = path_prefix . pre_slash . mkd_dir
+  if base_url !~# '/$'
+    let base_url .= '/'
+  endif
+  return base_url
+endfunction
+
 function! previm#convert_relative_to_absolute_filepath(text, mkd_dir) abort
   return substitute(a:text, '\v!?\[%([^\[\]\(\)]+|\[[^\[\]]*\]|\([^()]*\))*\]\([^()]*\)|^\[[^^]%([^\[\]]*)\]:\s*%(.*)', '\=previm#relative_to_absolute_filepath(submatch(0), a:mkd_dir)', 'g')
 endfunction
@@ -475,6 +499,7 @@ function! previm#options()
   \   'autoClose': get(g:, 'previm_auto_close', 0),
   \   'showCodeLanguage': get(g:, 'previm_code_language_show', 0),
   \   'codeLanguageSeparator': get(g:, 'previm_code_language_separator', '[\s:]+'),
+  \   'baseUrl': previm#base_url(),
   \ })
 endfunction
 

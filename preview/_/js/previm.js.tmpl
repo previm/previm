@@ -119,6 +119,41 @@
     return 'Sorry. It is a filetype(' + filetype + ') that is not support<br /><br />' + content;
   }
 
+  function normalizeBaseUrl(baseUrl) {
+    if (/^\/\//.test(baseUrl)) {
+      return _win.location.protocol + baseUrl;
+    }
+    return baseUrl;
+  }
+
+  function isRelativeUrl(url) {
+    return !/^(?:[a-z][a-z0-9+.-]*:|\/\/|#|\/)/i.test(url);
+  }
+
+  function resolveRelativeImageSrcs(container) {
+    if (typeof getOptions !== 'function') {
+      return;
+    }
+    const options = getOptions();
+    if (!options || !options.baseUrl) {
+      return;
+    }
+    const baseUrl = normalizeBaseUrl(options.baseUrl);
+    const imgs = container.querySelectorAll('img[src]');
+    imgs.forEach(function(img) {
+      const src = img.getAttribute('src');
+      if (!src || !isRelativeUrl(src)) {
+        return;
+      }
+      try {
+        const resolved = new URL(src, baseUrl).toString();
+        img.setAttribute('src', resolved);
+      } catch (_e) {
+        // ignore invalid URLs
+      }
+    });
+  }
+
   function hasTargetFileType(filetype, targetList) {
     const ftlist = filetype.split('.');
     for(let i=0;i<ftlist.length; i++) {
@@ -175,6 +210,7 @@
 
       const beforePageYOffset = _win.pageYOffset;
       _doc.getElementById('preview').innerHTML = transform(getFileType(), getContent());
+      resolveRelativeImageSrcs(_doc.getElementById('preview'));
 
       {{previm_load_libraries}}
 
