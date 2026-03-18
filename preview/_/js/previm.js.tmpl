@@ -234,6 +234,7 @@
     }
   }
 
+  let isFirstLoad = true;
   const interval = _win.setInterval(function() {
     const script = _doc.createElement('script');
 
@@ -255,7 +256,24 @@
 
     _doc.getElementsByTagName('head')[0].appendChild(script);
 
+    if (isFirstLoad) {
+      _addEventListener(script, 'load', function() {
+        if (/#scroll=(\d+),(\d+)$/.test(_win.location.href)) {
+          const x = parseInt(RegExp.$1, 10);
+          const y = parseInt(RegExp.$2, 10);
+          _win.setTimeout(function() {
+            _win.scrollTo(x, y);
+          }, 300);
+        }
+      });
+      isFirstLoad = false;
+    }
+
   }, REFRESH_INTERVAL);
+
+  _addEventListener(_doc, 'scrollend', function() {
+    _win.location.href = _win.location.href.replace(/(#.*)?$/, '#scroll=' + _win.scrollX + ',' + _win.scrollY);
+  });
 
   function _addEventListener(target, type, listener) {
     if (target.addEventListener) {
