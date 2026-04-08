@@ -1,0 +1,35 @@
+{
+  "name": "previm",
+  "version": "1.0.0",
+  "description": "[README in English](https://github.com/previm/previm/blob/master/README-en.md)",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node --test test/node/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/previm/previm.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/previm/previm/issues"
+  },
+  "homepage": "https://github.com/previm/previm#readme",
+  "devDependencies": {
+    "markdown-it": "^14.1.1",
+    "markdown-it-abbr": "^2.0.0",
+    "markdown-it-checkbox": "^1.1.0",
+    "markdown-it-cjk-breaks": "^2.0.0",
+    "markdown-it-deflist": "^3.0.0",
+    "markdown-it-footnote": "^4.0.0",
+    "markdown-it-sub": "^2.0.0",
+    "markdown-it-sup": "^2.0.0"
+  }
+}
