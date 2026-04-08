@@ -228,7 +228,7 @@ function! s:function_template() abort
   let current_file = expand('%:p')
   return join([
       \ 'function getFileName() {',
-      \ printf('return "%s";', s:escape_backslash(current_file)),
+      \ printf('return "%s";', substitute(s:escape_backslash(current_file), '"', '\\"', 'g')),
       \ '}',
       \ '',
       \ 'function getFileType() {',
