@@ -228,7 +228,7 @@ function! s:function_template() abort
   let current_file = expand('%:p')
   return join([
       \ 'function getFileName() {',
-      \ printf('return "%s";', s:escape_backslash(current_file)),
+      \ printf('return "%s";', substitute(s:escape_backslash(current_file), '"', '\\"', 'g')),
       \ '}',
       \ '',
       \ 'function getFileType() {',
@@ -317,7 +317,7 @@ function! previm#convert_to_content(lines) abort
   " コードブロック内ではパスの展開は行わない
   let in_codeblock = 0
   for line in s:do_external_parse(a:lines)
-    if line =~ '^```'
+    if line =~ '^\(```\|~~~\)'
       let in_codeblock = !in_codeblock
     endif
 
