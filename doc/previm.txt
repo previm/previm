@@ -198,7 +198,10 @@ g:previm_code_language_show			*g:previm_code_language_show*
 	Sets the ability to display the language (or file name) of the code
 	block during preview.
 
-	If the value is 1, use the language display function of the code block.
+	If the value is 1, use the language display function of the code block
+	(either language name or file name).
+	If the value is 2, use the language display function of the code block
+	(only if file name is specified).
 	If the value is 0, the language display feature of the code block 
 	is not used.
 	It is set to 0 by default.

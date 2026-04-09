@@ -3,6 +3,7 @@ preview/**
 doc/tags*
 preview/_/css/extra
 preview/_/js/extra
+node_modules
 
 # Created by https://www.gitignore.io/api/vim,osx
 

@@ -182,8 +182,8 @@ function! s:t.teardown()
   endif
 endfunction
 
-let s:default_origin_css_path = "@import url('../../_/css/origin.css');"
-let s:default_github_css_path = "@import url('../../_/css/lib/github.css');"
+let s:default_origin_css_path = "@import url('../../_/css/origin.css') layer;"
+let s:default_github_css_path = "@import url('../../_/css/lib/github.css') layer;"
 function! s:t.default_content_if_not_exists_setting()
   call previm#refresh_css()
   let actual = readfile(previm#make_preview_file_path('css/previm.css'))
