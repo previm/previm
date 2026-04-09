@@ -273,7 +273,7 @@
   }, REFRESH_INTERVAL);
 
   _addEventListener(_doc, 'scrollend', function() {
-    _win.location.href = _win.location.href.replace(/(#.*)?$/, '#scroll=' + _win.scrollX + ',' + _win.scrollY);
+    _win.location.replace(_win.location.href.replace(/(#.*)?$/, '#scroll=' + _win.scrollX + ',' + _win.scrollY));
   });
 
   function _addEventListener(target, type, listener) {
