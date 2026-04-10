@@ -500,6 +500,7 @@ function! previm#options()
   \   'showCodeLanguage': get(g:, 'previm_code_language_show', 0),
   \   'codeLanguageSeparator': get(g:, 'previm_code_language_separator', '[\s:]+'),
   \   'baseUrl': previm#base_url(),
+  \   'katexInlineExp': get(b:, 'previm_katex_inline_expr', get(g:, 'previm_katex_inline_expr', v:false))
   \ })
 endfunction
 
