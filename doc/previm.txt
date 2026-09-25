@@ -314,6 +314,17 @@ You can add extra libraries for preview: >
 <
 Adding this into your vimrc, and |:PrevimUpdateAssets| after opening markdown file.
 
+Besides "type", "path" and "url", each entry of "files" accepts:
+
+	code	List of JavaScript lines run after the preview is
+		rendered ("js" only).
+	init	List of JavaScript lines run before the content is
+		converted. The markdown-it instance is available as "md".
+		They run on every refresh.
+	style	List of CSS lines added to the preview ("css" only).
+
+A library whose "enabled" is 0 is ignored.
+
 
 USING WITH OPEN-BROWSER.VIM				*previm-openbrowser*
 

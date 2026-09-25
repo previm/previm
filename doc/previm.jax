@@ -297,6 +297,17 @@ g:previm_code_language_separator		*g:previm_code_language_separator*
 これを vimrc に追加し markdown ファイルを開いた後で |:PrevimUpdateAssets| を実
 行して下さい。
 
+"files" の各要素には "type"、"path"、"url" のほかに次のキーを指定できます:
+
+	code	プレビューの描画後に実行する JavaScript の行のリスト
+		("js" のみ)。
+	init	内容を変換する前に実行する JavaScript の行のリスト。
+		markdown-it のインスタンスを "md" として参照できます。
+		プレビューの更新のたびに実行されます。
+	style	プレビューに追加する CSS の行のリスト ("css" のみ)。
+
+"enabled" に 0 を指定したライブラリは無視されます。
+
 
 open-browser.vimの使用					*previm-openbrowser*
 
