@@ -263,3 +263,18 @@ function! previm#assets#code() abort
   endfor
   return l:code
 endfunction
+
+function! previm#assets#missing() abort
+  let l:missing = []
+  for l:i in filter(copy(get(g:, 'previm_extra_libraries', [])), {k, v -> !has_key(v, 'enabled') || v['enabled']})
+    for l:file in l:i['files']
+      if !has_key(l:file, 'path')
+        continue
+      endif
+      if !filereadable(previm#preview_base_dir() . '/' . l:file['path'])
+        call add(l:missing, l:file['path'])
+      endif
+    endfor
+  endfor
+  return l:missing
+endfunction

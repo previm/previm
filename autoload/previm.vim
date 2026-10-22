@@ -10,6 +10,10 @@ let s:newline_character = "\n"
 function! previm#open(preview_html_file) abort
   let b:previm_opened = 1
   call previm#refresh()
+  let missing = previm#assets#missing()
+  if !empty(missing)
+    call s:echo_err('[Previm]extra libraries not found. run :PrevimUpdateAssets: ' . join(missing, ', '))
+  endif
   if exists('g:previm_open_cmd') && !empty(g:previm_open_cmd)
     if has('win32') && g:previm_open_cmd =~? 'firefox'
       " windows+firefox環境
