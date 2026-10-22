@@ -366,3 +366,27 @@ function! s:t.empty_if_not_exists_file()
 endfunction
 "}}}
 "
+
+let s:t = themis#suite('assets_missing') "{{{
+
+function! s:t.teardown()
+  unlet! g:previm_extra_libraries
+endfunction
+
+function! s:t.empty_if_no_extra_libraries()
+  unlet! g:previm_extra_libraries
+  call s:assert.equals(previm#assets#missing(), [])
+endfunction
+
+function! s:t.returns_only_missing_enabled_files()
+  let g:previm_extra_libraries = [
+        \ {'name': 'exists', 'files': [{'type': 'js', 'path': '_/js/lib/markdown-it.min.js'}]},
+        \ {'name': 'missing', 'files': [
+        \   {'type': 'js', 'path': '_/js/extra/not_exists.js'},
+        \   {'type': 'js', 'init': ['md.options.typographer = true;']},
+        \ ]},
+        \ {'name': 'disabled', 'enabled': v:false, 'files': [{'type': 'js', 'path': '_/js/extra/disabled.js'}]},
+        \ ]
+  call s:assert.equals(previm#assets#missing(), ['_/js/extra/not_exists.js'])
+endfunction
+"}}}
